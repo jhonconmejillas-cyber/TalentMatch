@@ -3,7 +3,7 @@
 # Nombre de la Aplicación
 
 ## Descripción
-Breve descripción del sistema de software, el problema que busca solucionar y el contexto general del proyecto.
+Breve descripción del sistema de software, el problema que busca solucionar y el contexto general del proyecto. quiero ver sirve develop como rama principal
 
 ---
 
