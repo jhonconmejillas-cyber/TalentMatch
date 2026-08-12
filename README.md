@@ -119,7 +119,7 @@ docker-compose run ai-model pytest
 
 **Equipo de desarrollo:**
 
-**Estudiante 1**  
+**Estudiante 1 Jhon Sebastian Mejia Alvarez**  
 Estudiante de Ciencia de Datos, Pontificia Universidad Javeriana  
 📧 est1.u@javeriana.edu.co  
 
@@ -127,6 +127,9 @@ Estudiante de Ciencia de Datos, Pontificia Universidad Javeriana
 Estudiante de Ingeniería en Sistemas, Pontificia Universidad Javeriana  
 📧 est2@javeriana.edu.co  
 
+**Estudiante 3**  
+Estudiante de Ingeniería en Sistemas, Pontificia Universidad Javeriana  
+📧 est2@javeriana.edu.co  
 --- 
 
 ## Licencia
