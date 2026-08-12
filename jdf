@@ -1,0 +1,63 @@
+[33mcommit dd7b0013f22de4f1bc0efe688a3f8387aa4e7774[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeatures-sebastian[m[33m)[m
+Author: Jhon Sebastian Mejia Alvarez <jhonconmejillas@gmail.com>
+Date:   Wed Aug 12 12:59:30 2026 -0500
+
+    feat: agregar nombre al README
+
+[33mcommit e587fa6b592fe164653ca6aa13712b9d1edf7333[m[33m ([m[1;31morigin/features-sebastian[m[33m, [m[1;31morigin/features-juan[m[33m, [m[1;31morigin/features-carlos[m[33m, [m[1;31morigin/Main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mfeatures-juan[m[33m, [m[1;32mfeatures-carlos[m[33m, [m[1;32mMain[m[33m)[m
+Author: Juan Pablo Arias Buitrago <126124282+JuanParias29@users.noreply.github.com>
+Date:   Thu Feb 19 12:40:04 2026 -0500
+
+    Docs(README): Update project name (#6)
+
+[33mcommit f575fe687a1d9a84581a2c2a82920e4d5eba9ff0[m
+Author: Juan Pablo Arias Buitrago <126124282+JuanParias29@users.noreply.github.com>
+Date:   Thu Feb 19 11:35:19 2026 -0500
+
+    📝 docs(README): Update with version number (#6)
+    
+    Versión final de la plantilla para 2610
+
+[33mcommit a9adfb632904d9c752b80f12bc0be26e7bcf482b[m
+Author: Juan Pablo Arias Buitrago <126124282+JuanParias29@users.noreply.github.com>
+Date:   Thu Feb 19 11:33:30 2026 -0500
+
+    📝 docs(README): Add contact information for instructor
+    
+    Se agrego el correo del docente de la clase
+
+[33mcommit a02210aa97f8b4865928511cde16f3c0596b093f[m
+Author: Juan Pablo Arias Buitrago <126124282+JuanParias29@users.noreply.github.com>
+Date:   Mon Feb 9 21:36:19 2026 -0500
+
+    Add project README template
+
+[33mcommit ffe47ac8f43d7c6bf7f305c60411f922ca0a2fe2[m
+Author: Juan Pablo Arias Buitrago <126124282+JuanParias29@users.noreply.github.com>
+Date:   Mon Feb 9 21:35:42 2026 -0500
+
+    Rename README.md to BOILERPLATE_template.md
+
+[33mcommit c0ba9340c53dbd45467fe9b139c8a98e5b8579d7[m
+Author: Juan Pablo Arias Buitrago <126124282+JuanParias29@users.noreply.github.com>
+Date:   Mon Feb 9 21:34:36 2026 -0500
+
+    Add README template for project documentation
+
+[33mcommit ff6ac908a84ee842699dfea0c2b0bcce7d9bdca0[m
+Author: gabriel moreno <morenoluis@javeriana.edu.co>
+Date:   Tue Aug 19 10:35:40 2025 -0500
+
+    feat(conf): add folder for config project boilerplate.
+
+[33mcommit 36fd23b9d89fbcb584c444895330b3c58a216850[m
+Author: morenoluisg <morenoluis@javeriana.edu.co>
+Date:   Tue Jul 23 08:58:45 2024 -0500
+
+    Update README.md
+
+[33mcommit f49b4d45c9fddf6e6f345b8020a987cb3f37a61a[m
+Author: morenoluisg <morenoluis@javeriana.edu.co>
+Date:   Tue Jul 23 08:55:01 2024 -0500
+
+    Initial commit
