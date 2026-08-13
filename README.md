@@ -8,14 +8,14 @@ Breve descripción del sistema de software, el problema que busca solucionar y e
 ---
 
 ## Equipo del Proyecto
-| Nombre        | Rol                   | GitHub / Perfil |
-|--------------|-----------------------|-----------------|
-| Estudiante 1 | Scrum Master          | github.com/usuario1 |
-| Estudiante 2 | Product Owner         | github.com/usuario2 |
-| Estudiante 3 | Sprint Planner        | github.com/usuario3 |
-| Estudiante 4 | Configuration Manager | github.com/usuario4 |
-| Estudiante 5 | QA Lead               | github.com/usuario5 |
-| Estudiante 6 | DevOps Engineer       | github.com/usuario6 |
+| Nombre         | Rol                   | GitHub / Perfil                 |
+|--------------  |-----------------------|---------------------------------|
+| Carlos Camacho | Scrum Master          | github.com/charly-31            |
+| Jhon Mejia     | Product Owner         | github.com/jhoncomejillas-cyber |
+| Juan Maldonado | Sprint Planner        | github.com/camilo058            |
+| Jhon Mejia     | Configuration Manager | github.com/jhoncomejillas-cyber |
+| Juan Maldonado | QA Lead               | github.com/camilo058            |
+| Carlos Camacho | DevOps Engineer       | github.com/charly-31            |
 
 ---
 
