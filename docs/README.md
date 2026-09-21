@@ -7,11 +7,11 @@ historias de usuario y casos de uso.
 
 | Carpeta | Documento | Qué contiene | IDs |
 |---|---|---|---|
-| [`reglas-negocio/`](reglas-negocio/) | [RN-TalentMatch-Reglas-de-Negocio.md](reglas-negocio/RN-TalentMatch-Reglas-de-Negocio.md) | Reglas de negocio del modelo de rotación continuo. **Fuente única de verdad.** | RN-01 … RN-30, PEN-01 … PEN-03 |
-| [`requerimientos/`](requerimientos/) | [RF-RNF-TalentMatch.md](requerimientos/RF-RNF-TalentMatch.md) | Requerimientos funcionales y no funcionales. | RF-01 … RF-33, RNF-01 … RNF-13 |
+| [`reglas-negocio/`](reglas-negocio/) | [RN-TalentMatch-Reglas-de-Negocio.md](reglas-negocio/RN-TalentMatch-Reglas-de-Negocio.md) | Reglas de negocio del modelo de rotación continuo. **Fuente única de verdad.** | RN-01 … RN-30 (RN-24 derogada) |
+| [`requerimientos/`](requerimientos/) | [RF-RNF-TalentMatch.md](requerimientos/RF-RNF-TalentMatch.md) | Requerimientos funcionales y no funcionales. | RF-01 … RF-33 (32 activos), RNF-01 … RNF-13 |
 | [`historias-usuario/`](historias-usuario/) | [HU-TalentMatch.md](historias-usuario/HU-TalentMatch.md) | Historias de usuario con criterios de aceptación, Definición de Terminado y subtareas técnicas. | HU-001 … HU-010 |
-| [`casos-uso/`](casos-uso/) | [CU-TalentMatch.md](casos-uso/CU-TalentMatch.md) | Casos de uso en formato estándar (secuencia normal, excepciones, pre y postcondición). | CU_01 … CU_25 |
-| [`diagramas/`](diagramas/) | — | Diagramas de casos de uso, de clases y de despliegue. | — |
+| [`casos-uso/`](casos-uso/) | [CU-TalentMatch.md](casos-uso/CU-TalentMatch.md) | Casos de uso en formato estándar (secuencia normal, excepciones, pre y postcondición). | CU_01 … CU_25 (24 activos) |
+| [`diagramas/`](diagramas/) | [DC-TalentMatch-Diagrama-de-Clases.md](diagramas/DC-TalentMatch-Diagrama-de-Clases.md) | Diagrama de clases (E-R y UML) y, a futuro, de casos de uso y de despliegue. | DC-01 |
 | [`wiki/`](wiki/) | — | Copia versionada de las páginas del wiki del repositorio. | — |
 
 ## Jerarquía y orden de precedencia
@@ -47,10 +47,10 @@ historias de usuario y casos de uso.
 
 | Métrica | Valor |
 |---|---|
-| Reglas de negocio | 30 |
-| Requerimientos funcionales | 33 |
+| Reglas de negocio | 30 (RN-24 derogada) |
+| Requerimientos funcionales | 33 numerados, 32 activos (RF-05 eliminado) |
 | Requerimientos no funcionales | 13 |
 | Historias de usuario | 10 |
-| Casos de uso | 25 |
-| Cobertura RF → CU | **100 %** (33 de 33) |
-| Pendientes por confirmar con la empresa | 3 (PEN-01, PEN-02, PEN-03) |
+| Casos de uso | 25 numerados, 24 activos (CU_04 eliminado) |
+| Cobertura RF → CU | **100 %** (32 de 32 activos) |
+| Pendientes por confirmar con la empresa | 0 — PEN-01, PEN-02 y PEN-03 confirmados el 2026-09-21 |

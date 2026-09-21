@@ -2,11 +2,13 @@
 
 ## 3 Roles Principales
 
+> ⚠️ El rol **VP Engineering**, la **meta de carrera** y la **escalera de carrera** se eliminaron
+> del alcance del MVP (Career Impact Score fuera de alcance, ver Reglas de Negocio §9).
+
 ### 1. 👨‍💻 Empleado (Ingeniero)
 
 **Qué hace:**
 - Define su perfil: habilidades, senioridad, años de experiencia
-- Define meta de carrera (ej. Staff Engineer)
 - Guarda "deseos" de habilidades que quiere aprender
 - Explora vacantes activas
 - Expresa interés en vacantes relevantes
@@ -14,7 +16,6 @@
 - Participa en pulsos trimestrales de satisfacción
 
 **Dashboard principal:**
-- Progreso hacia su meta de carrera
 - Vacantes recomendadas
 - Deseos guardados
 - Historial de aplicaciones
@@ -26,7 +27,7 @@
 **Qué hace:**
 - Publica vacantes del equipo
 - Revisa ranking de candidatos (ordenado por Puntaje Final)
-- Ve Match Score + Career Impact + Costo de Rotación
+- Ve Match Score + Costo de Rotación
 - Acepta o rechaza candidatos
 - Si rechaza candidato de match ≥65%, el sistema notifica automáticamente al empleado (% y habilidades del seleccionado, sin nombre) — el manager no da feedback manual
 - Cada 12 meses justifica por qué empleados continúan en el proyecto
@@ -39,22 +40,16 @@
 
 ---
 
-### 3. 🏢 RR.HH. & VP Engineering
+### 3. 🏢 RR.HH.
 
-**Qué hacen RR.HH.:**
+**Qué hace:**
 - Dan seguimiento a alertas de rechazo repetido
 - Cargan datos de la empresa (CSV)
-- Configuran umbrales y pesos del algoritmo
-- Colaboran en definición de escaleras de carrera
-
-**Qué hace VP Engineering:**
-- Define requisitos técnicos de cada nivel de carrera
-- Colabora con RR.HH. en la escalera
+- Configuran umbrales del algoritmo
 
 **Panel administrativo:**
 - Carga de datos (empleados, proyectos, skills)
-- Definición de escaleras de carrera
-- Configuración de pesos y umbrales
+- Configuración de umbrales
 - Alertas de problemas (rechazo repetido, baja actividad)
 
 ---
@@ -65,11 +60,10 @@
 
 1. **Setup inicial**
    - Completa perfil (skills, senioridad, años)
-   - Elige meta de carrera desde escalera predefinida
    
 2. **Exploración**
    - Ve vacantes activas
-   - Cada vacante muestra: Match Score, Career Impact, tiempo de aprendizaje
+   - Cada vacante muestra: Match Score, tiempo de aprendizaje
    
 3. **Interés**
    - Guarda "deseos" de habilidades (wishlist)
@@ -94,7 +88,7 @@
    
 2. **Revisar candidatos**
    - Ve ranking de empleados que expresaron interés
-   - Por cada uno: Match Score, Career Impact, Costo de Rotación
+   - Por cada uno: Match Score, Costo de Rotación
    
 3. **Decisión**
    - Acepta: se inicia transición formal con RR.HH.

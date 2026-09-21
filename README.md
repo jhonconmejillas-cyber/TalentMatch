@@ -25,7 +25,7 @@ reemplazarlo.
 | Pilar | Qué hace |
 |---|---|
 | **Visibilidad** | El empleado ve todas las vacantes internas relevantes para su carrera, incluso en otras áreas. |
-| **Transparencia** | Cada puntaje es explicable: `Puntaje Final = Match Score × 0.4 + Career Impact × 0.6`. Sin caja negra. |
+| **Transparencia** | Cada puntaje es explicable: `Puntaje Final = Match Score`. Sin caja negra. |
 | **Argumento económico** | El manager ve cuánto cuesta perder a esa persona frente a cuánto cuesta moverla. |
 | **Decisión por mérito** | El ranking es inmutable y ningún dato personal entra al cálculo. |
 
@@ -38,9 +38,9 @@ Toda la especificación vive en **[`docs/`](docs/)**:
 | Documento | Contenido |
 |---|---|
 | **[Reglas de Negocio](docs/reglas-negocio/RN-TalentMatch-Reglas-de-Negocio.md)** | RN-01 … RN-30. **Fuente única de verdad.** |
-| **[Requerimientos](docs/requerimientos/RF-RNF-TalentMatch.md)** | 33 RF y 13 RNF, trazados a las reglas de negocio. |
+| **[Requerimientos](docs/requerimientos/RF-RNF-TalentMatch.md)** | 32 RF activos y 13 RNF, trazados a las reglas de negocio. |
 | **[Historias de Usuario](docs/historias-usuario/HU-TalentMatch.md)** | 10 historias con criterios de aceptación, DoD y subtareas. |
-| **[Casos de Uso](docs/casos-uso/CU-TalentMatch.md)** | CU_01 … CU_25 en formato estándar, con matriz de trazabilidad. |
+| **[Casos de Uso](docs/casos-uso/CU-TalentMatch.md)** | CU_01 … CU_25 (24 activos) en formato estándar, con matriz de trazabilidad. |
 | **[Copia del wiki](docs/wiki/)** | Instantánea de las páginas del wiki, versionada junto al código. |
 
 ```

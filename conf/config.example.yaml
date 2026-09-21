@@ -3,10 +3,8 @@
 # debe estar fijo en el codigo: todos se leen en tiempo de ejecucion.
 
 algoritmo:
-  # Puntaje Final = match_score * peso_match_score + career_impact * peso_career_impact
-  # Ambos pesos DEBEN sumar 1.0 (RN-13, CU_25 excepcion 4)
-  peso_match_score: 0.4
-  peso_career_impact: 0.6
+  # Puntaje Final = Match Score (RN-13). No hay una segunda metrica que ponderar:
+  # el Career Impact Score se elimino del alcance del MVP (PEN-03 confirmado).
 
   # Match Score = (% habilidades avaladas coincidentes * 0.7) + (ajuste senioridad * 0.3)
   peso_habilidades: 0.7
@@ -29,9 +27,9 @@ plazos:
   # Ciclo de evaluacion de peticiones acumuladas del manager (RN-12)
   ciclo_evaluacion_dias: 3
 
-  # Dias que una vacante puede estar activa sin match antes de alertar
-  # PENDIENTE de confirmar con la empresa (PEN-01) - valor por defecto del MVP
-  umbral_vacante_sin_match_dias: 30
+  # Dias que una vacante puede estar activa sin match antes de alertar (RN-05, RN-30)
+  # PEN-01 confirmado con la empresa: 10 dias
+  umbral_vacante_sin_match_dias: 10
 
 alertas:
   # Rechazos del mismo manager a candidatos viables antes de alertar a RRHH (RN-29)
@@ -42,8 +40,8 @@ reporte_ejecutivo:
   top_n: 10
 
 costo_rotacion:
-  # PENDIENTE de confirmar el alcance (PEN-02).
-  # Mientras tanto se muestra como metrica informativa: NO altera el ranking.
+  # PEN-02 confirmado con la empresa: valor aproximado, solo para mostrarle al manager
+  # los beneficios de la rotacion interna. NO altera el ranking ni el Puntaje Final.
   habilitado: true
   altera_ranking: false
   salida:

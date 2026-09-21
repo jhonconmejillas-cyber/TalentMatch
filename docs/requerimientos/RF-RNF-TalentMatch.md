@@ -3,10 +3,10 @@
 | Campo | Valor |
 |---|---|
 | **Documento** | Requerimientos Funcionales (RF) y No Funcionales (RNF) |
-| **Versión** | 2.0 — corregida contra las [Reglas de Negocio v2.0](../reglas-negocio/RN-TalentMatch-Reglas-de-Negocio.md) |
+| **Versión** | 2.1 — corregida contra las [Reglas de Negocio v2.1](../reglas-negocio/RN-TalentMatch-Reglas-de-Negocio.md) |
 | **Fecha** | 2026-09-21 |
 | **Sistema** | TalentMatch — Movilidad Interna de Ingenieros |
-| **Total RF** | 33 |
+| **Total RF** | 33 numerados, **32 activos** (RF-05 eliminado, ver PEN-03) |
 | **Total RNF** | 13 |
 
 ---
@@ -21,7 +21,7 @@ La versión 1.0 de este documento describía parcialmente un proceso de **selecc
 (feedback obligatorio del manager, apelaciones, métricas de desempeño individual). La
 versión 2.0 **realinea todos los requerimientos** con las Reglas de Negocio vigentes:
 modelo de rotación continuo, resultado de rechazo anónimo y automático, y cálculo basado
-exclusivamente en **habilidades avaladas** y **meta de carrera**.
+exclusivamente en **habilidades avaladas** y **senioridad**.
 
 ---
 
@@ -36,14 +36,14 @@ los origina; la columna **CU** el caso de uso que los realiza.
 |---|---|---|---|---|---|---|
 | **RF-01** | Registrarse | El sistema debe permitir a un usuario crear una cuenta con nombre completo, correo electrónico corporativo y contraseña, validando los datos antes de almacenarlos. | Usuario | — | CU_01 | Alta |
 | **RF-02** | Iniciar sesión | El sistema debe autenticar al usuario con correo y contraseña, y cargar el perfil correspondiente a su rol. | Usuario registrado | — | CU_02 | Alta |
-| **RF-03** | Gestionar usuarios y roles | El sistema debe permitir crear, desactivar y asignar rol (Empleado, Manager, RR.HH., VP Engineering, Líder Ejecutivo, Administrador) a las cuentas. | Administrador del Sistema | RN-§11 | CU_23 | Alta |
+| **RF-03** | Gestionar usuarios y roles | El sistema debe permitir crear, desactivar y asignar rol (Empleado, Manager, RR.HH., Líder Ejecutivo, Administrador) a las cuentas. | Administrador del Sistema | RN-§11 | CU_23 | Alta |
 
 ### 1.2 Perfil del empleado
 
 | ID | Nombre | Descripción | Actor | RN | CU | Prioridad |
 |---|---|---|---|---|---|---|
 | **RF-04** | Gestionar perfil profesional | El sistema debe permitir al empleado registrar y actualizar su senioridad, años de experiencia, área y proyecto actual. | Empleado | RN-23 | CU_03 | Alta |
-| **RF-05** | Definir meta de carrera | El sistema debe permitir al empleado elegir su meta de carrera desde la escalera predefinida por VP Engineering y RR.HH. | Empleado | RN-24 | CU_04 | Alta |
+| **RF-05** | ~~Definir meta de carrera~~ | **Eliminado.** El Career Impact Score y la meta de carrera se sacaron del alcance del MVP (PEN-03). | — | — | — | — |
 | **RF-06** | Agregar habilidades autoreportadas | El sistema debe permitir al empleado agregar habilidades a su perfil, guardándolas siempre en estado `agregado`. | Empleado | RN-19 | CU_05 | Alta |
 | **RF-07** | Avalar habilidades | El sistema debe permitir al manager actual revisar las habilidades `agregado` de su equipo y cambiarlas a `avalado` o rechazarlas. | Manager / Líder Técnico | RN-19 | CU_06 | Alta |
 | **RF-08** | Excluir habilidades no avaladas del cálculo | El sistema debe usar **únicamente** habilidades en estado `avalado` al calcular el Match Score. | Sistema | RN-20 | CU_11 | Alta |
@@ -63,10 +63,10 @@ los origina; la columna **CU** el caso de uso que los realiza.
 
 | ID | Nombre | Descripción | Actor | RN | CU | Prioridad |
 |---|---|---|---|---|---|---|
-| **RF-15** | Calcular Puntaje Final | El sistema debe calcular Match Score, Career Impact Score y `Puntaje Final = MS×0.4 + CI×0.6` para cada par empleado–vacante, usando reglas lógicas explicables y **sin IA**. | Sistema | RN-13, RN-23, RN-24, RN-25 | CU_11 | Alta |
-| **RF-16** | Mostrar desglose al empleado | El sistema debe mostrar al empleado su Puntaje Final y el desglose de cada métrica **antes** de que decida postularse. | Empleado | RN-29 (§10) | CU_11 | Alta |
+| **RF-15** | Calcular Puntaje Final | El sistema debe calcular el Match Score y el `Puntaje Final = Match Score` para cada par empleado–vacante, usando reglas lógicas explicables y **sin IA**. | Sistema | RN-13, RN-23, RN-25 | CU_11 | Alta |
+| **RF-16** | Mostrar desglose al empleado | El sistema debe mostrar al empleado su Puntaje Final y el desglose del Match Score **antes** de que decida postularse. | Empleado | RN-29 (§10) | CU_11 | Alta |
 | **RF-17** | Advertir posibilidades bajas | Si el Puntaje Final es **< 65 %**, el sistema debe informar al empleado que sus posibilidades son bajas, **sin bloquear** su postulación. | Sistema | RN-28 | CU_12 | Alta |
-| **RF-18** | Calcular Costo de Rotación | El sistema debe estimar y mostrar al manager el costo de perder al empleado frente al costo de moverlo internamente. *(Alcance sujeto a PEN-02.)* | Sistema | RN-26 | CU_13 | Media |
+| **RF-18** | Calcular Costo de Rotación | El sistema debe estimar y mostrar al manager, de forma **puramente informativa**, el costo de perder al empleado frente al costo de moverlo internamente. **No altera el Puntaje Final ni el ranking** (PEN-02). | Sistema | RN-26 | CU_13 | Media |
 
 ### 1.5 Postulación y decisión
 
@@ -96,7 +96,7 @@ los origina; la columna **CU** el caso de uso que los realiza.
 | **RF-30** | Consultar historial de proyectos y rotaciones | El sistema debe permitir consultar el historial de proyectos y rotaciones de un empleado a quien tenga relación autorizada con él. | Manager, Analista RR.HH. | RN-21 | CU_20 | Media |
 | **RF-31** | Consultar historial propio de postulaciones | El sistema debe permitir al empleado ver sus postulaciones, su posición en cada ranking y el resultado anónimo de cada una. **Solo el propio empleado y RR.HH. pueden acceder a su historial de rechazos.** | Empleado | RN-18 | CU_21 | Media |
 | **RF-32** | Alertar rechazos repetidos | El sistema debe emitir una alerta a RR.HH. cuando un mismo manager rechace **2 o más** candidatos viables (≥ 65 %). | Sistema | RN-29 | CU_24 | Alta |
-| **RF-33** | Configurar pesos, umbrales y escalera de carrera | El sistema debe permitir a RR.HH. y VP Engineering ajustar los pesos (0.4 / 0.6), el umbral de viabilidad (65 %) y los requisitos de cada nivel de carrera **sin recompilar**. | Analista RR.HH., VP Engineering | RN-24, RN-27, PEN-03 | CU_25 | Media |
+| **RF-33** | Configurar umbrales | El sistema debe permitir a RR.HH. ajustar el umbral de viabilidad (65 %) y el umbral de días sin match (10 días) **sin recompilar**. | Analista RR.HH. | RN-27 | CU_25 | Media |
 
 ---
 
@@ -118,13 +118,13 @@ los origina; la columna **CU** el caso de uso que los realiza.
 | **RNF-03** | Baja carga cognitiva | Cualquier acción principal (ver vacantes, postularse, ver ranking, aceptar/rechazar) debe alcanzarse en **máximo 3 clics** desde el panel del usuario. | Usabilidad | Alta |
 | **RNF-04** | Tiempo de respuesta | El **90 %** de las páginas y consultas debe responder en **menos de 3 segundos**; el ranking de una vacante con hasta **20 candidatos** debe cargar en menos de **2 segundos**. | Rendimiento | Alta |
 | **RNF-05** | Diseño sencillo por defecto | La interfaz debe mostrar solo las opciones esenciales; las opciones avanzadas (filtros extra, desgloses detallados) deben estar disponibles pero **ocultas tras un control explícito**. | Usabilidad / Diseño | Media |
-| **RNF-06** | Bitácora del cálculo | Cada cálculo de Puntaje Final debe **guardarse en una tabla de bitácora** con: empleado, vacante, Match Score, Career Impact Score, Puntaje Final, pesos y umbral usados, y fecha/hora. La bitácora es de solo lectura. | Trazabilidad | Alta |
+| **RNF-06** | Bitácora del cálculo | Cada cálculo de Puntaje Final debe **guardarse en una tabla de bitácora** con: empleado, vacante, Match Score, Puntaje Final, umbral usado, y fecha/hora. La bitácora es de solo lectura. | Trazabilidad | Alta |
 | **RNF-07** | Autenticación y permisos por rol | El acceso debe requerir usuario y contraseña, las contraseñas deben almacenarse con **hash** (nunca en texto plano), el tráfico debe viajar por **HTTPS**, y cada pantalla debe validar el rol del solicitante contra la **matriz de permisos** documentada. | Seguridad | Alta |
 | **RNF-08** | Inmediatez de las notificaciones | Toda notificación generada por el sistema (resultado de vacante, alerta a RR.HH., aviso de wishlist) debe quedar disponible para su destinatario en **menos de 5 minutos**. No depende de ninguna acción humana. | Rendimiento de proceso | Media |
-| **RNF-09** | Neutralidad del cálculo | El cálculo del Puntaje Final debe usar **exclusivamente** habilidades avaladas, senioridad y meta de carrera. **Ningún dato personal** (nombre, edad, género, foto, área, antigüedad con el manager) puede intervenir, y el ranking resultante **no debe poder reordenarse manualmente**. Verificable con pruebas unitarias. | Equidad | Alta |
+| **RNF-09** | Neutralidad del cálculo | El cálculo del Puntaje Final debe usar **exclusivamente** habilidades avaladas y senioridad. **Ningún dato personal** (nombre, edad, género, foto, área, antigüedad con el manager) puede intervenir, y el ranking resultante **no debe poder reordenarse manualmente**. Verificable con pruebas unitarias. | Equidad | Alta |
 | **RNF-10** | Privacidad del historial de rechazos | El historial de rechazos de un empleado solo debe ser accesible para **ese empleado y para RR.HH.**; cualquier otro intento debe denegarse y registrarse en la bitácora. | Privacidad | Alta |
 | **RNF-11** | Compatibilidad | La aplicación web debe funcionar en **Chrome y Edge** (dos últimas versiones estables) a partir de una resolución de **1366×768**. | Portabilidad | Media |
-| **RNF-12** | Configurabilidad sin recompilar | Los pesos (0.4 / 0.6), el umbral de viabilidad (65 %), el ciclo de evaluación (3 días) y los plazos (6 meses, 24 horas) deben residir en un **archivo de configuración** editable sin recompilar ni redesplegar. | Mantenibilidad | Media |
+| **RNF-12** | Configurabilidad sin recompilar | El umbral de viabilidad (65 %), el umbral de días sin match (10 días), el ciclo de evaluación (3 días) y los plazos (6 meses, 24 horas) deben residir en un **archivo de configuración** editable sin recompilar ni redesplegar. | Mantenibilidad | Media |
 | **RNF-13** | Idioma y mensajes de error | Toda la interfaz y todos los mensajes de error deben estar en **español**, indicando el campo afectado y cómo corregirlo. | Usabilidad | Baja |
 
 ### 2.2 Antes y después de la simplificación
@@ -136,7 +136,7 @@ los origina; la columna **CU** el caso de uso que los realiza.
 | RNF-03 | Máximo 3 clics | **Se mantiene** (RNF-03) | Ya era simple y verificable. |
 | RNF-04 | "Priorizar rendimiento sobre estética" | **90 % de las páginas < 3 s; ranking < 2 s con 20 candidatos** (RNF-04) | La versión original no era medible ni verificable; ahora tiene un número contra el cual probar. |
 | RNF-05 | Progressive disclosure | **Opciones avanzadas ocultas tras un control explícito** (RNF-05) | Misma intención, redactada como algo revisable en una lista de chequeo de UI. |
-| RNF-06 | "Toda decisión del algoritmo auditable" | **Una tabla de bitácora con las 3 métricas, pesos, umbral y fecha** (RNF-06) | "Auditable" era ambiguo; ahora es una tabla concreta que se implementa y se consulta. |
+| RNF-06 | "Toda decisión del algoritmo auditable" | **Una tabla de bitácora con el Match Score, el Puntaje Final, el umbral y la fecha** (RNF-06) | "Auditable" era ambiguo; ahora es una tabla concreta que se implementa y se consulta. |
 | RNF-07 | Control de acceso granular + cifrado en reposo | **Login + hash de contraseñas + HTTPS + matriz de permisos por rol** (RNF-07) | El cifrado a nivel de base de datos exige configuración de infraestructura. Hash + HTTPS + roles logra la protección esencial con el stack del curso. |
 | RNF-08 | SLA de feedback de rechazo ≤ 24 h | **Notificaciones del sistema disponibles en < 5 min** (RNF-08) | El feedback humano **ya no existe** (RN-17). Lo que queda es una notificación automática, que es más rápida y más fácil de medir. |
 | RNF-09 | "Mecanismos verificables de equidad" | **Lista cerrada de campos permitidos en el cálculo + ranking no reordenable** (RNF-09) | Convierte un objetivo abstracto en dos pruebas unitarias concretas. |
@@ -170,13 +170,16 @@ los origina; la columna **CU** el caso de uso que los realiza.
 
 ### 3.3 Requerimientos nuevos
 
-`RF-01`, `RF-02`, `RF-03` (acceso y cuentas) · `RF-05` (meta de carrera) ·
+`RF-01`, `RF-02`, `RF-03` (acceso y cuentas) ·
 `RF-07`, `RF-08` (aval de habilidades) · `RF-09`, `RF-10` (wishlist y notificación proactiva) ·
 `RF-12` (generación automática de vacantes) · `RF-14` (vacante sin match) ·
 `RF-17` (aviso de posibilidades bajas) · `RF-18` (costo de rotación) ·
 `RF-20` (postulaciones simultáneas) · `RF-22` (ciclo de 3 días) ·
 `RF-24`, `RF-25`, `RF-26` (transición automática, notificación a RR.HH., cancelación en cascada) ·
-`RF-28`, `RF-29` (incentivo y reporte ejecutivo) · `RF-33` (configuración de pesos y umbrales).
+`RF-28`, `RF-29` (incentivo y reporte ejecutivo) · `RF-33` (configuración de umbrales).
+
+> `RF-05` (meta de carrera) se propuso en la v2.0 y se **eliminó** en la v2.1 al sacar el
+> Career Impact Score del alcance del MVP (PEN-03).
 
 ---
 
@@ -188,8 +191,7 @@ RF-06 (agregar habilidad)
       v
 RF-07 (avalar) --> RF-08 (solo avaladas cuentan)
                           |
-RF-04 (perfil) -----------+
-RF-05 (meta de carrera) --+--> RF-15 (calcular Puntaje Final)  <-- CORAZON DEL SISTEMA
+RF-04 (perfil) -----------+--> RF-15 (calcular Puntaje Final)  <-- CORAZON DEL SISTEMA
 RF-11/RF-12 (vacante) ----+          |
                                      +--> RF-16 (desglose al empleado)
                                      +--> RF-17 (aviso < 65%)
@@ -216,7 +218,7 @@ garantías de calidad que lo hacen auditable, y deben validarse **antes de pasar
 | Bloque | RN | RF | CU |
 |---|---|---|---|
 | Acceso y cuentas | §11 | RF-01…RF-03 | CU_01, CU_02, CU_23 |
-| Perfil y habilidades | RN-19, RN-20, RN-23, RN-24 | RF-04…RF-10 | CU_03…CU_08 |
+| Perfil y habilidades | RN-19, RN-20, RN-23 | RF-04, RF-06…RF-10 | CU_03, CU_05…CU_08 |
 | Vacantes | RN-01…RN-05, RN-11, RN-30 | RF-11…RF-14 | CU_09, CU_10, CU_18, CU_19 |
 | Matching | RN-13, RN-23…RN-28 | RF-15…RF-18 | CU_11, CU_12, CU_13 |
 | Postulación y decisión | RN-06…RN-16 | RF-19…RF-26 | CU_12, CU_14…CU_17 |

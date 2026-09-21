@@ -2,7 +2,12 @@
 
 El match funciona con **reglas lógicas simples**. Cualquiera puede entender por qué obtuvo su puntaje.
 
-## 4 Métricas Principales
+> ⚠️ El algoritmo incluía originalmente una segunda métrica, **Career Impact Score** (qué tanto
+> una vacante acercaba al empleado a su meta de carrera). Esa métrica, la meta de carrera, la
+> escalera de carrera y el rol VP Engineering **se eliminaron del alcance del MVP**. El Puntaje
+> Final depende ahora **únicamente** del Match Score.
+
+## 2 Métricas Principales
 
 ### 1. Match Score (¿Tiene las habilidades?)
 
@@ -19,31 +24,22 @@ Combina:
 
 ---
 
-### 2. Career Impact Score (¿Te acerca a tu meta?)
+### 2. Puntaje Final (Ranking que ve el Manager)
 
-
-**Ejemplo:**
-- Meta de Juan: Staff Engineer
-  - Requiere: 3+ lenguajes, distributed systems, arquitectura
-- Proyecto ofrece: Go (lenguaje nuevo) + Kubernetes (distributed systems)
-  - Cubre 2 de 3 requisitos
-- **Career Impact = 67%**
-
----
-
-### 3. Puntaje Final (Ranking que ve el Manager)
-**¿Por qué Career Impact tiene mayor peso (0.6)?**
-
-Porque el objetivo es **retención a largo plazo**, no solo llenar vacante hoy.
+`Puntaje Final = Match Score`. No hay una segunda métrica que ponderar: lo único que se evalúa
+es si el empleado tiene las habilidades.
 
 **Ejemplo:**
 - Match Score: 50%
-- Career Impact: 67%
-- **Puntaje Final = (50 × 0.4) + (67 × 0.6) = 60.2%**
+- **Puntaje Final = 50%**
 
 ---
 
-### 4. Costo de Rotación (Argumento Económico)
+### Costo de Rotación (Argumento Económico, solo informativo)
+
+Es un valor **aproximado**, mostrado únicamente al manager para indicarle los beneficios de una
+rotación interna. **No entra al Puntaje Final ni altera el ranking.**
+
 **Ejemplo:**
 - Si Juan renuncia: $6,000 (recruiting) + $3,000 (ramp-up) + $2,000 (pérdida) = **$11,000**
 - Si Juan se mueve: $1,000 (capacitación) + $500 (transición) + $500 (baja temporal) = **$2,000**

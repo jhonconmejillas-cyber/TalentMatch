@@ -3,7 +3,7 @@
 | Campo | Valor |
 |---|---|
 | **Documento** | Historias de Usuario (HU) |
-| **Versión** | 2.0 — corregida contra las [Reglas de Negocio v2.0](../reglas-negocio/RN-TalentMatch-Reglas-de-Negocio.md) |
+| **Versión** | 2.1 — corregida contra las [Reglas de Negocio v2.1](../reglas-negocio/RN-TalentMatch-Reglas-de-Negocio.md) |
 | **Fecha** | 2026-09-21 |
 | **Curso** | Fundamentos de Ingeniería de Software (FIS 2610) — Pontificia Universidad Javeriana |
 | **Total** | 10 historias (6 funcionales, 2 no funcionales, 2 de soporte al modelo de rotación) |
@@ -48,7 +48,7 @@ de postulación** (RN-07…RN-10), la **generación automática de vacantes** (R
 
 > **COMO** Manager / Líder Técnico,
 > **QUIERO** ver el ranking de empleados que se postularon a mi vacante interna, ordenado por
-> Puntaje Final (Match Score + Career Impact), sin revisar perfiles uno por uno,
+> Puntaje Final (Match Score), sin revisar perfiles uno por uno,
 > **PARA** identificar al mejor candidato interno en minutos y avanzar la rotación sin burocracia.
 
 ## Descripción
@@ -56,8 +56,8 @@ de postulación** (RN-07…RN-10), la **generación automática de vacantes** (R
 Tengo una vacante interna abierta en mi equipo de Backend. Ocho empleados de otras áreas se
 postularon para moverse a mi proyecto — TalentMatch permite rotar **entre áreas distintas**
 (RN-11). No tengo tiempo de revisar cada perfil a fondo. Necesito ver de inmediato quién tiene
-el mejor Puntaje Final —la combinación de Match Score (habilidades **avaladas**) y Career Impact
-Score (qué tanto acerca a la persona a su meta de carrera)—: 🟢 Empleado_001 85 %,
+el mejor Puntaje Final —el Match Score calculado sobre habilidades **avaladas** y senioridad—:
+🟢 Empleado_001 85 %,
 🟡 Empleado_002 72 %, 🔴 Empleado_003 68 %. El sistema solo me muestra candidatos con Puntaje
 Final **≥ 65 %** (RN-27); los que quedan por debajo ni siquiera aparecen en mi lista. Cada tres
 días el sistema me habilita el lote de peticiones acumuladas para resolver (RN-12).
@@ -69,8 +69,8 @@ días el sistema me habilita el lote de peticiones acumuladas para resolver (RN-
   *entonces* veo el ranking **ordenado por Puntaje Final descendente** con indicador de color,
   en menos de 2 segundos.
 - **Escenario 2 — Desglose sin salir del ranking.** *Dado* que veo el ranking, *cuando* hago
-  clic en un candidato, *entonces* veo su desglose (Match Score, Career Impact Score y Costo de
-  Rotación estimado) **sin perder el contexto** de los demás candidatos.
+  clic en un candidato, *entonces* veo su desglose (Match Score y Costo de Rotación estimado)
+  **sin perder el contexto** de los demás candidatos.
 - **Escenario 3 — El orden no se puede manipular.** *Dado* que el ranking está en pantalla,
   *cuando* intento arrastrar, reordenar o fijar un candidato, *entonces* la interfaz no lo
   permite y el backend rechaza cualquier petición de reordenamiento (RN-14).
@@ -78,7 +78,7 @@ días el sistema me habilita el lote de peticiones acumuladas para resolver (RN-
 ## Definición de Terminado
 
 - [ ] Cumple los 3 criterios de aceptación.
-- [ ] El Puntaje Final se calcula con `MS×0.4 + CI×0.6` y filtra correctamente con el umbral de 65 %.
+- [ ] El Puntaje Final se calcula como `Puntaje Final = Match Score` y filtra correctamente con el umbral de 65 %.
 - [ ] Solo se consideran habilidades en estado `avalado` (RN-20), verificado con prueba unitaria.
 - [ ] Probado con hasta 20 candidatos por vacante sin superar los 2 s de carga (RNF-04).
 - [ ] Sin errores críticos.
@@ -93,10 +93,10 @@ días el sistema me habilita el lote de peticiones acumuladas para resolver (RN-
 | # | Subtarea | Responsable |
 |---|---|---|
 | 1 | Endpoint API que devuelve los candidatos postulados con su Puntaje Final calculado. | Backend |
-| 2 | Consulta que une postulación, habilidades **avaladas** y meta de carrera. | Configuration Manager |
+| 2 | Consulta que une postulación y habilidades **avaladas**. | Configuration Manager |
 | 3 | Filtro de umbral (Puntaje Final ≥ 65 %) en el backend. | Backend |
 | 4 | Componente de lista rankeada con indicador de color en el frontend. | Frontend |
-| 5 | Vista de desglose (Match Score / Career Impact / Costo de Rotación). | Frontend |
+| 5 | Vista de desglose (Match Score / Costo de Rotación). | Frontend |
 | 6 | Bloqueo de reordenamiento manual en UI y en API. | Backend / Frontend |
 | 7 | Pruebas unitarias del cálculo, del filtro de umbral y de la inmutabilidad del orden. | QA Lead |
 | 8 | Pipeline de CI que corre las pruebas antes de cada merge. | DevOps Engineer |
@@ -287,7 +287,7 @@ hay bloqueo (RN-17), la notificación es automática e inmediata (RNF-08) y la e
 > **COMO** Empleado (Ingeniero Senior),
 > **QUIERO** competir por vacantes internas en igualdad de condiciones, con un ranking objetivo
 > por Puntaje Final y sin que mi relación personal con el Manager influya,
-> **PARA** asegurar que mi movilidad interna dependa de mis habilidades y mi meta de carrera, no
+> **PARA** asegurar que mi movilidad interna dependa de mis habilidades, no
 > de la política interna.
 
 ## Descripción
@@ -296,8 +296,8 @@ Tengo 8 años en la empresa, pero cambié de área hace 6 meses y el Manager de 
 conoce. Cuando aparece una vacante interna de Cloud Engineer, quiero que me evalúen objetivamente:
 si mi Puntaje Final es 82 % y otro empleado tiene 75 %, el sistema debe mostrarme primero, sin
 que el Manager pueda reordenar la lista ni ignorar mi perfil por no estar "en su círculo". El
-cálculo solo puede usar mis **habilidades avaladas**, mi senioridad y mi meta de carrera: ni mi
-nombre, ni mi edad, ni cuánto me conoce el Manager (RNF-09).
+cálculo solo puede usar mis **habilidades avaladas** y mi senioridad: ni mi nombre, ni mi edad,
+ni cuánto me conoce el Manager (RNF-09).
 
 ## Criterios de Aceptación
 
@@ -437,7 +437,7 @@ concurrentes → **50**; p95 < 4 s → **90 % < 3 s**; *"panel de monitoreo con 
 **Tipo:** Historia no funcional — Seguridad y Privacidad
 
 > **COMO** Empleado,
-> **QUIERO** que mis habilidades, mi meta de carrera, mis postulaciones y mis rechazos estén
+> **QUIERO** que mis habilidades, mis postulaciones y mis rechazos estén
 > protegidos con autenticación y permisos por rol,
 > **PARA** que ninguna persona no autorizada —ni siquiera otro Manager— vea información sobre mi
 > carrera que no le corresponde.
@@ -478,7 +478,7 @@ revelar quién fue seleccionado en una vacante.
 
 | # | Subtarea | Responsable |
 |---|---|---|
-| 1 | Matriz de permisos por rol (Empleado, Manager, RR.HH., VP Eng., Líder Ejecutivo, Admin). | Product Owner / Configuration Manager |
+| 1 | Matriz de permisos por rol (Empleado, Manager, RR.HH., Líder Ejecutivo, Admin). | Product Owner / Configuration Manager |
 | 2 | Autorización en cada endpoint verificando la relación entre solicitante y recurso. | Backend |
 | 3 | Hash de contraseñas en el registro y en el cambio de contraseña. | Backend |
 | 4 | Configurar HTTPS en el ambiente de pruebas. | DevOps Engineer |
@@ -679,7 +679,7 @@ B lo toma dejando el suyo, C toma el de B. Cada eslabón es una vacante independ
 
 ## Trabajo Relacionado
 
-CU_18, CU_19 · RF-12, RF-14 · RNF-12 · RN-02, RN-03, RN-04, RN-05, RN-30 · Pendiente **PEN-01**
+CU_18, CU_19 · RF-12, RF-14 · RNF-12 · RN-02, RN-03, RN-04, RN-05, RN-30 · Umbral: **10 días** (PEN-01 confirmado)
 
 ---
 

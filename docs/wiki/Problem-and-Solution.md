@@ -27,8 +27,7 @@ Cuando un ingeniero se aburre o siente que dejó de aprender, **no pide un cambi
 
 #### 2️⃣ **Transparencia en el Match**
 - Match Score muestra si tienes las habilidades
-- Career Impact Score muestra si te acerca a tu meta de carrera
-- Sin "caja negra" — todo es explicable
+- El Puntaje Final es igual al Match Score: sin "caja negra" — todo es explicable
 
 #### 3️⃣ **Argumento Económico para el Manager**
 - Reporte de Costo de Rotación: "Si pierdo este talento, costo $X. Si lo muevo, costo $Y. Ahorro: $Z"
@@ -41,8 +40,6 @@ Cuando un ingeniero se aburre o siente que dejó de aprender, **no pide un cambi
 
 ```
 Empleado                      Sistema                      Manager
-   |                             |                            |
-   └──Define meta (Staff Eng)─────>                           |
    |                             |                            |
    └──Define deseos (Kubernetes)─>                           |
    |                             |                            |

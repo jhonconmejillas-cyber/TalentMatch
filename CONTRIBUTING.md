@@ -11,7 +11,7 @@
 Se usa [Conventional Commits](https://www.conventionalcommits.org/es/):
 
 ```
-feat(matching): calcular Career Impact Score - closes #12
+feat(matching): calcular Match Score - closes #12
 fix(vacante): respetar la activacion diferida de 24h
 docs(reglas-negocio): actualizar RN-10 tras confirmacion con la empresa
 ```

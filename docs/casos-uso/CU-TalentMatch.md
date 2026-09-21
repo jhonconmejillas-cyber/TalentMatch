@@ -3,10 +3,10 @@
 | Campo | Valor |
 |---|---|
 | **Documento** | Casos de Uso (CU) |
-| **Versión** | 1.0 |
+| **Versión** | 1.1 — CU_04 eliminado (PEN-03) |
 | **Fecha** | 2026-09-21 |
 | **Sistema** | TalentMatch — Movilidad Interna de Ingenieros |
-| **Total de casos de uso** | 25 (CU_01 – CU_25) |
+| **Total de casos de uso** | 25 numerados, **24 activos** (CU_04 eliminado) |
 | **Documentos fuente** | [Reglas de Negocio v2.0](../reglas-negocio/RN-TalentMatch-Reglas-de-Negocio.md) · [Requerimientos v2.0](../requerimientos/RF-RNF-TalentMatch.md) · [Historias de Usuario v2.0](../historias-usuario/HU-TalentMatch.md) |
 
 ---
@@ -30,10 +30,9 @@ completa está en la [§4](#4-matriz-de-trazabilidad).
 | Actor | Descripción |
 |---|---|
 | **Usuario** | Persona que aún no tiene cuenta en el sistema. Solo participa en CU_01. |
-| **Empleado** | Ingeniero de la organización. Mantiene su perfil, define su meta de carrera, se postula a vacantes y consulta sus resultados. |
+| **Empleado** | Ingeniero de la organización. Mantiene su perfil, se postula a vacantes y consulta sus resultados. |
 | **Manager / Líder Técnico** | Responsable de un equipo. Publica vacantes, avala habilidades de su gente, revisa el ranking y decide. |
 | **Analista de RR.HH.** | Recibe la notificación de las rotaciones aceptadas, atiende alertas, carga datos maestros y configura el algoritmo. |
-| **VP Engineering** | Define los requisitos técnicos de cada nivel de la escalera de carrera. |
 | **Líder Ejecutivo** | Consume el reporte top 10 como insumo de ascensos. |
 | **Administrador del Sistema** | Gestiona cuentas, roles y permisos. |
 | **Sistema** | Actor interno: procesos automáticos (cálculos, generación de vacantes, notificaciones, alertas). |
@@ -53,11 +52,12 @@ completa está en la [§4](#4-matriz-de-trazabilidad).
 ```
 ACCESO                   PERFIL Y HABILIDADES           VACANTES
 CU_01 Registrarse        CU_03 Gestionar perfil         CU_09 Publicar vacante
-CU_02 Iniciar sesion     CU_04 Definir meta carrera     CU_10 Buscar vacantes
-CU_23 Gestionar usuarios CU_05 Agregar habilidad        CU_18 Generar vacante auto.
-                         CU_06 Avalar habilidad         CU_19 Alertar vacante sin match
-                         CU_07 Gestionar wishlist
+CU_02 Iniciar sesion     CU_05 Agregar habilidad        CU_10 Buscar vacantes
+CU_23 Gestionar usuarios CU_06 Avalar habilidad         CU_18 Generar vacante auto.
+                         CU_07 Gestionar wishlist       CU_19 Alertar vacante sin match
                          CU_08 Notificar por wishlist
+
+                         (CU_04 Definir meta de carrera fue ELIMINADO — ver PEN-03)
 
 MATCHING                 POSTULACION Y DECISION         CONTROL Y REPORTES
 CU_11 Calcular Puntaje   CU_12 Postularse               CU_20 Historial de proyectos
@@ -104,7 +104,7 @@ CU_13 Costo de rotacion  CU_14 Revisar ranking          CU_21 Historial propio
 |:---|:---|
 | **Nombre** | Iniciar sesión |
 | **Descripción** | Este caso de uso permite a un usuario registrado autenticarse y acceder al panel correspondiente a su rol. |
-| **Actores** | Empleado, Manager / Líder Técnico, Analista de RR.HH., VP Engineering, Líder Ejecutivo, Administrador del Sistema |
+| **Actores** | Empleado, Manager / Líder Técnico, Analista de RR.HH., Líder Ejecutivo, Administrador del Sistema |
 | **Secuencia normal** | |
 | **Actor** | **Software** |
 | 1. El usuario selecciona la opción "Iniciar sesión". | |
@@ -143,36 +143,19 @@ CU_13 Costo de rotacion  CU_14 Revisar ranking          CU_21 Historial propio
 | **Excepciones** | **Software** |
 | 5. Datos inconsistentes o fuera de rango. | a. Muestra un mensaje indicando el campo y el rango válido.<br>b. Regresar al paso 3. |
 | 5. El empleado intenta modificar su fecha de inicio en el rol. | a. Rechaza el cambio: esa fecha la establece el sistema al ejecutarse una rotación (CU_15) y determina la antigüedad exigida por RN-07.<br>b. Regresar al paso 3. |
-| **CU relacionados** | CU_04, CU_05, **CU_11** |
+| **CU relacionados** | CU_05, **CU_11** |
 | **Precondición** | El empleado tiene sesión iniciada (CU_02). |
 | **Post condición** | El perfil queda actualizado y los cálculos de Puntaje Final posteriores usan los nuevos datos. |
 | **Requerimientos** | RF-04 · RN-07, RN-23 |
 
 ---
 
-### CU_04 — Definir meta de carrera
+### CU_04 — *(Eliminado)*
 
-| Identificador de Caso Uso | **CU_04** |
-|:---|:---|
-| **Nombre** | Definir meta de carrera |
-| **Descripción** | Este caso de uso permite al empleado elegir su meta de carrera desde la escalera predefinida, dato que determina el Career Impact Score. |
-| **Actores** | Empleado |
-| **Secuencia normal** | |
-| **Actor** | **Software** |
-| 1. El empleado selecciona la opción "Mi meta de carrera". | |
-| | 2. El sistema muestra la escalera de carrera disponible con los niveles definidos por VP Engineering y RR.HH. (CU_25). |
-| 3. El empleado selecciona el nivel que quiere alcanzar (p. ej. "Staff Engineer"). | |
-| | 4. Muestra los requisitos técnicos de ese nivel y cuáles cubre ya con sus habilidades avaladas. |
-| 5. El empleado confirma la meta. | |
-| | 6. El sistema guarda la meta y recalcula el Career Impact Score de todas sus postulaciones activas. |
-| | 7. El caso de uso termina. |
-| **Excepciones** | **Software** |
-| 2. La escalera de carrera no está configurada. | a. Informa que la escalera aún no ha sido definida e indica contactar a RR.HH.<br>b. El caso de uso termina. |
-| 5. El empleado selecciona un nivel inferior al actual. | a. Solicita confirmación explícita advirtiendo que reducirá su Career Impact Score en las vacantes de mayor nivel.<br>b. Regresar al paso 3. |
-| **CU relacionados** | CU_03, **CU_11**, CU_25 |
-| **Precondición** | El empleado tiene sesión iniciada y existe al menos una escalera de carrera configurada. |
-| **Post condición** | La meta de carrera queda asociada al empleado y el Career Impact Score de sus postulaciones se actualiza. |
-| **Requerimientos** | RF-05 · RN-24 · PEN-03 |
+> **CU_04 — Definir meta de carrera** fue eliminado del alcance del MVP al confirmarse **PEN-03**:
+> el Career Impact Score, la meta de carrera y la escalera de carrera no se implementan. El
+> Puntaje Final depende únicamente del Match Score (RN-13, RN-25). El identificador `CU_04` queda
+> reservado y **no se reutiliza** para mantener estable la numeración del resto de casos de uso.
 
 ---
 
@@ -338,27 +321,24 @@ CU_13 Costo de rotacion  CU_14 Revisar ranking          CU_21 Historial propio
 | Identificador de Caso Uso | **CU_11** |
 |:---|:---|
 | **Nombre** | Calcular Puntaje Final |
-| **Descripción** | Este caso de uso describe el cálculo de las métricas del algoritmo de matching —Match Score, Career Impact Score y Puntaje Final— para un par empleado–vacante. Es el núcleo del sistema. |
+| **Descripción** | Este caso de uso describe el cálculo del Match Score y el Puntaje Final para un par empleado–vacante. Es el núcleo del sistema. |
 | **Actores** | Sistema |
 | **Secuencia normal** | |
 | **Actor** | **Software** |
 | | 1. El sistema recibe la solicitud de cálculo para un empleado y una vacante (originada en CU_08, CU_10, CU_12 o CU_14). |
-| | 2. Recupera las habilidades del empleado **en estado "avalado" únicamente**, su senioridad y su meta de carrera. |
+| | 2. Recupera las habilidades del empleado **en estado "avalado" únicamente** y su senioridad. |
 | | 3. Calcula el Match Score: `(% de habilidades avaladas coincidentes × 0.7) + (ajuste por senioridad × 0.3)`. |
-| | 4. Calcula el Career Impact Score: % de los requisitos de la meta de carrera del empleado que cubre la vacante. |
-| | 5. Calcula el Puntaje Final: `Match Score × 0.4 + Career Impact Score × 0.6`, con los pesos leídos de la configuración. |
-| | 6. Registra en la bitácora: empleado, vacante, las tres métricas, los pesos, el umbral aplicado y la fecha y hora. |
-| | 7. Devuelve el resultado con el desglose explicable de cada métrica. |
-| | 8. El caso de uso termina. |
+| | 4. Calcula el Puntaje Final: `Puntaje Final = Match Score`. |
+| | 5. Registra en la bitácora: empleado, vacante, el Match Score, el Puntaje Final, el umbral aplicado y la fecha y hora. |
+| | 6. Devuelve el resultado con el desglose explicable del cálculo. |
+| | 7. El caso de uso termina. |
 | **Excepciones** | **Software** |
 | 2. El empleado no tiene ninguna habilidad avalada. | a. Calcula Match Score = 0 e informa al empleado que debe solicitar el aval de sus habilidades a su manager (CU_06).<br>b. Continuar en el paso 4. |
-| 4. El empleado no ha definido meta de carrera. | a. Calcula Career Impact Score = 0, advierte que está perdiendo el 60 % del puntaje y sugiere definirla (CU_04).<br>b. Continuar en el paso 5. |
-| 5. Los pesos configurados no suman 1.0. | a. Aborta el cálculo, usa los valores por defecto (0.4 / 0.6), registra el error y alerta al Analista de RR.HH.<br>b. Continuar en el paso 6. |
-| 6. Falla el registro en la bitácora. | a. Aborta la operación y no devuelve resultado: ningún puntaje puede usarse si no queda trazado (RNF-06).<br>b. El caso de uso termina con error. |
-| **CU relacionados** | CU_03, CU_04, **CU_06**, CU_08, CU_10, **CU_12**, **CU_14**, CU_25 |
-| **Precondición** | Existen el empleado y la vacante, y los pesos y el umbral están configurados. |
-| **Post condición** | Las tres métricas quedan calculadas, devueltas con su desglose y registradas de forma inmutable en la bitácora. |
-| **Requerimientos** | RF-15, RF-16, RF-08 · RNF-06, RNF-09, RNF-12 · RN-13, RN-20, RN-23, RN-24, RN-25 |
+| 5. Falla el registro en la bitácora. | a. Aborta la operación y no devuelve resultado: ningún puntaje puede usarse si no queda trazado (RNF-06).<br>b. El caso de uso termina con error. |
+| **CU relacionados** | CU_03, **CU_06**, CU_08, CU_10, **CU_12**, **CU_14**, CU_25 |
+| **Precondición** | Existen el empleado y la vacante, y el umbral está configurado. |
+| **Post condición** | El Match Score y el Puntaje Final quedan calculados, devueltos con su desglose y registrados de forma inmutable en la bitácora. |
+| **Requerimientos** | RF-15, RF-16, RF-08 · RNF-06, RNF-09, RNF-12 · RN-13, RN-20, RN-23, RN-25 |
 
 ---
 
@@ -410,11 +390,11 @@ CU_13 Costo de rotacion  CU_14 Revisar ranking          CU_21 Historial propio
 | | 6. El caso de uso termina. |
 | **Excepciones** | **Software** |
 | 2. Los parámetros de costo no están configurados. | a. Muestra "Métrica no disponible: los parámetros de costo no han sido cargados por RR.HH." y oculta el indicador.<br>b. El caso de uso termina. |
-| 5. La métrica está fuera del alcance confirmado (PEN-02). | a. Muestra el valor marcado como **informativo** y advierte explícitamente que **no influye en el Puntaje Final ni en el orden del ranking**.<br>b. Continuar en el paso 6. |
+| 5. (Siempre.) | a. Muestra el valor marcado como **informativo**, aproximado, y advierte explícitamente que **no influye en el Puntaje Final ni en el orden del ranking** (PEN-02 confirmado).<br>b. Continuar en el paso 6. |
 | **CU relacionados** | **CU_14**, CU_15, CU_25 |
 | **Precondición** | El manager tiene sesión iniciada y está revisando el ranking de una vacante suya. |
-| **Post condición** | El manager dispone del argumento económico. El valor **no altera** el ranking, que sigue siendo estrictamente por Puntaje Final. |
-| **Requerimientos** | RF-18 · RN-26 · PEN-02 |
+| **Post condición** | El manager dispone del argumento económico aproximado. El valor **no altera** el ranking, que sigue siendo estrictamente por Puntaje Final. |
+| **Requerimientos** | RF-18 · RN-26 |
 
 ---
 
@@ -433,7 +413,7 @@ CU_13 Costo de rotacion  CU_14 Revisar ranking          CU_21 Historial propio
 | | 4. Filtra y conserva únicamente los candidatos con Puntaje Final **≥ 65 %**. |
 | | 5. El sistema muestra el ranking ordenado de mayor a menor Puntaje Final, con indicador de color, en menos de 2 segundos. |
 | 6. El manager selecciona un candidato para ver su desglose. | |
-| | 7. Muestra Match Score, Career Impact Score, habilidades avaladas coincidentes y costo de rotación (CU_13), sin perder el contexto del ranking. |
+| | 7. Muestra Match Score, habilidades avaladas coincidentes y costo de rotación (CU_13), sin perder el contexto del ranking. |
 | | 8. El caso de uso termina. |
 | **Excepciones** | **Software** |
 | 4. Ningún candidato alcanza el 65 %. | a. Muestra "No hay candidatos viables en este ciclo" e informa cuántas postulaciones quedaron por debajo del umbral, sin revelar su identidad.<br>b. El caso de uso termina. |
@@ -577,13 +557,13 @@ CU_13 Costo de rotacion  CU_14 Revisar ranking          CU_21 Historial propio
 | | 7. Muestra el detalle de la vacante y la deja marcada como "en seguimiento". |
 | | 8. El caso de uso termina. |
 | **Excepciones** | **Software** |
-| 3. El umbral de días no está configurado. | a. Aplica el valor por defecto del MVP (30 días) y registra la advertencia para RR.HH. (PEN-01).<br>b. Continuar en el paso 4. |
+| 3. El umbral de días no está configurado. | a. Aplica el valor por defecto del MVP (**10 días**) y registra la advertencia para RR.HH.<br>b. Continuar en el paso 4. |
 | 5. La vacante no tiene un Jefe de área asignado. | a. Envía la alerta únicamente al manager solicitante y notifica la inconsistencia al Analista de RR.HH.<br>b. Continuar en el paso 6. |
 | 7. El manager decide cerrar la vacante. | a. La marca como "cerrada sin cubrir". **La decisión de contratar externamente o eliminar el puesto queda fuera del alcance de la aplicación.**<br>b. El caso de uso termina. |
 | **CU relacionados** | **CU_18**, CU_09, CU_14 |
-| **Precondición** | Existe al menos una vacante activa que supera el umbral de días sin Match. |
+| **Precondición** | Existe al menos una vacante activa que supera **10 días** sin Match. |
 | **Post condición** | Manager solicitante y Jefe del área notificados. La vacante queda en seguimiento o cerrada sin cubrir. |
-| **Requerimientos** | RF-14 · RNF-08, RNF-12 · RN-05, RN-30 · PEN-01 |
+| **Requerimientos** | RF-14 · RNF-08, RNF-12 · RN-05, RN-30 |
 
 ---
 
@@ -722,32 +702,28 @@ CU_13 Costo de rotacion  CU_14 Revisar ranking          CU_21 Historial propio
 
 ---
 
-### CU_25 — Configurar pesos, umbrales y escalera de carrera
+### CU_25 — Configurar umbrales del algoritmo
 
 | Identificador de Caso Uso | **CU_25** |
 |:---|:---|
-| **Nombre** | Configurar pesos, umbrales y escalera de carrera |
-| **Descripción** | Este caso de uso permite a RR.HH. y a VP Engineering ajustar los parámetros del algoritmo y los requisitos de cada nivel de la escalera de carrera, sin recompilar el sistema. |
-| **Actores** | Analista de RR.HH., VP Engineering |
+| **Nombre** | Configurar umbrales del algoritmo |
+| **Descripción** | Este caso de uso permite a RR.HH. ajustar los umbrales y plazos del algoritmo y de los parámetros de costo de rotación, sin recompilar el sistema. |
+| **Actores** | Analista de RR.HH. |
 | **Secuencia normal** | |
 | **Actor** | **Software** |
 | 1. El usuario selecciona la opción "Configuración del algoritmo". | |
-| | 2. El sistema muestra los parámetros vigentes: pesos (0.4 / 0.6), umbral de viabilidad (65 %), ciclo de evaluación (3 días), antigüedad mínima (6 meses), bloqueo por rechazo (6 meses), activación diferida (24 horas) y umbral de días sin match. |
+| | 2. El sistema muestra los parámetros vigentes: umbral de viabilidad (65 %), ciclo de evaluación (3 días), antigüedad mínima (6 meses), bloqueo por rechazo (6 meses), activación diferida (24 horas), umbral de días sin match (10 días) y parámetros de costo de rotación. |
 | 3. El usuario modifica los parámetros que necesita ajustar. | |
-| | 4. Valida que los pesos sumen 1.0, que el umbral esté entre 0 y 100, y que los plazos sean positivos. |
-| 5. El VP Engineering edita los requisitos técnicos de un nivel de la escalera de carrera. | |
-| | 6. Valida que cada requisito corresponda a una habilidad del catálogo. |
-| | 7. El sistema guarda la configuración, registra quién la cambió y cuándo, y aplica los nuevos valores a los cálculos **posteriores**. |
-| | 8. El caso de uso termina. |
+| | 4. Valida que el umbral de viabilidad esté entre 0 y 100 y que los plazos sean positivos. |
+| | 5. El sistema guarda la configuración, registra quién la cambió y cuándo, y aplica los nuevos valores a los cálculos **posteriores**. |
+| | 6. El caso de uso termina. |
 | **Excepciones** | **Software** |
-| 4. Los pesos no suman 1.0. | a. Rechaza el cambio y muestra "Match Score + Career Impact deben sumar 1.0".<br>b. Regresar al paso 3. |
 | 4. El umbral de viabilidad está fuera del rango 0–100. | a. Muestra el rango válido.<br>b. Regresar al paso 3. |
-| 7. Existen postulaciones activas calculadas con la configuración anterior. | a. **Conserva** los puntajes ya registrados en la bitácora —el ranking de una vacante en curso no cambia retroactivamente— y aplica la nueva configuración solo a los cálculos posteriores.<br>b. Continuar en el paso 8. |
-| 6. Un requisito no existe en el catálogo de habilidades. | a. Señala el requisito no reconocido y ofrece darlo de alta.<br>b. Regresar al paso 5. |
-| **CU relacionados** | **CU_11**, CU_04, CU_13, CU_19, CU_23 |
-| **Precondición** | El usuario tiene sesión iniciada con rol Analista de RR.HH. o VP Engineering. |
+| 5. Existen postulaciones activas calculadas con la configuración anterior. | a. **Conserva** los puntajes ya registrados en la bitácora —el ranking de una vacante en curso no cambia retroactivamente— y aplica la nueva configuración solo a los cálculos posteriores.<br>b. Continuar en el paso 6. |
+| **CU relacionados** | **CU_11**, CU_13, CU_19, CU_23 |
+| **Precondición** | El usuario tiene sesión iniciada con rol Analista de RR.HH. |
 | **Post condición** | Configuración actualizada y aplicada a los cálculos posteriores. Los puntajes históricos permanecen intactos en la bitácora. |
-| **Requerimientos** | RF-33 · RNF-06, RNF-12 · RN-13, RN-24, RN-27 · PEN-01, PEN-03 |
+| **Requerimientos** | RF-33 · RNF-06, RNF-12 · RN-13, RN-27 |
 
 ---
 
@@ -761,8 +737,7 @@ CU_01 Registrarse --> CU_02 Iniciar sesion
      EMPLEADO                              MANAGER
         |                                      |
   CU_03 Perfil                          CU_09 Publicar vacante
-  CU_04 Meta de carrera                        |
-  CU_05 Agregar habilidad ---> CU_06 Avalar habilidad
+  CU_05 Agregar habilidad ---> CU_06 Avalar habilidad          |
   CU_07 Wishlist                               |
         |                                      |
   CU_08 Notificacion proactiva <---------------+
@@ -803,14 +778,14 @@ TRANSVERSALES: CU_20 historial de proyectos · CU_21 historial propio ·
 | CU_01 | Registrarse | Usuario | RF-01 | RNF-07, RNF-13 | — |
 | CU_02 | Iniciar sesión | Todos | RF-02 | RNF-07 | — |
 | CU_03 | Gestionar perfil profesional | Empleado | RF-04 | — | RN-07, RN-23 |
-| CU_04 | Definir meta de carrera | Empleado | RF-05 | — | RN-24 |
+| CU_04 | *(Eliminado — ver PEN-03)* | — | — | — | — |
 | CU_05 | Agregar habilidad al perfil | Empleado | RF-06 | — | RN-19, RN-20 |
 | CU_06 | Avalar habilidad del equipo | Manager | RF-07, RF-08 | — | RN-19, RN-20 |
 | CU_07 | Gestionar lista de deseos | Empleado | RF-09 | — | — |
 | CU_08 | Notificar vacante por wishlist | Sistema | RF-10 | RNF-08 | RN-01, RN-07, RN-10 |
 | CU_09 | Publicar vacante interna | Manager | RF-11 | — | RN-01, RN-11 |
 | CU_10 | Buscar y filtrar vacantes | Empleado | RF-13 | RNF-03, RNF-04 | RN-03, RN-11 |
-| CU_11 | **Calcular Puntaje Final** | Sistema | RF-08, RF-15, RF-16 | RNF-06, RNF-09, RNF-12 | RN-13, RN-20, RN-23, RN-24, RN-25 |
+| CU_11 | **Calcular Puntaje Final** | Sistema | RF-08, RF-15, RF-16 | RNF-06, RNF-09, RNF-12 | RN-13, RN-20, RN-23, RN-25 |
 | CU_12 | Postularse a una vacante | Empleado | RF-17, RF-19, RF-20 | — | RN-06…RN-10, RN-28 |
 | CU_13 | Consultar costo de rotación | Manager | RF-18 | — | RN-26 |
 | CU_14 | Revisar ranking de candidatos | Manager | RF-21, RF-22 | RNF-03, RNF-04, RNF-09 | RN-12, RN-13, RN-14, RN-27 |
@@ -824,7 +799,7 @@ TRANSVERSALES: CU_20 historial de proyectos · CU_21 historial propio ·
 | CU_22 | Generar reporte ejecutivo top 10 | Líder Ejecutivo | RF-29 | RNF-07 | RN-20, RN-21, RN-22 |
 | CU_23 | Gestionar usuarios y roles | Administrador | RF-03 | RNF-07 | — |
 | CU_24 | Alertar rechazos repetidos | Sistema / RR.HH. | RF-32 | RNF-06, RNF-08, RNF-10 | RN-27, RN-29 |
-| CU_25 | Configurar pesos y umbrales | RR.HH. / VP Eng. | RF-33 | RNF-06, RNF-12 | RN-13, RN-24, RN-27 |
+| CU_25 | Configurar umbrales del algoritmo | RR.HH. | RF-33 | RNF-06, RNF-12 | RN-13, RN-27 |
 
 ### 4.2 Cobertura de los requerimientos funcionales
 
@@ -834,7 +809,7 @@ TRANSVERSALES: CU_20 historial de proyectos · CU_21 historial propio ·
 | RF-02 | CU_02 | RF-19 | CU_12 |
 | RF-03 | CU_23 | RF-20 | CU_12 |
 | RF-04 | CU_03 | RF-21 | CU_14 |
-| RF-05 | CU_04 | RF-22 | CU_14 |
+| RF-05 | *(eliminado)* | RF-22 | CU_14 |
 | RF-06 | CU_05 | RF-23 | CU_15, CU_16 |
 | RF-07 | CU_06 | RF-24 | CU_15 |
 | RF-08 | CU_06, CU_11 | RF-25 | CU_15 |
@@ -848,8 +823,9 @@ TRANSVERSALES: CU_20 historial de proyectos · CU_21 historial propio ·
 | RF-16 | CU_11, CU_12 | RF-33 | CU_25 |
 | RF-17 | CU_12 | | |
 
-**Cobertura: 33 de 33 RF (100 %).** Ningún requerimiento funcional queda sin caso de uso, y
-ningún caso de uso existe sin un requerimiento que lo justifique.
+**Cobertura: 32 de 32 RF activos (100 %).** RF-05 fue eliminado (PEN-03) y no cuenta en la base.
+Ningún requerimiento funcional activo queda sin caso de uso, y ningún caso de uso activo existe
+sin un requerimiento que lo justifique.
 
 ### 4.3 Cobertura de las historias de usuario
 
@@ -882,14 +858,14 @@ Antes de pasar a producción deben validarse con especial rigor:
 
 ---
 
-## 6. Pendientes que afectan a los casos de uso
+## 6. Confirmaciones que afectan a los casos de uso
 
-| Pendiente | Casos de uso afectados | Supuesto del MVP |
+| Confirmación | Casos de uso afectados | Decisión final |
 |---|---|---|
-| **PEN-01** Umbral de días sin match | CU_19, CU_25 | 30 días, igual para todos los roles. |
-| **PEN-02** Alcance del Costo de Rotación | CU_13, CU_14 | Se muestra como métrica **informativa**; no altera el Puntaje Final ni el orden del ranking. |
-| **PEN-03** Definición de la escalera de carrera | CU_04, CU_11, CU_25 | Requisitos con peso igual, definidos por VP Engineering junto a RR.HH. |
+| **PEN-01** Umbral de días sin match | CU_19, CU_25 | **10 días**, igual para todos los roles. |
+| **PEN-02** Alcance del Costo de Rotación | CU_13, CU_14 | Se muestra como métrica **informativa** y aproximada; no altera el Puntaje Final ni el orden del ranking. |
+| **PEN-03** Career Impact Score / escalera de carrera | CU_04 (eliminado), CU_11, CU_25 | **Eliminado del alcance del MVP.** El Puntaje Final depende únicamente del Match Score. |
 
-Cada supuesto queda registrado aquí y en las
-[Reglas de Negocio §9](../reglas-negocio/RN-TalentMatch-Reglas-de-Negocio.md#9-pendientes-por-confirmar-con-la-empresa).
-Al confirmarse con la empresa, deben actualizarse **ambos** documentos.
+Cada decisión queda registrada aquí y en las
+[Reglas de Negocio §9](../reglas-negocio/RN-TalentMatch-Reglas-de-Negocio.md#9-confirmaciones-con-la-empresa).
+No quedan pendientes abiertos.
