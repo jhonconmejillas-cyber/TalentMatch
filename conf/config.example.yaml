@@ -1,0 +1,67 @@
+# TalentMatch - parametros configurables (RNF-12)
+# Copiar a conf/config.yaml y ajustar. Ningun valor de este archivo
+# debe estar fijo en el codigo: todos se leen en tiempo de ejecucion.
+
+algoritmo:
+  # Puntaje Final = match_score * peso_match_score + career_impact * peso_career_impact
+  # Ambos pesos DEBEN sumar 1.0 (RN-13, CU_25 excepcion 4)
+  peso_match_score: 0.4
+  peso_career_impact: 0.6
+
+  # Match Score = (% habilidades avaladas coincidentes * 0.7) + (ajuste senioridad * 0.3)
+  peso_habilidades: 0.7
+  peso_senioridad: 0.3
+
+  # Umbral de viabilidad: por debajo de este valor el candidato no
+  # aparece en el ranking del manager, pero SI puede postularse (RN-27, RN-28)
+  umbral_viabilidad: 65
+
+plazos:
+  # Antiguedad minima en el rol actual para poder postularse (RN-07)
+  antiguedad_minima_rol_meses: 6
+
+  # Bloqueo de repostulacion tras un rechazo (RN-10)
+  bloqueo_repostulacion_meses: 6
+
+  # Activacion diferida de la vacante nacida de una rotacion aceptada (RN-03)
+  activacion_diferida_horas: 24
+
+  # Ciclo de evaluacion de peticiones acumuladas del manager (RN-12)
+  ciclo_evaluacion_dias: 3
+
+  # Dias que una vacante puede estar activa sin match antes de alertar
+  # PENDIENTE de confirmar con la empresa (PEN-01) - valor por defecto del MVP
+  umbral_vacante_sin_match_dias: 30
+
+alertas:
+  # Rechazos del mismo manager a candidatos viables antes de alertar a RRHH (RN-29)
+  rechazos_viables_para_alerta: 2
+
+reporte_ejecutivo:
+  # Numero de empleados en el reporte de recomendacion (RN-21)
+  top_n: 10
+
+costo_rotacion:
+  # PENDIENTE de confirmar el alcance (PEN-02).
+  # Mientras tanto se muestra como metrica informativa: NO altera el ranking.
+  habilitado: true
+  altera_ranking: false
+  salida:
+    recruiting_usd: 6000
+    ramp_up_usd: 3000
+    perdida_conocimiento_usd: 2000
+  rotacion_interna:
+    capacitacion_usd: 1000
+    transicion_usd: 500
+    baja_temporal_usd: 500
+
+seguridad:
+  # RNF-07
+  minutos_inactividad_sesion: 30
+  longitud_minima_password: 8
+
+rendimiento:
+  # RNF-04
+  max_segundos_respuesta: 3
+  max_segundos_ranking: 2
+  max_usuarios_concurrentes: 50
