@@ -1,17 +1,67 @@
 # Guia de contribucion — TalentMatch
 
-## Flujo de trabajo
+## Flujo de trabajo (Gitflow)
 
-1. Cada integrante trabaja en su rama `features-<nombre>`.
-2. Los cambios llegan a la rama principal mediante **pull request**.
-3. Todo PR debe pasar las pruebas antes de fusionarse.
+Guia completa en el wiki: [Development Workflow](https://github.com/jhonconmejillas-cyber/TalentMatch/wiki/Development-Workflow).
+
+```
+main      o--------------o--------------o        version entregada al cierre de cada sprint (tag)
+           \            /              /
+develop     o--o--o--o-o--o--o--o--o--o          integracion del equipo
+               \   /      \      /
+feature/...     o-o        o----o                una rama por issue
+```
+
+| Rama | Sale de | Se fusiona en | Cuando |
+|---|---|---|---|
+| `feature/<issue>-<descripcion>` | `develop` | `develop` (PR) | Al trabajar un issue. Ej.: `feature/27-avalar-habilidades` |
+| `develop` | — | `main` (PR) | Al cerrar el sprint. Se crea un tag `vX.Y.Z` |
+| `hotfix/<descripcion>` | `main` | `main` y `develop` | Error urgente en la version entregada |
+
+1. `main` y `develop` estan protegidas: **nadie hace commit directo**, todo entra por PR con
+   al menos **1 aprobacion**.
+2. Un PR de `feature/*` **siempre apunta a `develop`**, nunca a `main`.
+3. Un issue = una rama = un PR. No abrir PRs duplicados de la misma rama.
+4. La descripcion del PR incluye `Closes #<numero>` para cerrar el issue y moverlo a *Done*.
+5. Todo PR debe pasar el CI (compilacion y pruebas JUnit) antes de fusionarse.
+
+### Como empezar un issue
+
+```bash
+git switch develop
+git pull
+git switch -c feature/27-avalar-habilidades
+# ... trabajar y hacer commits ...
+git push -u origin feature/27-avalar-habilidades
+```
+
+Luego abrir el PR hacia `develop` y mover la tarjeta a **In review**.
+
+## Sprints y tablero
+
+- Cada sprint (2 semanas) es un **Milestone**; cada issue lleva su milestone y el prefijo
+  `[S1]`, `[S2]`… en el titulo.
+- Tablero kanban: `Backlog` → `Ready` → `In progress` → `In review` → `Done`.
+- Cada issue debe tener un **Estimate**; sin el, las graficas de *Insights* salen planas.
 
 ## Mensajes de commit
 
 Se usa [Conventional Commits](https://www.conventionalcommits.org/es/):
+`tipo(alcance): descripcion en minuscula e imperativo`.
+
+| Tipo | Uso |
+|---|---|
+| `feat` | Funcionalidad nueva |
+| `fix` | Correccion de error |
+| `docs` | Documentacion |
+| `test` | Pruebas |
+| `refactor` | Cambio interno sin cambiar comportamiento |
+| `chore` | Configuracion, dependencias |
+| `ci` | Integracion continua y despliegue |
+| `style` | Formato, sin cambio de logica |
 
 ```
-feat(matching): calcular Match Score - closes #12
+feat(habilidades): permitir al manager avalar una habilidad
 fix(vacante): respetar la activacion diferida de 24h
 docs(reglas-negocio): actualizar RN-10 tras confirmacion con la empresa
 ```
