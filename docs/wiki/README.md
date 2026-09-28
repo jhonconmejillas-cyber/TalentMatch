@@ -11,6 +11,8 @@ documentacion viaje con el codigo y quede bajo control de versiones.
 | `User-Roles-and-Flows.md` | User Roles & Flows |
 | `Matching-Algorithm.md` | Matching Algorithm |
 | `Stakeholders.md` | StatkeHolders |
+| `Technical-Architecture.md` | Technical Architecture |
+| `Development-Workflow.md` | Development Workflow |
 
 > El wiki es la vista divulgativa del proyecto. La especificacion formal y vinculante
 > esta en las carpetas hermanas de `docs/`. Ante una contradiccion, prevalecen las
