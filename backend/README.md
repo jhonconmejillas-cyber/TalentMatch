@@ -29,3 +29,31 @@ Las pruebas JUnit estan en `src/test/java/`, con la misma estructura de paquetes
 3. **Todo calculo queda en bitacora** antes de devolverse. Si falla la bitacora, falla el calculo (RNF-06, CU_11).
 4. **El ranking no se reordena** por ninguna via (RN-14).
 5. **La respuesta de rechazo jamas incluye identificadores** del seleccionado (RN-18, CU_16).
+
+## Como ejecutarlo
+
+Requisitos: **JDK 21**. Maven no hace falta instalarlo: el proyecto trae el *wrapper* (`mvnw`).
+
+```bash
+# desde la raiz del repositorio
+cp conf/config.example.yaml conf/config.yaml   # parametros locales (RNF-12)
+cd backend
+./mvnw spring-boot:run        # Windows: mvnw.cmd spring-boot:run
+```
+
+La API queda en `http://localhost:8080`. Para comprobar que esta arriba:
+
+```bash
+curl http://localhost:8080/api/v1/health
+# {"estado":"ok"}
+```
+
+Pruebas:
+
+```bash
+./mvnw test
+```
+
+Los parametros de `conf/config.yaml` se leen al arrancar (ver `application.properties`) y se
+consultan desde cualquier Service a traves de `ParametrosService`. Si la carpeta `conf/` esta en
+otra ruta, se indica con la variable de entorno `TALENTMATCH_CONF_DIR`.
