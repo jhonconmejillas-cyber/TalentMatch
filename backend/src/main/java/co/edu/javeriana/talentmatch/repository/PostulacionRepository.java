@@ -16,5 +16,12 @@ public interface PostulacionRepository extends JpaRepository<Postulacion, Long> 
 
     List<Postulacion> findByVacanteId(Long vacanteId);
 
+    /** RN-29: rechazos directos de un manager a candidatos viables desde una fecha. */
+    List<Postulacion> findByVacanteManagerIdAndRechazoDirectoTrueAndPuntajeFinalGreaterThanEqualAndFechaResolucionAfterOrderByFechaResolucionAsc(
+            Long managerId, double umbral, java.time.LocalDateTime desde);
+
+    List<Postulacion> findByVacanteManagerIdAndEstadoInAndFechaResolucionAfter(
+            Long managerId, java.util.Collection<EstadoPostulacion> estados, java.time.LocalDateTime desde);
+
     boolean existsByEmpleadoIdAndVacanteIdAndEstado(Long empleadoId, Long vacanteId, EstadoPostulacion estado);
 }

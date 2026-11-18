@@ -45,7 +45,7 @@ public class Manager extends Empleado {
 
     public void rechazarCandidato(Postulacion postulacion, LocalDateTime ahora) {
         verificarQueEsSuVacante(postulacion);
-        postulacion.rechazar(ahora);
+        postulacion.rechazarDirectamente(ahora);
     }
 
     private void verificarQueEsSuEquipo(HabilidadEmpleado habilidad) {
