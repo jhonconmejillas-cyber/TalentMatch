@@ -1,5 +1,6 @@
 package co.edu.javeriana.talentmatch.config;
 
+import co.edu.javeriana.talentmatch.service.ReporteRechazosService;
 import co.edu.javeriana.talentmatch.service.VacanteAutomaticaService;
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -19,11 +20,19 @@ import org.springframework.scheduling.annotation.Scheduled;
 public class TareasProgramadas {
 
     private final VacanteAutomaticaService vacantes;
+    private final ReporteRechazosService reporteRechazos;
     private final Clock reloj;
 
-    public TareasProgramadas(VacanteAutomaticaService vacantes, Clock reloj) {
+    public TareasProgramadas(VacanteAutomaticaService vacantes, ReporteRechazosService reporteRechazos, Clock reloj) {
         this.vacantes = vacantes;
+        this.reporteRechazos = reporteRechazos;
         this.reloj = reloj;
+    }
+
+    /** HU-002: el dia 1 de cada mes (2:00) genera el reporte de rechazos del mes anterior. */
+    @Scheduled(cron = "${talentmatch.tareas.reporte-rechazos-cron:0 0 2 1 * *}")
+    public void generarReporteMensual() {
+        reporteRechazos.generarMesAnterior();
     }
 
     /** RN-03: activa las vacantes cuya ventana de 24 h ya paso (cada minuto por defecto). */

@@ -77,3 +77,19 @@ function intentarJson(texto) {
 export function rutaLogin() {
   return window.location.pathname.includes("/pages/") ? "../index.html" : "index.html";
 }
+
+/** Descarga un archivo protegido (con el token) y lo guarda con el nombre indicado. */
+export async function descargar(ruta, nombreArchivo) {
+  const respuesta = await fetch(`${API_URL}${ruta}`, { headers: { Authorization: `Bearer ${obtenerToken()}` } });
+  if (!respuesta.ok) {
+    const cuerpo = intentarJson(await respuesta.text());
+    throw new ErrorApi((cuerpo && cuerpo.mensaje) || MENSAJES_POR_ESTADO[respuesta.status] || MENSAJES_POR_ESTADO[500],
+      respuesta.status);
+  }
+  const url = URL.createObjectURL(await respuesta.blob());
+  const enlace = document.createElement("a");
+  enlace.href = url;
+  enlace.download = nombreArchivo;
+  enlace.click();
+  URL.revokeObjectURL(url);
+}
