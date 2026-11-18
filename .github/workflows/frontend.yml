@@ -1,0 +1,40 @@
+# Publica el frontend en Cloudflare Pages.
+#   push a develop -> ambiente preview   (rama "develop" del proyecto de Pages)
+#   push a main    -> ambiente produccion (rama "main", la de produccion del proyecto)
+#
+# Configuracion necesaria en GitHub -> Settings -> Secrets and variables -> Actions:
+#   Secrets:   CLOUDFLARE_API_TOKEN (permiso "Cloudflare Pages: Edit"), CLOUDFLARE_ACCOUNT_ID
+#   Variables: CLOUDFLARE_PAGES_PROYECTO (ej. talentmatch)
+#              API_URL_PREVIEW    (URL del backend de develop, ej. https://.../api/v1)
+#              API_URL_PRODUCCION (URL del backend de main)
+name: Frontend - Cloudflare Pages
+
+on:
+  push:
+    branches: [develop, main]
+    paths: ['frontend/**', '.github/workflows/frontend.yml']
+  workflow_dispatch:
+
+jobs:
+  publicar:
+    name: Publicar frontend
+    runs-on: ubuntu-latest
+    # Sin credenciales de Cloudflare el job se omite (no falla).
+    if: ${{ vars.CLOUDFLARE_PAGES_PROYECTO != '' }}
+    environment: ${{ github.ref_name == 'main' && 'produccion' || 'preview' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Escribir la URL de la API del ambiente
+        env:
+          API_URL: ${{ github.ref_name == 'main' && vars.API_URL_PRODUCCION || vars.API_URL_PREVIEW }}
+        run: |
+          echo "window.TALENTMATCH_API_URL = \"${API_URL}\";" > frontend/js/ambiente.js
+          cat frontend/js/ambiente.js
+
+      - name: Publicar en Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy frontend --project-name=${{ vars.CLOUDFLARE_PAGES_PROYECTO }} --branch=${{ github.ref_name }}
