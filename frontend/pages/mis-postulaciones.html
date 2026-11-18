@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mis postulaciones · TalentMatch</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+</head>
+<body>
+  <main class="contenido">
+    <section class="tarjeta">
+      <h1>Mis postulaciones</h1>
+      <p class="ayuda">Solo tú y RR.HH. pueden ver tu historial de postulaciones.</p>
+      <p id="mensaje" class="mensaje" role="alert" hidden></p>
+      <table class="tabla">
+        <thead><tr><th>Vacante</th><th>Área</th><th>Puntaje Final</th><th>Postulada</th><th>Estado</th><th></th></tr></thead>
+        <tbody id="filas"><tr><td colspan="6" class="vacio">Cargando…</td></tr></tbody>
+      </table>
+    </section>
+  </main>
+  <script src="../js/ambiente.js"></script>
+  <script type="module" src="../js/pages/mis-postulaciones.js"></script>
+</body>
+</html>

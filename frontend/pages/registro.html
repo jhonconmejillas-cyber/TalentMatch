@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Registro · TalentMatch</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+</head>
+<body class="pagina-acceso">
+  <main class="tarjeta-acceso">
+    <h1 class="marca">TalentMatch</h1>
+    <p class="subtitulo">Crea tu cuenta con tu correo corporativo</p>
+
+    <form id="form-registro" novalidate>
+      <div class="campo">
+        <label for="nombre">Nombre completo</label>
+        <input id="nombre" name="nombre" type="text" autocomplete="name" required maxlength="120">
+      </div>
+      <div class="campo">
+        <label for="correo">Correo corporativo</label>
+        <input id="correo" name="correo" type="email" autocomplete="email" required
+               placeholder="nombre.apellido@empresa.com">
+      </div>
+      <div class="campo">
+        <label for="contrasena">Contraseña</label>
+        <input id="contrasena" name="contrasena" type="password" autocomplete="new-password" required>
+        <small class="ayuda">Mínimo 8 caracteres.</small>
+      </div>
+      <div class="campo">
+        <label for="confirmacion">Confirma la contraseña</label>
+        <input id="confirmacion" name="confirmacion" type="password" autocomplete="new-password" required>
+      </div>
+
+      <p id="mensaje" class="mensaje" role="alert" hidden></p>
+
+      <button type="submit" class="boton boton-primario boton-bloque">Crear cuenta</button>
+    </form>
+
+    <p class="pie-acceso">¿Ya tienes cuenta? <a href="../index.html">Inicia sesión</a></p>
+  </main>
+
+  <script src="../js/ambiente.js"></script>
+  <script type="module" src="../js/pages/registro.js"></script>
+</body>
+</html>

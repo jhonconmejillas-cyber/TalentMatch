@@ -1,0 +1,90 @@
+// Encabezado comun de las paginas con sesion: marca, menu segun el rol y cierre de sesion.
+
+import { cerrarSesion, requerirSesion, rutaPanel } from "./auth.js";
+import { escaparHtml } from "./ui.js";
+
+/** Opciones del menu por rol. Cada accion principal queda a 1 clic del panel (RNF-03). */
+const MENU_POR_ROL = {
+  EMPLEADO: [
+    { texto: "Inicio", pagina: "panel-empleado.html" },
+    { texto: "Vacantes", pagina: "vacantes.html" },
+    { texto: "Mis postulaciones", pagina: "mis-postulaciones.html" },
+    { texto: "Mi perfil", pagina: "perfil.html" },
+    { texto: "Mis habilidades", pagina: "habilidades.html" },
+  ],
+  MANAGER: [
+    { texto: "Inicio", pagina: "panel-manager.html" },
+    { texto: "Mis vacantes", pagina: "publicar-vacante.html" },
+    { texto: "Avalar habilidades", pagina: "avalar.html" },
+    { texto: "Mi perfil", pagina: "perfil.html" },
+    { texto: "Mis habilidades", pagina: "habilidades.html" },
+    { texto: "Vacantes", pagina: "vacantes.html" },
+    { texto: "Mis postulaciones", pagina: "mis-postulaciones.html" },
+  ],
+  RRHH: [
+    { texto: "Inicio", pagina: "panel-rrhh.html" },
+    { texto: "Alertas", pagina: "alertas.html" },
+    { texto: "Gestión de vacantes", pagina: "gestion-vacantes.html" },
+    { texto: "Reporte de rechazos", pagina: "reporte-rechazos.html" },
+    { texto: "Top 10", pagina: "reporte-top10.html" },
+  ],
+  LIDER_EJECUTIVO: [
+    { texto: "Inicio", pagina: "panel-lider.html" },
+    { texto: "Reporte top 10", pagina: "reporte-top10.html" },
+  ],
+  ADMIN: [
+    { texto: "Usuarios", pagina: "panel-admin.html" },
+  ],
+};
+
+// Todas las personas reciben notificaciones del sistema (RNF-08).
+Object.values(MENU_POR_ROL).forEach((menu) => menu.push({ texto: "Notificaciones", pagina: "notificaciones.html" }));
+
+const NOMBRE_ROL = {
+  EMPLEADO: "Empleado",
+  MANAGER: "Manager",
+  RRHH: "RR.HH.",
+  LIDER_EJECUTIVO: "Líder Ejecutivo",
+  ADMIN: "Administrador",
+};
+
+export function nombreRol(rol) {
+  return NOMBRE_ROL[rol] || rol;
+}
+
+/**
+ * Protege la pagina y dibuja el encabezado. Devuelve el usuario de la sesion
+ * (o null si se redirigio al login).
+ * @param {string[]} [rolesPermitidos] roles que pueden ver la pagina
+ */
+export function montarLayout(rolesPermitidos) {
+  const usuario = requerirSesion(rolesPermitidos);
+  if (!usuario) {
+    return null;
+  }
+  const actual = window.location.pathname.split("/").pop();
+  const opciones = (MENU_POR_ROL[usuario.rol] || [])
+    .map((o) => `<a href="${o.pagina}"${o.pagina === actual ? ' aria-current="page"' : ""}>${escaparHtml(o.texto)}</a>`)
+    .join("");
+
+  const encabezado = document.createElement("header");
+  encabezado.className = "encabezado";
+  encabezado.innerHTML = `
+    <a class="marca" href="${rutaPanel(usuario.rol)}">TalentMatch</a>
+    <nav aria-label="Menú principal">${opciones}</nav>
+    <div class="usuario-sesion">
+      <span>${escaparHtml(usuario.nombre)} · ${escaparHtml(nombreRol(usuario.rol))}</span>
+      <button type="button" class="boton" id="cerrar-sesion">Cerrar sesión</button>
+    </div>`;
+  document.body.prepend(encabezado);
+  document.getElementById("cerrar-sesion").addEventListener("click", () => {
+    cerrarSesion();
+    window.location.href = "../index.html";
+  });
+  return usuario;
+}
+
+/** Opciones del menu de un rol (el panel de inicio las muestra como accesos directos). */
+export function opcionesMenu(rol) {
+  return [...(MENU_POR_ROL[rol] || [])];
+}

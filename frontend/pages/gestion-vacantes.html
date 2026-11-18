@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gestión de vacantes · TalentMatch</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+</head>
+<body>
+  <main class="contenido">
+    <p id="mensaje" class="mensaje" role="alert" hidden></p>
+
+    <section class="tarjeta">
+      <div class="titulo-seccion">
+        <h1>Vacantes por estado</h1>
+        <div class="campo" style="margin:0">
+          <label for="estado" class="ayuda">Estado</label>
+          <select id="estado">
+            <option value="">Todos</option>
+            <option value="PENDIENTE_ACTIVACION">Pendiente de activación</option>
+            <option value="ACTIVA" selected>Activa</option>
+            <option value="CERRADA">Cerrada</option>
+            <option value="DESCARTADA">Descartada</option>
+          </select>
+        </div>
+      </div>
+      <table class="tabla">
+        <thead><tr><th>Vacante</th><th>Área</th><th>Origen</th><th>Estado</th><th>Activación</th></tr></thead>
+        <tbody id="vacantes"><tr><td colspan="5" class="vacio">Cargando…</td></tr></tbody>
+      </table>
+    </section>
+
+    <section class="tarjeta">
+      <h2>Asignaciones vigentes</h2>
+      <p class="ayuda">Registra una renuncia o el cierre de un proyecto: el sistema crea la vacante del puesto
+        y la activa de inmediato. Las rotaciones aceptadas se registran solas y se activan 24 horas después.</p>
+      <table class="tabla">
+        <thead><tr><th>Empleado</th><th>Proyecto</th><th>Cargo</th><th>Desde</th><th></th></tr></thead>
+        <tbody id="asignaciones"><tr><td colspan="5" class="vacio">Cargando…</td></tr></tbody>
+      </table>
+    </section>
+  </main>
+  <script src="../js/ambiente.js"></script>
+  <script type="module" src="../js/pages/gestion-vacantes.js"></script>
+</body>
+</html>

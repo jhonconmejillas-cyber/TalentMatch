@@ -1,0 +1,93 @@
+# TalentMatch - parametros configurables (RNF-12)
+# Copiar a conf/config.yaml y ajustar. Ningun valor de este archivo
+# debe estar fijo en el codigo: todos se leen en tiempo de ejecucion.
+
+algoritmo:
+  # Puntaje Final = Match Score (RN-13). No hay una segunda metrica que ponderar:
+  # el Career Impact Score se elimino del alcance del MVP (PEN-03 confirmado).
+
+  # Match Score = (% habilidades avaladas coincidentes * 0.7) + (ajuste senioridad * 0.3)
+  peso_habilidades: 0.7
+  peso_senioridad: 0.3
+
+  # Ajuste por senioridad (RN-23). Si el empleado SUPERA el nivel de la vacante:
+  ajuste_senioridad_superior: 0.9
+  # Si esta por debajo, segun cuantos niveles: [mismo nivel, 1 abajo, 2 abajo, 3 o mas abajo]
+  # Niveles: JUNIOR < SEMI_SENIOR < SENIOR < LIDER
+  ajuste_senioridad_inferior: [1.0, 0.6, 0.3, 0.0]
+
+  # Umbral de viabilidad: por debajo de este valor el candidato no
+  # aparece en el ranking del manager, pero SI puede postularse (RN-27, RN-28)
+  umbral_viabilidad: 65
+
+plazos:
+  # Antiguedad minima en el rol actual para poder postularse (RN-07)
+  antiguedad_minima_rol_meses: 6
+
+  # Bloqueo de repostulacion tras un rechazo (RN-10)
+  bloqueo_repostulacion_meses: 6
+
+  # Activacion diferida de la vacante nacida de una rotacion aceptada (RN-03)
+  activacion_diferida_horas: 24
+
+  # Ciclo de evaluacion de peticiones acumuladas del manager (RN-12)
+  ciclo_evaluacion_dias: 3
+
+  # Dias que una vacante puede estar activa sin match antes de alertar (RN-05, RN-30)
+  # PEN-01 confirmado con la empresa: 10 dias
+  umbral_vacante_sin_match_dias: 10
+
+ranking:
+  # Indicador de color del ranking del manager (HU-001). Solo es visual: no cambia el orden.
+  #   verde >= indicador_verde, amarillo >= indicador_amarillo, rojo por debajo (y >= umbral)
+  indicador_verde: 80
+  indicador_amarillo: 70
+
+alertas:
+  # Rechazos del mismo manager a candidatos viables antes de alertar a RRHH (RN-29)
+  rechazos_viables_para_alerta: 2
+
+reporte_rechazos:
+  # HU-002: reporte mensual para RR.HH. con los patrones de rechazo por manager.
+  # Meses que abarca cada reporte (ventana movil que termina en el mes reportado)
+  meses_ventana: 3
+  # Se resalta al manager cuya tasa de rechazo a candidatos viables supera el promedio
+  # de la organizacion en mas de estos puntos porcentuales
+  desviacion_resaltado_pct: 20
+
+reporte_ejecutivo:
+  # Numero de empleados en el reporte de recomendacion (RN-21)
+  top_n: 10
+
+costo_rotacion:
+  # PEN-02 confirmado con la empresa: valor aproximado, solo para mostrarle al manager
+  # los beneficios de la rotacion interna. NO altera el ranking ni el Puntaje Final.
+  habilitado: true
+  altera_ranking: false
+  salida:
+    recruiting_usd: 6000
+    ramp_up_usd: 3000
+    perdida_conocimiento_usd: 2000
+  rotacion_interna:
+    capacitacion_usd: 1000
+    transicion_usd: 500
+    baja_temporal_usd: 500
+
+seguridad:
+  # RNF-07
+  minutos_inactividad_sesion: 30
+  longitud_minima_password: 8
+  # RF-01: solo se aceptan registros con correo de estos dominios corporativos
+  dominios_correo_corporativo:
+    - talentmatch.com
+
+rendimiento:
+  # RNF-04 / HU-005: metas de tiempo de respuesta
+  # El 90 % de las paginas y consultas responde en menos de este tiempo
+  max_segundos_respuesta: 3
+  # El ranking de una vacante con hasta 20 candidatos carga en menos de este tiempo
+  max_segundos_ranking: 2
+  # RNF-01: usuarios concurrentes que debe soportar el MVP
+  max_usuarios_concurrentes: 50
+  # La interfaz muestra un indicador de carga si una respuesta tarda mas de esto
+  milisegundos_indicador_carga: 300

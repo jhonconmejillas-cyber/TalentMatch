@@ -1,0 +1,105 @@
+# Backend — TalentMatch
+
+API REST y logica del algoritmo de matching. **Java 21 + Spring Boot + Maven.**
+
+## Las 4 capas
+
+| Capa | Paquete (`co.edu.javeriana.talentmatch.*`) | Responsabilidad | Documentos |
+|---|---|---|---|
+| 1. Frontend | `frontend/` (fuera del backend) | Muestra y captura datos. No decide nada del negocio. | RNF-03, RNF-13 |
+| 2. Controller | `controller/` | Recibe la peticion HTTP, valida el rol y el formato, llama al Service y responde JSON. | RNF-07 |
+| 3. Service | `service/` | **Reglas de negocio** (RN-01 … RN-30): 6 meses, solo `avalado`, 65 %, ranking inmutable, bitacora. | CU_11, CU_15…CU_19, CU_24 |
+| 4. Repository | `repository/` | Interfaces Spring Data JPA. Solo leen y guardan, no deciden. | — |
+
+Paquetes de apoyo:
+
+| Paquete | Contenido |
+|---|---|
+| `model/` | Entidades del [diagrama de clases](../docs/diagramas/DC-TalentMatch-Diagrama-de-Clases.md). |
+| `dto/` | Contratos JSON de entrada y salida. Aqui vive la garantia de que **el resultado que recibe un empleado no seleccionado no expone la identidad de quien fue elegido** (RN-18). Las respuestas autorizadas para RR.HH. (por ejemplo, las excepciones de CU_15) si pueden identificarlo. |
+| `security/` | Login, token y permisos por rol (RNF-07). |
+| `config/` | Lectura de `conf/config.yaml` (RNF-12) y CORS. |
+
+Las pruebas JUnit estan en `src/test/java/`, con la misma estructura de paquetes.
+
+## Reglas que el backend debe garantizar
+
+1. **Solo habilidades `avalado`** entran al Match Score (RN-20). Prueba unitaria obligatoria.
+2. **Ningun dato personal** interviene en el calculo (RNF-09). Lista cerrada de campos.
+3. **Todo calculo queda en bitacora** antes de devolverse. Si falla la bitacora, falla el calculo (RNF-06, CU_11).
+4. **El ranking no se reordena** por ninguna via (RN-14).
+5. **La respuesta de rechazo jamas incluye identificadores** del seleccionado (RN-18, CU_16).
+
+## Como ejecutarlo
+
+Requisitos: **JDK 21**. Maven no hace falta instalarlo: el proyecto trae el *wrapper* (`mvnw`).
+
+```bash
+# desde la raiz del repositorio
+cp -n conf/config.example.yaml conf/config.yaml   # parametros locales (RNF-12); no sobrescribe un archivo existente
+cp -n .env.example .env                           # credenciales de la base de datos (RNF-07)
+cd backend
+./mvnw spring-boot:run        # Windows: mvnw.cmd spring-boot:run
+```
+
+La API queda en `http://localhost:8080`. Para comprobar que esta arriba:
+
+```bash
+curl http://localhost:8080/api/v1/health
+# {"estado":"ok"}
+```
+
+### Base de datos
+
+La API se conecta a PostgreSQL (Supabase) con tres variables de entorno: `DB_URL`, `DB_USER` y
+`DB_PASSWORD`. En local se escriben en el archivo `.env` de la raiz (ignorado por Git); Spring lo
+lee al arrancar. Las credenciales **nunca** se escriben en `application.yml`.
+
+| Variable | Ejemplo |
+|---|---|
+| `DB_URL` | `jdbc:postgresql://aws-0-us-east-1.pooler.supabase.com:5432/postgres?sslmode=require` |
+| `DB_USER` | `postgres.<id-del-proyecto>` |
+| `DB_PASSWORD` | la contraseña de la base de Supabase |
+
+Pruebas (tambien necesitan una base PostgreSQL accesible con esas variables):
+
+```bash
+./mvnw test
+```
+
+Los parametros de `conf/config.yaml` se leen al arrancar (ver `application.properties`) y se
+consultan desde cualquier Service a traves de `ParametrosService`. Si la carpeta `conf/` esta en
+otra ruta, se indica con la variable de entorno `TALENTMATCH_CONF_DIR`.
+
+## Imagen Docker
+
+El `Dockerfile` es multi-etapa (compila con Maven + JDK 21 y ejecuta con solo el JRE 21) y se
+construye desde la **raíz** del repositorio, porque incluye `conf/` y `database/migrations`:
+
+```bash
+docker build -f backend/Dockerfile -t talentmatch-backend .
+docker run -p 8080:8080 --env-file .env talentmatch-backend
+```
+
+La imagen no carga los datos de prueba (`FLYWAY_LOCATIONS` solo apunta a las migraciones). Para
+un ambiente de pruebas se pueden incluir con
+`-e FLYWAY_LOCATIONS=filesystem:/app/database/migrations,filesystem:/app/database/seeds`.
+El CI construye la imagen en cada PR (job *Construir imagen Docker*).
+
+## Rendimiento (HU-005, RNF-04)
+
+| Meta (en `conf/config.yaml` → `rendimiento`) | Cómo se verifica |
+|---|---|
+| Ranking de 20 candidatos < 2 s | `CargaConcurrenteTest.escenario1` y `RankingControllerTest` |
+| 50 usuarios concurrentes, p90 < 3 s | `CargaConcurrenteTest.escenario2` (servidor real por HTTP) |
+| Indicador de carga si la respuesta tarda > 300 ms | `frontend/js/api.js` |
+
+- El Puntaje Final se guarda al postularse; el ranking lo **lee** (no recalcula). Solo se recalcula
+  cuando cambian las habilidades avaladas o la senioridad del empleado (`RecalculoService`).
+- Índices de la migración `V4__indices_rendimiento.sql`.
+- Cada petición deja su tiempo en el log (`logs/talentmatch.log`, ruta configurable con `LOG_FILE`):
+
+```bash
+grep tiempo-respuesta logs/talentmatch.log          # todos los tiempos
+grep "supera la meta" logs/talentmatch.log          # solo las respuestas lentas
+```

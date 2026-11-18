@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ranking de candidatos · TalentMatch</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+</head>
+<body>
+  <main class="contenido">
+    <p><a href="publicar-vacante.html">← Mis vacantes</a></p>
+    <p id="mensaje" class="mensaje" role="alert" hidden></p>
+    <section class="tarjeta">
+      <h1 id="titulo">Ranking de candidatos</h1>
+      <p class="ayuda" id="ciclo"></p>
+      <p class="ayuda">Ordenado por Puntaje Final. Solo aparecen candidatos viables. El orden no se puede modificar.</p>
+    </section>
+    <div class="ranking-layout">
+      <section class="tarjeta">
+        <table class="tabla tabla-ranking">
+          <thead><tr><th>#</th><th>Candidato</th><th>Puntaje Final</th><th>Postulado</th><th></th></tr></thead>
+          <tbody id="candidatos"><tr><td colspan="5" class="vacio">Cargando…</td></tr></tbody>
+        </table>
+      </section>
+      <aside class="tarjeta" id="desglose">
+        <p class="vacio">Selecciona un candidato para ver su desglose.</p>
+      </aside>
+    </div>
+  </main>
+  <script src="../js/ambiente.js"></script>
+  <script type="module" src="../js/pages/ranking.js"></script>
+</body>
+</html>

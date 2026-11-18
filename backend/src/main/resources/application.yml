@@ -1,0 +1,94 @@
+# Configuracion de Spring Boot para TalentMatch.
+# Los parametros de NEGOCIO (umbrales, plazos) NO van aqui: estan en conf/config.yaml (RNF-12).
+
+spring:
+  application:
+    # Nombre de la aplicacion (aparece en los logs)
+    name: talentmatch
+
+  config:
+    # ---------------------------------------------------------------
+    # Spring lee estos archivos al arrancar, en este orden:
+    #   1. conf/config.example.yaml -> parametros de negocio por defecto (se sube a Git)
+    #   2. conf/config.yaml         -> copia local de cada uno (NO se sube a Git)
+    #   3. .env                     -> secretos locales: DB_URL, DB_USER, DB_PASSWORD (NO se sube a Git)
+    # Si el mismo valor esta en varios, gana el ULTIMO.
+    #
+    # "optional:" = si el archivo no existe, no falla aqui.
+    # ${TALENTMATCH_CONF_DIR:../conf} = usa la variable de entorno TALENTMATCH_CONF_DIR
+    #   si existe; si no, la carpeta ../conf (relativa a backend/, desde donde se ejecuta).
+    # "[.properties]" le dice a Spring que el .env tiene formato CLAVE=valor.
+    # ---------------------------------------------------------------
+    import:
+      - optional:file:${TALENTMATCH_CONF_DIR:../conf}/config.example.yaml
+      - optional:file:${TALENTMATCH_CONF_DIR:../conf}/config.yaml
+      - optional:file:../.env[.properties]
+      - optional:file:.env[.properties]
+
+  # ---------------------------------------------------------------
+  # Base de datos: PostgreSQL en Supabase (RNF-07).
+  # Las credenciales SIEMPRE vienen de variables de entorno (o del .env local);
+  # nunca se escriben en este archivo. Ver .env.example en la raiz.
+  # ---------------------------------------------------------------
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+  # ---------------------------------------------------------------
+  # Migraciones: Flyway crea y actualiza las tablas al arrancar, en orden
+  # (V1, V1_1, V2...). Las migraciones estan en database/migrations y los
+  # datos de prueba en database/seeds. En produccion se quita la carpeta de
+  # seeds con la variable de entorno FLYWAY_LOCATIONS.
+  # ---------------------------------------------------------------
+  flyway:
+    locations: ${FLYWAY_LOCATIONS:filesystem:${TALENTMATCH_DB_DIR:../database}/migrations,filesystem:${TALENTMATCH_DB_DIR:../database}/seeds}
+
+  jpa:
+    # Las tablas las crea Flyway, no Hibernate. "validate" revisa al arrancar
+    # que las clases de model/ coincidan con las tablas; si no, la app no arranca.
+    hibernate:
+      ddl-auto: validate
+    # No mantener la sesion de base de datos abierta mientras se arma el JSON.
+    open-in-view: false
+
+# ---------------------------------------------------------------
+# HTTPS (RNF-07): en Render el certificado TLS lo pone su proxy y la peticion llega
+# al contenedor con X-Forwarded-Proto=https. Spring usa esos encabezados para saber
+# que la conexion es segura (y enviar HSTS).
+# ---------------------------------------------------------------
+server:
+  # Render indica el puerto en la variable PORT; en local se usa 8080
+  port: ${PORT:8080}
+  forward-headers-strategy: framework
+
+# ---------------------------------------------------------------
+# Log de la aplicacion. Los tiempos de respuesta de la API (HU-005) quedan
+# con la etiqueta "tiempo-respuesta" y se pueden consultar con:
+#   grep tiempo-respuesta logs/talentmatch.log
+# ---------------------------------------------------------------
+logging:
+  file:
+    name: ${LOG_FILE:logs/talentmatch.log}
+
+# ---------------------------------------------------------------
+# CORS: paginas web (origenes) que pueden llamar a esta API.
+#   5500  -> Live Server de VS Code
+#   63342 -> servidor interno de IntelliJ al abrir un .html
+# En produccion se usan los dominios de Vercel con la variable de entorno
+# CORS_ORIGENES (ver render.yaml). Se aceptan comodines: https://talentmatch-*.vercel.app
+# ---------------------------------------------------------------
+talentmatch:
+  cors:
+    origenes-permitidos: ${CORS_ORIGENES:http://localhost:5500,http://127.0.0.1:5500,http://localhost:63342}
+  # ---------------------------------------------------------------
+  # Tareas programadas (formato cron de Spring: seg min hora dia mes dia-semana)
+  # ---------------------------------------------------------------
+  tareas:
+    habilitadas: ${TAREAS_HABILITADAS:true}
+    # RN-03: activa las vacantes cuya ventana de 24 h ya paso
+    activacion-cron: "0 * * * * *"
+    # RN-05: alerta de vacantes sin match
+    vacantes-sin-match-cron: "0 0 7 * * *"
+    # HU-002: reporte mensual de rechazos (dia 1 de cada mes, 2:00)
+    reporte-rechazos-cron: "0 0 2 1 * *"
