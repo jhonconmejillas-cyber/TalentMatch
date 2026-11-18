@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mi perfil · TalentMatch</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+</head>
+<body>
+  <main class="contenido">
+    <section class="tarjeta">
+      <h1>Mi perfil profesional</h1>
+      <p class="ayuda" id="resumen"></p>
+
+      <form id="form-perfil" novalidate>
+        <div class="fila-campos">
+          <div class="campo">
+            <label for="senioridad">Senioridad</label>
+            <select id="senioridad" name="senioridad" required>
+              <option value="">Selecciona…</option>
+              <option value="JUNIOR">Junior</option>
+              <option value="SEMI_SENIOR">Semi Senior</option>
+              <option value="SENIOR">Senior</option>
+              <option value="LIDER">Líder</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="aniosExperiencia">Años de experiencia</label>
+            <input id="aniosExperiencia" name="aniosExperiencia" type="number" min="0" max="60" required>
+          </div>
+          <div class="campo">
+            <label for="area">Área</label>
+            <input id="area" name="area" type="text" maxlength="80" required placeholder="Backend, Cloud, Datos…">
+          </div>
+        </div>
+
+        <div class="fila-campos">
+          <div class="campo">
+            <label for="fechaIngresoEmpresa">Ingreso a la empresa</label>
+            <input id="fechaIngresoEmpresa" name="fechaIngresoEmpresa" type="date">
+          </div>
+          <div class="campo">
+            <label for="fechaInicioRol">Inicio en tu rol actual</label>
+            <input id="fechaInicioRol" name="fechaInicioRol" type="date">
+            <small class="ayuda">Se necesitan 6 meses en el rol para postularse. Una vez guardada, solo RR.HH. puede cambiarla.</small>
+          </div>
+        </div>
+
+        <div class="fila-campos">
+          <div class="campo">
+            <label for="proyectoActualId">Proyecto actual</label>
+            <select id="proyectoActualId" name="proyectoActualId">
+              <option value="">Sin proyecto</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="cargo">Cargo en el proyecto</label>
+            <input id="cargo" name="cargo" type="text" maxlength="120" placeholder="Backend Developer">
+            <small class="ayuda">El proyecto actual cambia solo cuando se acepta una rotación.</small>
+          </div>
+        </div>
+
+        <p id="mensaje" class="mensaje" role="alert" hidden></p>
+        <button type="submit" class="boton boton-primario">Guardar cambios</button>
+      </form>
+    </section>
+  </main>
+  <script type="module" src="../js/pages/perfil.js"></script>
+</body>
+</html>
