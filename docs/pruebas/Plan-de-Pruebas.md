@@ -99,7 +99,7 @@ PostgreSQL, matriz de permisos y carga concurrente), con **93.6 % de cobertura d
 
 `.github/workflows/ci.yml` ejecuta todas las pruebas en cada PR hacia `develop` o `main` y en cada
 push a `develop`, `main`, `release/**` y `hotfix/**`. Después genera el informe
-(`scripts/reporte_pruebas.py`) con:
+(`python3 scripts/reporte_pruebas.py`) con:
 
 - casos ejecutados;
 - casos exitosos (passed);

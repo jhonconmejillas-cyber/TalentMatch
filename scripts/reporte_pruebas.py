@@ -8,11 +8,11 @@ Cruza los reportes XML de Surefire (backend/target/surefire-reports) con el plan
   - reporte-pruebas.json : los mismos datos en JSON
   - resumen.md           : resumen en Markdown (el pipeline lo agrega al resumen del job)
 
-Uso:
-  python3 scripts/reporte_pruebas.py --surefire backend/target/surefire-reports \
-      --plan docs/pruebas/plan-de-pruebas.csv --salida reporte-pruebas
+Uso (sin argumentos):
+  python3 scripts/reporte_pruebas.py
+
+Las rutas son fijas y relativas a la raiz del repositorio: el script no recibe rutas externas.
 """
-import argparse
 import csv
 import glob
 import html
@@ -23,6 +23,11 @@ import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 
 CASO = re.compile(r"^(CP\d+)\s*\|")
+
+RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SUREFIRE = os.path.join(RAIZ, "backend", "target", "surefire-reports")
+PLAN = os.path.join(RAIZ, "docs", "pruebas", "plan-de-pruebas.csv")
+SALIDA = os.path.join(RAIZ, "informe-pruebas")
 
 
 def leer_surefire(carpeta):
@@ -160,18 +165,13 @@ def a_markdown(d):
 
 
 def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--surefire", default="backend/target/surefire-reports")
-    ap.add_argument("--plan", default="docs/pruebas/plan-de-pruebas.csv")
-    ap.add_argument("--salida", default="reporte-pruebas")
-    a = ap.parse_args()
-    os.makedirs(a.salida, exist_ok=True)
-    datos = construir(leer_plan(a.plan), leer_surefire(a.surefire))
-    with open(os.path.join(a.salida, "reporte-pruebas.html"), "w", encoding="utf-8") as f:
+    os.makedirs(SALIDA, exist_ok=True)
+    datos = construir(leer_plan(PLAN), leer_surefire(SUREFIRE))
+    with open(os.path.join(SALIDA, "reporte-pruebas.html"), "w", encoding="utf-8") as f:
         f.write(a_html(datos))
-    with open(os.path.join(a.salida, "reporte-pruebas.json"), "w", encoding="utf-8") as f:
+    with open(os.path.join(SALIDA, "reporte-pruebas.json"), "w", encoding="utf-8") as f:
         json.dump(datos, f, ensure_ascii=False, indent=2)
-    with open(os.path.join(a.salida, "resumen.md"), "w", encoding="utf-8") as f:
+    with open(os.path.join(SALIDA, "resumen.md"), "w", encoding="utf-8") as f:
         f.write(a_markdown(datos))
     t = datos["totales"]
     print(f"Ejecutadas={t['EJECUTADAS']} passed={t['PASSED']} failed={t['FAILED']} errores={t['ERROR']} "

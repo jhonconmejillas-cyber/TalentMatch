@@ -62,10 +62,7 @@ jobs:
       - name: Generar informe de pruebas
         if: always()
         run: |
-          python3 scripts/reporte_pruebas.py \
-            --surefire backend/target/surefire-reports \
-            --plan docs/pruebas/plan-de-pruebas.csv \
-            --salida informe-pruebas
+          python3 scripts/reporte_pruebas.py
           cat informe-pruebas/resumen.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Publicar informe de pruebas
@@ -81,7 +78,7 @@ jobs:
       - name: Analisis de calidad en SonarQube Cloud
         # Se omite (sin fallar) mientras el secreto SONAR_TOKEN no exista
         if: ${{ success() && env.SONAR_TOKEN != '' }}
-        uses: SonarSource/sonarqube-scan-action@v5
+        uses: SonarSource/sonarqube-scan-action@e805d875275f728fac1885b413934be6d7c63f65 # v8.4.1
 
   imagen-docker:
     name: Construir imagen Docker

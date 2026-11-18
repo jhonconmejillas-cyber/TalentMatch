@@ -52,7 +52,7 @@ la sección 2 del plan.
 - **Local:** `cd backend && ./mvnw test -Dtest='*PlanTest'` → 26 pruebas, 0 fallos.
   La suite completa (`./mvnw verify`) da **203 pruebas, 0 fallos**.
 - **Pipeline:** `.github/workflows/ci.yml` corre en cada PR hacia `develop` o `main` y en cada
-  push a `develop`, `main`, `release/**` y `hotfix/**`. Genera el informe (`scripts/reporte_pruebas.py`)
+  push a `develop`, `main`, `release/**` y `hotfix/**`. Genera el informe (`python3 scripts/reporte_pruebas.py`)
   y lo publica siempre como artefacto **informe-pruebas**. Contiene `reporte-pruebas.html`,
   `reporte-pruebas.json`, los XML de Surefire y la cobertura de JaCoCo. El resumen también
   aparece en la pestaña *Summary* de la ejecución.
@@ -115,6 +115,7 @@ Vulnerabilidades (Security), Code Smells (Maintainability) y Duplicaciones.
 | 3 | **Baja cobertura (cobertura no medida):** SonarQube no recibía datos de cobertura. | Coverage | Se agregó **JaCoCo** al `pom.xml`. El pipeline envía el reporte a SonarQube. La cobertura medida es **93.6 % de líneas** y **74.4 % de ramas**. |
 | 4 | **Contraseña escrita en el pipeline** (`yaml:S2068`) en `ci.yml`, para la base de datos temporal de pruebas. | Security · Medium | La base de prueba del CI usa `POSTGRES_HOST_AUTH_METHOD: trust`: solo existe durante el job y ya no hay ninguna contraseña en el repositorio. |
 | 5 | **`[` en lugar de `[[`** en `scripts/setup.sh` (`shell:S7688`). | Reliability · High | Se cambió a `[[ ... ]]`, que evita errores con variables vacías o con espacios. |
+| 7 | **Revisión del PR del taller** (segundo análisis): la acción de Sonar sin fijar a un *commit SHA* (`githubactions:S7637`) y el script del informe aceptaba rutas por línea de comandos (*path traversal*, `pythonsecurity:S8707`). | Security | La acción se fija a su SHA completo (`sonarqube-scan-action@e805d87…`, v8.4.1) y el script usa rutas fijas dentro del repositorio, sin argumentos. |
 | 6 | **Hashes BCrypt en los datos de prueba** (`secrets:S8215`) en `database/seeds/`. | Security · Blocker | Son los usuarios de **prueba** de la demo, no cuentas reales. No se pueden borrar de `V1_1` porque Flyway ya aplicó ese archivo en producción. **Propuesta:** en producción no cargar `database/seeds` (variable `FLYWAY_LOCATIONS` sin la carpeta de seeds) y marcar estos issues en SonarQube como *Accepted* con la justificación "datos de prueba". |
 
 📸 **Captura:** la pestaña *Issues* antes y después de los cambios (el segundo análisis corre al
