@@ -119,7 +119,8 @@ public class RankingService {
         if (vacante.getFechaActivacion() == null) {
             return null;
         }
-        long dias = ChronoUnit.DAYS.between(vacante.getFechaActivacion(), ahora);
+        // Se cuentan dias completos en la zona horaria del sistema (evita errores con cambios de hora)
+        long dias = ChronoUnit.DAYS.between(vacante.getFechaActivacion().atZone(reloj.getZone()), ahora.atZone(reloj.getZone()));
         long ciclos = dias / parametros.cicloEvaluacionDias();
         return ciclos == 0 ? null : vacante.getFechaActivacion().plusDays(ciclos * parametros.cicloEvaluacionDias());
     }
