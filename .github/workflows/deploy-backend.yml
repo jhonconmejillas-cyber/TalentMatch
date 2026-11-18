@@ -1,0 +1,51 @@
+# Despliega el backend en Cloudflare Containers al fusionar en main.
+# Configuracion necesaria: ver deploy/cloudflare/README.md
+name: Backend - Cloudflare Containers
+
+on:
+  push:
+    branches: [main]
+    paths: ['backend/**', 'conf/**', 'database/migrations/**', 'deploy/cloudflare/**', '.github/workflows/deploy-backend.yml']
+  workflow_dispatch:
+
+jobs:
+  desplegar:
+    name: Desplegar backend
+    runs-on: ubuntu-latest
+    # Sin la configuracion de Cloudflare el job se omite (no falla).
+    if: ${{ vars.DESPLEGAR_BACKEND == 'true' }}
+    environment: produccion
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Instalar dependencias del Worker
+        working-directory: deploy/cloudflare
+        run: npm install
+
+      - name: Construir la imagen y desplegar
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: deploy/cloudflare
+          command: deploy
+          # Sube los secretos que el Worker pasa al contenedor
+          secrets: |
+            DB_URL
+            DB_USER
+            DB_PASSWORD
+            JWT_SECRET
+        env:
+          DB_URL: ${{ secrets.DB_URL }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
+      - name: Verificar que la API responde
+        run: |
+          sleep 60
+          curl --fail --retry 5 --retry-delay 20 "${{ vars.API_URL_PRODUCCION }}/health"
