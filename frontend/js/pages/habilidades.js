@@ -23,11 +23,37 @@ async function cargar() {
       </tr>`).join("");
 }
 
+const formWishlist = document.getElementById("form-wishlist");
+const wishlist = document.getElementById("wishlist");
+
+function pintarWishlist(lista) {
+  wishlist.innerHTML = lista.length === 0 ? '<span class="ayuda">Tu wishlist está vacía.</span>'
+    : lista.map((h) => `<span class="etiqueta">${escaparHtml(h.nombre)}
+        <button type="button" class="boton-enlace" data-quitar="${h.id}" aria-label="Quitar ${escaparHtml(h.nombre)}">✕</button>
+      </span>`).join(" ");
+}
+
+formWishlist.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (formWishlist.wishlistId.value) {
+    pintarWishlist(await request("POST", `/empleados/me/wishlist/${formWishlist.wishlistId.value}`));
+  }
+});
+
+wishlist.addEventListener("click", async (e) => {
+  const boton = e.target.closest("button[data-quitar]");
+  if (boton) {
+    pintarWishlist(await request("DELETE", `/empleados/me/wishlist/${boton.dataset.quitar}`));
+  }
+});
+
 async function iniciar() {
   try {
     const catalogo = await request("GET", "/habilidades");
-    formulario.habilidadId.insertAdjacentHTML("beforeend",
-      catalogo.map((h) => `<option value="${h.id}">${escaparHtml(h.nombre)}</option>`).join(""));
+    const opciones = catalogo.map((h) => `<option value="${h.id}">${escaparHtml(h.nombre)}</option>`).join("");
+    formulario.habilidadId.insertAdjacentHTML("beforeend", opciones);
+    formWishlist.wishlistId.insertAdjacentHTML("beforeend", opciones);
+    pintarWishlist(await request("GET", "/empleados/me/wishlist"));
     await cargar();
   } catch (error) {
     mostrarMensaje(mensaje, error.message);
