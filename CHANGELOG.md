@@ -4,6 +4,35 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 ## [Sin publicar]
 
+## [1.0.0] - 2026-11-18
+
+Primera versión del MVP (Sprints 1 a 5).
+
+### Agregado
+- **Base técnica (Sprint 1):** backend Spring Boot 4 (Java 21) con Maven, conexión a PostgreSQL
+  (Supabase) por variables de entorno, migraciones Flyway con datos de prueba, mapeo JPA del
+  diagrama de clases, CI en GitHub Actions, frontend HTML/CSS/JS con login, registro con BCrypt,
+  token de sesión y permisos por rol, perfil profesional y guía de levantamiento local.
+- **Habilidades y vacantes (Sprint 2):** aval de habilidades por el manager actual (HU-007) y
+  publicación, búsqueda y filtro de vacantes.
+- **Postulación y matching (Sprint 3):** cálculo del Puntaje Final con bitácora obligatoria,
+  postulación con las reglas de antigüedad y cupos (HU-008) y vacantes que se abren solas al
+  liberarse un puesto (HU-009).
+- **Ranking y decisión (Sprint 4):** ranking inmutable de candidatos con desglose y costo de
+  rotación (HU-001), competencia por méritos con alertas a RR.HH. (HU-004) y resultado anónimo
+  para el empleado no seleccionado (HU-003).
+- **Alertas, reporte y MVP (Sprint 5):** reporte mensual de patrones de rechazo (HU-002), top 10
+  de empleados (HU-010), tiempos de respuesta medidos (HU-005) y protección de datos con matriz
+  de permisos y bitácora de accesos denegados (HU-006).
+- Revisión automática de PRs con CodeRabbit (`.coderabbit.yaml`).
+
+### Cambiado
+- **Despliegue:** el frontend se publica en Vercel y el backend en Render (plan gratuito, un solo
+  contenedor Docker), con la base de datos en Supabase. Se retira Cloudflare Containers, que
+  requeria un plan de pago. Guia en `deploy/README.md`.
+
+## [0.1.0] - Documentacion inicial
+
 ### Agregado
 - Estructura de carpetas del proyecto: `docs/`, `backend/`, `frontend/`, `database/`, `conf/`, `scripts/`.
 - `docs/reglas-negocio/` — 30 reglas de negocio (RN-01 … RN-30).
@@ -16,9 +45,6 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
   Entidad-Relación (Pata de Cuervo) y UML, como diagramas Mermaid versionados con el código.
 
 ### Cambiado
-- **Despliegue:** el frontend se publica en Vercel y el backend en Render (plan gratuito, un solo
-  contenedor Docker), con la base de datos en Supabase. Se retira Cloudflare Containers, que
-  requeria un plan de pago. Guia en `deploy/README.md`.
 - **Reglas de negocio:** el manager ya no da feedback al rechazar. El empleado rechazado ve el
   porcentaje y las habilidades del seleccionado, sin su nombre (RN-17, RN-18).
 - **Reglas de negocio:** el bloqueo de repostulacion pasa de 3 a **6 meses**, y ademas exige que
