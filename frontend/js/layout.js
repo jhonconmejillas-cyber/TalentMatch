@@ -26,9 +26,11 @@ const MENU_POR_ROL = {
     { texto: "Alertas", pagina: "alertas.html" },
     { texto: "Gestión de vacantes", pagina: "gestion-vacantes.html" },
     { texto: "Reporte de rechazos", pagina: "reporte-rechazos.html" },
+    { texto: "Top 10", pagina: "reporte-top10.html" },
   ],
   LIDER_EJECUTIVO: [
     { texto: "Inicio", pagina: "panel-lider.html" },
+    { texto: "Reporte top 10", pagina: "reporte-top10.html" },
   ],
   ADMIN: [
     { texto: "Usuarios", pagina: "panel-admin.html" },

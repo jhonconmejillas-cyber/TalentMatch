@@ -2,6 +2,7 @@ package co.edu.javeriana.talentmatch.dto;
 
 import co.edu.javeriana.talentmatch.model.EstadoPostulacion;
 import co.edu.javeriana.talentmatch.model.Postulacion;
+import co.edu.javeriana.talentmatch.service.ReporteEjecutivoService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -30,12 +31,19 @@ public final class PostulacionDtos {
             LocalDateTime fechaCreacion,
             LocalDateTime fechaResolucion,
             Integer posicionRanking,
-            Integer totalCandidatos) {
+            Integer totalCandidatos,
+            /** RN-22 en la rotacion confirmada; RN-09 en la cancelada. */
+            String mensaje) {
 
         public static MiPostulacionDto de(Postulacion p) {
+            String mensaje = switch (p.getEstado()) {
+                case ACEPTADA -> ReporteEjecutivoService.MENSAJE_INCENTIVO;
+                case CANCELADA_POR_ROTACION -> "Cancelada por rotación aceptada: aceptaste otra vacante.";
+                default -> null;
+            };
             return new MiPostulacionDto(p.getId(), p.getVacante().getId(), p.getVacante().getTitulo(),
                     p.getVacante().getArea(), p.getEstado(), p.getPuntajeFinal(), p.getFechaCreacion(),
-                    p.getFechaResolucion(), p.getPosicionRanking(), p.getTotalCandidatos());
+                    p.getFechaResolucion(), p.getPosicionRanking(), p.getTotalCandidatos(), mensaje);
         }
     }
 
