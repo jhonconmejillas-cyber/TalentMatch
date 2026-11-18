@@ -29,6 +29,9 @@ public class AsignacionProyecto {
 
     /** El empleado deja el puesto (RN-02). */
     public void liberar(MotivoFinAsignacion motivo, LocalDate fecha) {
+        if (motivo == null || fecha == null) {
+            throw new ReglaNegocioException("Para liberar la asignacion se requiere el motivo y la fecha");
+        }
         if (!estaVigente()) {
             throw new ReglaNegocioException("La asignacion ya fue liberada");
         }
