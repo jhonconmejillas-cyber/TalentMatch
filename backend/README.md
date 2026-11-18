@@ -37,6 +37,7 @@ Requisitos: **JDK 21**. Maven no hace falta instalarlo: el proyecto trae el *wra
 ```bash
 # desde la raiz del repositorio
 cp -n conf/config.example.yaml conf/config.yaml   # parametros locales (RNF-12); no sobrescribe un archivo existente
+cp -n .env.example .env                           # credenciales de la base de datos (RNF-07)
 cd backend
 ./mvnw spring-boot:run        # Windows: mvnw.cmd spring-boot:run
 ```
@@ -48,7 +49,19 @@ curl http://localhost:8080/api/v1/health
 # {"estado":"ok"}
 ```
 
-Pruebas:
+### Base de datos
+
+La API se conecta a PostgreSQL (Supabase) con tres variables de entorno: `DB_URL`, `DB_USER` y
+`DB_PASSWORD`. En local se escriben en el archivo `.env` de la raiz (ignorado por Git); Spring lo
+lee al arrancar. Las credenciales **nunca** se escriben en `application.yml`.
+
+| Variable | Ejemplo |
+|---|---|
+| `DB_URL` | `jdbc:postgresql://aws-0-us-east-1.pooler.supabase.com:5432/postgres?sslmode=require` |
+| `DB_USER` | `postgres.<id-del-proyecto>` |
+| `DB_PASSWORD` | la contraseña de la base de Supabase |
+
+Pruebas (tambien necesitan una base PostgreSQL accesible con esas variables):
 
 ```bash
 ./mvnw test
