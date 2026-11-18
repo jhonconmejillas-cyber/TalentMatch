@@ -47,6 +47,14 @@ alertas:
   # Rechazos del mismo manager a candidatos viables antes de alertar a RRHH (RN-29)
   rechazos_viables_para_alerta: 2
 
+reporte_rechazos:
+  # HU-002: reporte mensual para RR.HH. con los patrones de rechazo por manager.
+  # Meses que abarca cada reporte (ventana movil que termina en el mes reportado)
+  meses_ventana: 3
+  # Se resalta al manager cuya tasa de rechazo a candidatos viables supera el promedio
+  # de la organizacion en mas de estos puntos porcentuales
+  desviacion_resaltado_pct: 20
+
 reporte_ejecutivo:
   # Numero de empleados en el reporte de recomendacion (RN-21)
   top_n: 10

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reporte de rechazos · TalentMatch</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+</head>
+<body>
+  <main class="contenido">
+    <section class="tarjeta">
+      <div class="titulo-seccion">
+        <h1>Reporte mensual de rechazos</h1>
+        <div style="display:flex;gap:8px;align-items:flex-end">
+          <div class="campo" style="margin:0">
+            <label for="periodo" class="ayuda">Mes</label>
+            <input type="month" id="periodo">
+          </div>
+          <button type="button" class="boton" id="descargar">Descargar archivo</button>
+        </div>
+      </div>
+      <p class="ayuda" id="resumen"></p>
+      <p class="ayuda">Los empleados aparecen anonimizados. El reporte describe patrones; no señala culpables.
+        Se genera solo el día 1 de cada mes.</p>
+      <p id="mensaje" class="mensaje" role="alert" hidden></p>
+      <table class="tabla">
+        <thead><tr><th>Manager ID</th><th>Decisiones</th><th>% aceptación</th><th>% rechazo</th>
+          <th>% rechazo a viables</th><th>Desviación</th><th>Alertas RN-29</th><th></th></tr></thead>
+        <tbody id="filas"><tr><td colspan="8" class="vacio">Cargando…</td></tr></tbody>
+      </table>
+    </section>
+    <section class="tarjeta" id="detalle" hidden></section>
+  </main>
+  <script src="../js/ambiente.js"></script>
+  <script type="module" src="../js/pages/reporte-rechazos.js"></script>
+</body>
+</html>
