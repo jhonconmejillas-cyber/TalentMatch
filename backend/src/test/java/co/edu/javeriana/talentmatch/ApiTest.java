@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public abstract class ApiTest {
 
     /** Contrasena de todos los usuarios de database/seeds. */
-    protected static final String CONTRASENA_SEED = "TalentMatch2026";
+    protected static final String CONTRASENA_SEED = "talento";
 
     protected static final String ADMIN = "admin@talentmatch.com";
     protected static final String RRHH = "rrhh@talentmatch.com";

@@ -15,7 +15,7 @@ API aplica en orden las migraciones que falten. No hace falta ejecutar SQL a man
 2. Los datos de prueba (`seeds/V1_1__datos_prueba.sql`) solo se cargan en desarrollo y pruebas.
    En producción se excluyen con la variable de entorno
    `FLYWAY_LOCATIONS=filesystem:database/migrations`.
-3. Todos los usuarios de prueba tienen la contraseña `TalentMatch2026`
+3. Todos los usuarios de prueba tienen la contraseña `talento`
    (p. ej. `carlos.perez@talentmatch.com` es manager, `juan.ramirez@talentmatch.com` es empleado,
    `rrhh@talentmatch.com`, `lider@talentmatch.com`, `admin@talentmatch.com`).
 
