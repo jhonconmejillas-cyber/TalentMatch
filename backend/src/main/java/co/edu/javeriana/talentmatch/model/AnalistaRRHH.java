@@ -1,8 +1,12 @@
 package co.edu.javeriana.talentmatch.model;
 
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
 import java.time.LocalDateTime;
 
 /** Analista de RR.HH. (DC-01): atiende alertas (RN-29, RN-30) y configura umbrales. */
+@Entity
+@DiscriminatorValue("RRHH")
 public class AnalistaRRHH extends Usuario {
 
     protected AnalistaRRHH() {

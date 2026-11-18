@@ -1,11 +1,24 @@
 package co.edu.javeriana.talentmatch.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 /** Proyecto de la empresa al que se asignan empleados y del que nacen vacantes (RN-02). */
+@Entity
+@Table(name = "proyecto")
 public class Proyecto {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
     private String area;
+    @Enumerated(EnumType.STRING)
     private EstadoProyecto estado = EstadoProyecto.ACTIVO;
 
     protected Proyecto() {

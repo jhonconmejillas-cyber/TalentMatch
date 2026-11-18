@@ -1,5 +1,19 @@
 package co.edu.javeriana.talentmatch.model;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.SecondaryTable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,19 +26,39 @@ import java.util.Set;
  * y se postula a vacantes. {@link Manager} hereda de esta clase porque todo manager
  * tambien es un empleado que puede rotar (RN-11).
  */
+@Entity
+@DiscriminatorValue("EMPLEADO")
+// Los datos profesionales estan en la tabla "empleado", unida a "usuario" por el mismo id.
+@SecondaryTable(name = "empleado", pkJoinColumns = @PrimaryKeyJoinColumn(name = "id"))
 public class Empleado extends Usuario {
 
+    @Enumerated(EnumType.STRING)
+    @Column(table = "empleado")
     private Senioridad senioridad;
+    @Column(table = "empleado")
     private int aniosExperiencia;
+    @Column(table = "empleado")
     private String area;
     /** Inicio en el rol actual: determina la antiguedad minima de 6 meses (RN-07). */
+    @Column(table = "empleado")
     private LocalDate fechaInicioRol;
     /** Ingreso a la empresa: criterio "anios en la empresa" del reporte top 10 (RN-21). */
+    @Column(table = "empleado")
     private LocalDate fechaIngresoEmpresa;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manager_id", table = "empleado")
     private Manager managerActual;
 
+    @OneToMany(mappedBy = "empleado", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HabilidadEmpleado> habilidades = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name = "wishlist",
+            joinColumns = @JoinColumn(name = "empleado_id"),
+            inverseJoinColumns = @JoinColumn(name = "habilidad_id"))
     private Set<Habilidad> wishlist = new HashSet<>();
+
+    @OneToMany(mappedBy = "empleado", cascade = CascadeType.ALL)
     private List<AsignacionProyecto> asignaciones = new ArrayList<>();
 
     protected Empleado() {

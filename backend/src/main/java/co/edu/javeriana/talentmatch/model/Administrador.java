@@ -1,6 +1,11 @@
 package co.edu.javeriana.talentmatch.model;
 
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
 /** Administrador del Sistema (DC-01): gestiona cuentas y roles (RF-03). */
+@Entity
+@DiscriminatorValue("ADMIN")
 public class Administrador extends Usuario {
 
     protected Administrador() {

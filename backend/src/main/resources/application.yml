@@ -35,10 +35,20 @@ spring:
     username: ${DB_USER}
     password: ${DB_PASSWORD}
 
+  # ---------------------------------------------------------------
+  # Migraciones: Flyway crea y actualiza las tablas al arrancar, en orden
+  # (V1, V1_1, V2...). Las migraciones estan en database/migrations y los
+  # datos de prueba en database/seeds. En produccion se quita la carpeta de
+  # seeds con la variable de entorno FLYWAY_LOCATIONS.
+  # ---------------------------------------------------------------
+  flyway:
+    locations: ${FLYWAY_LOCATIONS:filesystem:${TALENTMATCH_DB_DIR:../database}/migrations,filesystem:${TALENTMATCH_DB_DIR:../database}/seeds}
+
   jpa:
-    # Las tablas las crean las migraciones (Flyway), no Hibernate: solo se valida.
+    # Las tablas las crea Flyway, no Hibernate. "validate" revisa al arrancar
+    # que las clases de model/ coincidan con las tablas; si no, la app no arranca.
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     # No mantener la sesion de base de datos abierta mientras se arma el JSON.
     open-in-view: false
 
