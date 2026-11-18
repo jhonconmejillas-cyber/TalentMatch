@@ -56,12 +56,17 @@ public class Habilidad {
         if (!(o instanceof Habilidad otra)) {
             return false;
         }
-        return nombre != null && otra.nombre != null && nombre.equalsIgnoreCase(otra.nombre);
+        return nombre != null && otra.nombre != null && normalizado(nombre).equals(normalizado(otra.nombre));
     }
 
     @Override
     public int hashCode() {
-        return nombre == null ? 0 : Objects.hash(nombre.toLowerCase(Locale.ROOT));
+        return nombre == null ? 0 : Objects.hash(normalizado(nombre));
+    }
+
+    /** Misma equivalencia en equals y hashCode: "Docker" = "docker". */
+    private static String normalizado(String valor) {
+        return valor.toUpperCase(Locale.ROOT).toLowerCase(Locale.ROOT);
     }
 
     @Override

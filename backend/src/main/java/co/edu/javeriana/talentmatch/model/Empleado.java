@@ -112,6 +112,12 @@ public class Empleado extends Usuario {
     }
 
     public void agregarAsignacion(AsignacionProyecto asignacion) {
+        if (asignacion.getEmpleado() != this && !mismoUsuarioQue(asignacion.getEmpleado())) {
+            throw new ReglaNegocioException("La asignacion pertenece a otro empleado");
+        }
+        if (asignacion.estaVigente() && asignacionActual().isPresent()) {
+            throw new ReglaNegocioException("El empleado ya tiene una asignacion vigente: liberala antes de asignar otra");
+        }
         asignaciones.add(asignacion);
     }
 

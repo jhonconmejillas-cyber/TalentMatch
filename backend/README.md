@@ -16,7 +16,7 @@ Paquetes de apoyo:
 | Paquete | Contenido |
 |---|---|
 | `model/` | Entidades del [diagrama de clases](../docs/diagramas/DC-TalentMatch-Diagrama-de-Clases.md). |
-| `dto/` | Contratos JSON de entrada y salida. Aqui vive la garantia de que **ninguna respuesta expone la identidad del seleccionado** (RN-18). |
+| `dto/` | Contratos JSON de entrada y salida. Aqui vive la garantia de que **el resultado que recibe un empleado no seleccionado no expone la identidad de quien fue elegido** (RN-18). Las respuestas autorizadas para RR.HH. (por ejemplo, las excepciones de CU_15) si pueden identificarlo. |
 | `security/` | Login, token y permisos por rol (RNF-07). |
 | `config/` | Lectura de `conf/config.yaml` (RNF-12) y CORS. |
 
@@ -36,8 +36,8 @@ Requisitos: **JDK 21**. Maven no hace falta instalarlo: el proyecto trae el *wra
 
 ```bash
 # desde la raiz del repositorio
-cp conf/config.example.yaml conf/config.yaml   # parametros locales (RNF-12)
-cp .env.example .env                           # credenciales de la base de datos (RNF-07)
+cp -n conf/config.example.yaml conf/config.yaml   # parametros locales (RNF-12); no sobrescribe un archivo existente
+cp -n .env.example .env                           # credenciales de la base de datos (RNF-07)
 cd backend
 ./mvnw spring-boot:run        # Windows: mvnw.cmd spring-boot:run
 ```

@@ -77,6 +77,9 @@ public class Vacante {
         if (estado != EstadoVacante.BORRADOR && estado != EstadoVacante.PENDIENTE_ACTIVACION) {
             throw new ReglaNegocioException("Solo se puede activar una vacante en borrador o pendiente de activacion");
         }
+        if (estado == EstadoVacante.PENDIENTE_ACTIVACION && !debeActivarse(ahora)) {
+            throw new ReglaNegocioException("La vacante aun no cumple su ventana de activacion (RN-03)");
+        }
         this.estado = EstadoVacante.ACTIVA;
         this.fechaActivacion = ahora;
     }
@@ -85,6 +88,9 @@ public class Vacante {
     public void programarActivacion(LocalDateTime fecha) {
         if (estado != EstadoVacante.BORRADOR) {
             throw new ReglaNegocioException("Solo se puede programar la activacion de una vacante en borrador");
+        }
+        if (fecha == null) {
+            throw new ReglaNegocioException("Indica la fecha en que se activara la vacante");
         }
         this.estado = EstadoVacante.PENDIENTE_ACTIVACION;
         this.fechaActivacion = fecha;
@@ -128,7 +134,8 @@ public class Vacante {
         if (proyecto == null || otra.proyecto == null) {
             return proyecto == otra.proyecto && area != null && area.equalsIgnoreCase(otra.area);
         }
-        return proyecto.getId() != null && proyecto.getId().equals(otra.proyecto.getId());
+        return proyecto == otra.proyecto
+                || (proyecto.getId() != null && proyecto.getId().equals(otra.proyecto.getId()));
     }
 
     /** Criticas + deseables, sin repetir. */
