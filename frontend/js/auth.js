@@ -16,6 +16,14 @@ const PANEL_POR_ROL = {
 export function guardarSesion(token, usuario) {
   sessionStorage.setItem(CLAVE_TOKEN, token);
   sessionStorage.setItem(CLAVE_USUARIO, JSON.stringify(usuario));
+  registrarActividad();
+}
+
+/** Reemplaza el token por el renovado que devuelve la API (HU-006). */
+export function renovarToken(token) {
+  if (sessionStorage.getItem(CLAVE_TOKEN)) {
+    sessionStorage.setItem(CLAVE_TOKEN, token);
+  }
 }
 
 export function obtenerToken() {
@@ -30,6 +38,34 @@ export function usuarioActual() {
 export function cerrarSesion() {
   sessionStorage.removeItem(CLAVE_TOKEN);
   sessionStorage.removeItem(CLAVE_USUARIO);
+  sessionStorage.removeItem(CLAVE_ACTIVIDAD);
+}
+
+// ---------------------------------------------------------------------
+// Cierre por inactividad (HU-006, escenario 3). El backend es quien lo garantiza
+// (el token vence a los 30 min sin peticiones); aqui solo se evita mostrar datos
+// de una sesion vencida y se avisa al usuario.
+// ---------------------------------------------------------------------
+const CLAVE_ACTIVIDAD = "talentmatch.ultimaActividad";
+const MINUTOS_INACTIVIDAD = 30; // = seguridad.minutos_inactividad_sesion en conf/config.yaml
+
+function registrarActividad() {
+  sessionStorage.setItem(CLAVE_ACTIVIDAD, String(Date.now()));
+}
+
+function sesionInactiva() {
+  const ultima = Number(sessionStorage.getItem(CLAVE_ACTIVIDAD) || Date.now());
+  return Date.now() - ultima > MINUTOS_INACTIVIDAD * 60 * 1000;
+}
+
+function vigilarInactividad() {
+  ["click", "keydown"].forEach((e) => document.addEventListener(e, registrarActividad, { passive: true }));
+  setInterval(() => {
+    if (sesionInactiva()) {
+      cerrarSesion();
+      window.location.href = "../index.html?expirada=1";
+    }
+  }, 30 * 1000);
 }
 
 /** Ruta del panel del rol, relativa a la pagina actual. */
@@ -53,6 +89,13 @@ export function requerirSesion(rolesPermitidos) {
     window.location.href = "../index.html";
     return null;
   }
+  if (sesionInactiva()) {
+    cerrarSesion();
+    window.location.href = "../index.html?expirada=1";
+    return null;
+  }
+  registrarActividad();
+  vigilarInactividad();
   if (rolesPermitidos && !rolesPermitidos.includes(usuario.rol)) {
     redirigirAlPanel(usuario);
     return null;

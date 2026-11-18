@@ -6,7 +6,10 @@ import co.edu.javeriana.talentmatch.dto.GestionDtos.NotificacionDto;
 import co.edu.javeriana.talentmatch.dto.VacanteDtos.VacanteDto;
 import co.edu.javeriana.talentmatch.model.EstadoVacante;
 import co.edu.javeriana.talentmatch.security.Sesion;
+import co.edu.javeriana.talentmatch.security.RegistroAccesosDenegados;
 import co.edu.javeriana.talentmatch.service.AsignacionService;
+import co.edu.javeriana.talentmatch.service.HistorialService;
+import co.edu.javeriana.talentmatch.service.HistorialService.HistorialDto;
 import co.edu.javeriana.talentmatch.service.NotificacionService;
 import co.edu.javeriana.talentmatch.service.VacanteService;
 import jakarta.validation.Valid;
@@ -33,12 +36,31 @@ public class GestionController {
     private final AsignacionService asignaciones;
     private final VacanteService vacantes;
     private final NotificacionService notificaciones;
+    private final HistorialService historiales;
+    private final RegistroAccesosDenegados accesosDenegados;
 
     public GestionController(AsignacionService asignaciones, VacanteService vacantes,
-                             NotificacionService notificaciones) {
+                             NotificacionService notificaciones, HistorialService historiales,
+                             RegistroAccesosDenegados accesosDenegados) {
         this.asignaciones = asignaciones;
         this.vacantes = vacantes;
         this.notificaciones = notificaciones;
+        this.historiales = historiales;
+        this.accesosDenegados = accesosDenegados;
+    }
+
+    /** RF-30: historial de proyectos y rotaciones, solo con relacion autorizada (HU-006). */
+    @GetMapping("/empleados/{id}/historial")
+    @PreAuthorize("hasAnyRole('MANAGER', 'RRHH')")
+    public HistorialDto historial(@AuthenticationPrincipal Jwt token, @PathVariable Long id) {
+        return historiales.historial(Sesion.idUsuario(token), id);
+    }
+
+    /** HU-006: ultimos accesos denegados registrados en la bitacora. */
+    @GetMapping("/gestion/accesos-denegados")
+    @PreAuthorize("hasRole('RRHH')")
+    public List<java.util.Map<String, Object>> accesosDenegados() {
+        return accesosDenegados.ultimos(100);
     }
 
     @GetMapping("/asignaciones")
