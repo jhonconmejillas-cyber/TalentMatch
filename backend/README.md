@@ -36,7 +36,7 @@ Requisitos: **JDK 21**. Maven no hace falta instalarlo: el proyecto trae el *wra
 
 ```bash
 # desde la raiz del repositorio
-cp conf/config.example.yaml conf/config.yaml   # parametros locales (RNF-12)
+cp -n conf/config.example.yaml conf/config.yaml   # parametros locales (RNF-12); no sobrescribe un archivo existente
 cd backend
 ./mvnw spring-boot:run        # Windows: mvnw.cmd spring-boot:run
 ```
