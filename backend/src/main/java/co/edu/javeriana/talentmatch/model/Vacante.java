@@ -56,6 +56,9 @@ public class Vacante {
         if (estado != EstadoVacante.BORRADOR) {
             throw new ReglaNegocioException("Solo se puede programar la activacion de una vacante en borrador");
         }
+        if (fecha == null) {
+            throw new ReglaNegocioException("Indica la fecha en que se activara la vacante");
+        }
         this.estado = EstadoVacante.PENDIENTE_ACTIVACION;
         this.fechaActivacion = fecha;
     }
