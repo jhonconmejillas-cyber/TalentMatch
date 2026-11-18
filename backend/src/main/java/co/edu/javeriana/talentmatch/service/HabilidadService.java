@@ -29,14 +29,17 @@ public class HabilidadService {
     private final HabilidadEmpleadoRepository habilidadesEmpleado;
     private final EmpleadoRepository empleados;
     private final ManagerRepository managers;
+    private final RecalculoService recalculo;
     private final Clock reloj;
 
     public HabilidadService(HabilidadRepository catalogo, HabilidadEmpleadoRepository habilidadesEmpleado,
-                            EmpleadoRepository empleados, ManagerRepository managers, Clock reloj) {
+                            EmpleadoRepository empleados, ManagerRepository managers, RecalculoService recalculo,
+                            Clock reloj) {
         this.catalogo = catalogo;
         this.habilidadesEmpleado = habilidadesEmpleado;
         this.empleados = empleados;
         this.managers = managers;
+        this.recalculo = recalculo;
         this.reloj = reloj;
     }
 
@@ -95,6 +98,11 @@ public class HabilidadService {
             case RECHAZADO -> manager.rechazarHabilidad(habilidad, ahora);
             default -> throw new DatosInvalidosException("estado", "El estado debe ser AVALADO o RECHAZADO.");
         }
-        return HabilidadEmpleadoDto.de(habilidadesEmpleado.save(habilidad));
+        HabilidadEmpleado guardada = habilidadesEmpleado.save(habilidad);
+        if (nuevoEstado == EstadoHabilidad.AVALADO) {
+            // HU-005: cambio en las habilidades avaladas -> se actualizan sus postulaciones activas
+            recalculo.recalcularPostulacionesActivas(habilidad.getEmpleado());
+        }
+        return HabilidadEmpleadoDto.de(guardada);
     }
 }

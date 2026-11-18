@@ -23,6 +23,41 @@ const MENSAJES_POR_ESTADO = {
   500: "Ocurrió un error en el servidor. Inténtalo mas tarde.",
 };
 
+// HU-005 (escenario 3): si una respuesta tarda mas de 300 ms se muestra un indicador
+// de carga para que el usuario no piense que la aplicacion se congelo.
+const MS_INDICADOR_CARGA = 300;
+let pendientes = 0;
+let temporizadorCarga = null;
+
+function inicioCarga() {
+  pendientes += 1;
+  if (pendientes === 1) {
+    temporizadorCarga = setTimeout(() => {
+      let barra = document.getElementById("indicador-carga");
+      if (!barra) {
+        barra = document.createElement("div");
+        barra.id = "indicador-carga";
+        barra.className = "indicador-carga";
+        barra.setAttribute("role", "progressbar");
+        barra.setAttribute("aria-label", "Cargando");
+        document.body.appendChild(barra);
+      }
+      barra.hidden = false;
+    }, MS_INDICADOR_CARGA);
+  }
+}
+
+function finCarga() {
+  pendientes = Math.max(0, pendientes - 1);
+  if (pendientes === 0) {
+    clearTimeout(temporizadorCarga);
+    const barra = document.getElementById("indicador-carga");
+    if (barra) {
+      barra.hidden = true;
+    }
+  }
+}
+
 /**
  * Llama a la API.
  * @param {string} metodo  GET, POST, PUT, PATCH o DELETE
@@ -43,13 +78,17 @@ export async function request(metodo, ruta, datos) {
   }
 
   let respuesta;
+  let texto;
+  inicioCarga();
   try {
     respuesta = await fetch(`${API_URL}${ruta}`, opciones);
+    texto = await respuesta.text();
   } catch (e) {
     throw new ErrorApi(MENSAJES_POR_ESTADO[0], 0);
+  } finally {
+    finCarga();
   }
 
-  const texto = await respuesta.text();
   const cuerpo = texto ? intentarJson(texto) : null;
 
   if (!respuesta.ok) {

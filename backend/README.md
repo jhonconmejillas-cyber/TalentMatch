@@ -85,3 +85,21 @@ La imagen no carga los datos de prueba (`FLYWAY_LOCATIONS` solo apunta a las mig
 un ambiente de pruebas se pueden incluir con
 `-e FLYWAY_LOCATIONS=filesystem:/app/database/migrations,filesystem:/app/database/seeds`.
 El CI construye la imagen en cada PR (job *Construir imagen Docker*).
+
+## Rendimiento (HU-005, RNF-04)
+
+| Meta (en `conf/config.yaml` → `rendimiento`) | Cómo se verifica |
+|---|---|
+| Ranking de 20 candidatos < 2 s | `CargaConcurrenteTest.escenario1` y `RankingControllerTest` |
+| 50 usuarios concurrentes, p90 < 3 s | `CargaConcurrenteTest.escenario2` (servidor real por HTTP) |
+| Indicador de carga si la respuesta tarda > 300 ms | `frontend/js/api.js` |
+
+- El Puntaje Final se guarda al postularse; el ranking lo **lee** (no recalcula). Solo se recalcula
+  cuando cambian las habilidades avaladas o la senioridad del empleado (`RecalculoService`).
+- Índices de la migración `V4__indices_rendimiento.sql`.
+- Cada petición deja su tiempo en el log (`logs/talentmatch.log`, ruta configurable con `LOG_FILE`):
+
+```bash
+grep tiempo-respuesta logs/talentmatch.log          # todos los tiempos
+grep "supera la meta" logs/talentmatch.log          # solo las respuestas lentas
+```
