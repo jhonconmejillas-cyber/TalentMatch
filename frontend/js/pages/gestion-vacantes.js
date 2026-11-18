@@ -23,7 +23,7 @@ async function cargarVacantes() {
   tablaVacantes.innerHTML = lista.length === 0
     ? '<tr><td colspan="5" class="vacio">No hay vacantes en este estado.</td></tr>'
     : lista.map((v) => `<tr>
-        <td>${escaparHtml(v.titulo)}</td>
+        <td><a href="ranking.html?id=${v.id}">${escaparHtml(v.titulo)}</a></td>
         <td>${escaparHtml(v.area)}</td>
         <td>${TEXTO_ORIGEN[v.origen]}</td>
         <td><span class="etiqueta etiqueta-${v.estado.toLowerCase()}">${TEXTO_ESTADO_VACANTE[v.estado]}</span></td>

@@ -379,3 +379,26 @@ a {
 [hidden] {
   display: none !important;
 }
+
+/* ---------- Ranking (HU-001) ---------- */
+.ranking-layout {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.tabla-ranking tbody tr {
+  cursor: pointer;
+  user-select: none; /* RN-14: nada que arrastrar ni reordenar */
+}
+
+.tabla-ranking tbody tr:hover {
+  background: var(--color-fondo);
+}
+
+@media (max-width: 900px) {
+  .ranking-layout {
+    grid-template-columns: 1fr;
+  }
+}
