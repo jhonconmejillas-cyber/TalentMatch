@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Iniciar sesión · TalentMatch</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body class="pagina-acceso">
+  <main class="tarjeta-acceso">
+    <h1 class="marca">TalentMatch</h1>
+    <p class="subtitulo">Movilidad interna para ingenieros</p>
+
+    <form id="form-login" novalidate>
+      <div class="campo">
+        <label for="correo">Correo corporativo</label>
+        <input id="correo" name="correo" type="email" autocomplete="username" required
+               placeholder="nombre.apellido@empresa.com">
+      </div>
+      <div class="campo">
+        <label for="contrasena">Contraseña</label>
+        <input id="contrasena" name="contrasena" type="password" autocomplete="current-password" required>
+      </div>
+
+      <p id="mensaje" class="mensaje" role="alert" hidden></p>
+
+      <button type="submit" class="boton boton-primario boton-bloque">Iniciar sesión</button>
+    </form>
+
+    <p class="pie-acceso">¿No tienes cuenta? <a href="pages/registro.html">Regístrate</a></p>
+  </main>
+
+  <script type="module" src="js/pages/login.js"></script>
+</body>
+</html>
