@@ -9,7 +9,7 @@ una dinámica inspirada en Tinder pero basada en **reglas lógicas simples y exp
 |---|---|
 | **Curso** | Fundamentos de Ingeniería de Software (FIS 2610) — Pontificia Universidad Javeriana |
 | **Versión** | MVP |
-| **Estado** | En desarrollo — fase de especificación |
+| **Estado** | En desarrollo |
 | **Wiki** | https://github.com/jhonconmejillas-cyber/TalentMatch/wiki |
 
 ---
@@ -89,21 +89,61 @@ TalentMatch/
 
 ---
 
-## 🚀 Instalación
+## 🚀 Levantar el proyecto en local
+
+### Requisitos
+
+| Herramienta | Versión | Para qué |
+|---|---|---|
+| **JDK** | 21 | Compilar y ejecutar el backend. Maven **no** hace falta instalarlo: el proyecto trae `mvnw`. |
+| **PostgreSQL** | 14+ (o un proyecto de Supabase) | Base de datos. |
+| **Python 3** (o la extensión *Live Server* de VS Code) | cualquiera | Servir el frontend estático. |
+| Git Bash (en Windows) | — | Ejecutar los scripts de `scripts/`. |
+
+### Pasos
 
 ```bash
 git clone https://github.com/jhonconmejillas-cyber/TalentMatch.git
 cd TalentMatch
-cp conf/config.example.yaml conf/config.yaml
-./scripts/setup.sh
+./scripts/setup.sh            # crea conf/config.yaml y .env, descarga dependencias
 ```
+
+1. **Base de datos.** Completa `.env` con la conexión:
+   - Supabase: *Project Settings → Database → Connection string → JDBC* (session pooler, agrega `?sslmode=require`).
+   - PostgreSQL local: crea una base vacía (`createdb talentmatch`) y usa `DB_URL=jdbc:postgresql://localhost:5432/talentmatch`.
+2. **Backend** (aplica las migraciones y los datos de prueba al arrancar):
+   ```bash
+   cd backend && ./mvnw spring-boot:run      # Windows: mvnw.cmd spring-boot:run
+   curl http://localhost:8080/api/v1/health  # {"estado":"ok"}
+   ```
+3. **Frontend**, en otra terminal:
+   ```bash
+   cd frontend && python -m http.server 5500
+   ```
+   Abre http://localhost:5500 e inicia sesión con un usuario de prueba (contraseña `TalentMatch2026`):
+
+   | Rol | Correo |
+   |---|---|
+   | Empleado | `juan.ramirez@talentmatch.com` |
+   | Manager | `carlos.perez@talentmatch.com` |
+   | RR.HH. | `rrhh@talentmatch.com` |
+   | Líder Ejecutivo | `lider@talentmatch.com` |
+   | Administrador | `admin@talentmatch.com` |
+
+### Pruebas
 
 ```bash
-./scripts/test.sh
+./scripts/test.sh   # JUnit (unitarias + integración contra la base de .env)
 ```
 
-> Los parámetros del algoritmo (pesos 0.4/0.6, umbral 65 %, ciclo de 3 días, plazos de 6 meses
-> y 24 horas) se editan en `conf/config.yaml` **sin recompilar** (RNF-12).
+> Los parámetros del algoritmo (pesos 0.7/0.3, umbral 65 %, ciclo de 3 días, plazos de 6 meses
+> y 24 horas) se editan en `conf/config.yaml` y se aplican al reiniciar la API, **sin recompilar** (RNF-12).
+
+### Más información
+
+- Arquitectura de 4 capas, API y despliegue: [Technical Architecture](https://github.com/jhonconmejillas-cyber/TalentMatch/wiki/Technical-Architecture) ([copia local](docs/wiki/Technical-Architecture.md))
+- Ramas, PRs y commits: [Development Workflow](https://github.com/jhonconmejillas-cyber/TalentMatch/wiki/Development-Workflow) y [CONTRIBUTING.md](CONTRIBUTING.md)
+- Detalle de cada parte: [backend/](backend/README.md) · [frontend/](frontend/README.md) · [database/](database/README.md)
 
 ---
 
