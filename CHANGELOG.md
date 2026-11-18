@@ -16,6 +16,9 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
   Entidad-Relación (Pata de Cuervo) y UML, como diagramas Mermaid versionados con el código.
 
 ### Cambiado
+- **Despliegue:** el frontend se publica en Vercel y el backend en Render (plan gratuito, un solo
+  contenedor Docker), con la base de datos en Supabase. Se retira Cloudflare Containers, que
+  requeria un plan de pago. Guia en `deploy/README.md`.
 - **Reglas de negocio:** el manager ya no da feedback al rechazar. El empleado rechazado ve el
   porcentaje y las habilidades del seleccionado, sin su nombre (RN-17, RN-18).
 - **Reglas de negocio:** el bloqueo de repostulacion pasa de 3 a **6 meses**, y ademas exige que

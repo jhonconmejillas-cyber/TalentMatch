@@ -13,7 +13,7 @@ responsabilidad y **solo se comunica con la capa inmediatamente inferior**.
 | Base de datos | PostgreSQL alojado en Supabase |
 | Autenticación | Spring Security + BCrypt + token (RNF-07) |
 | Pruebas | JUnit 5 |
-| Despliegue | Cloudflare |
+| Despliegue | Vercel (frontend), Render (backend), Supabase (BD) |
 
 ---
 
@@ -152,19 +152,19 @@ y ciclo de evaluación de 3 días (RN-12).
 
 ---
 
-## Despliegue en Cloudflare
+## Despliegue: Vercel + Render + Supabase
 
 ```
             Usuario (Chrome / Edge)
                      |
                      v
 +--------------------------------------+
-| Cloudflare Pages                     |   Frontend estático (HTML/CSS/JS)
+| Vercel                               |   Frontend estático (HTML/CSS/JS)
 +------------------+-------------------+
                    | HTTPS /api/v1
                    v
 +--------------------------------------+
-| Cloudflare Containers                |   Backend Spring Boot (imagen Docker)
+| Render                               |   Backend Spring Boot (un contenedor Docker)
 +------------------+-------------------+
                    | JDBC (TLS)
                    v
@@ -173,11 +173,14 @@ y ciclo de evaluación de 3 días (RN-12).
 +--------------------------------------+
 ```
 
-| Componente | Servicio de Cloudflare | Notas |
+| Componente | Servicio | Notas |
 |---|---|---|
-| Frontend | **Cloudflare Pages** | Plan gratuito. Se publica automáticamente desde GitHub. |
-| Backend | **Cloudflare Containers** | Ejecuta la imagen Docker de Spring Boot. Requiere el plan **Workers Paid**. |
-| Base de datos | Supabase (fuera de Cloudflare) | El backend se conecta con la cadena del *connection pooler* de Supabase. |
+| Frontend | **Vercel** (plan Hobby) | Gratis. Se publica solo desde GitHub (`frontend/vercel.json`). |
+| Backend | **Render** (plan Free) | Ejecuta la imagen de `backend/Dockerfile` (`render.yaml`). Se duerme tras 15 min sin uso. |
+| Base de datos | **Supabase** (plan Free) | El backend usa la cadena del *Session pooler* (IPv4). |
+
+El backend es un **monolito**: un solo servicio Spring Boot dentro de un solo contenedor.
+La guía paso a paso está en `deploy/README.md`.
 
 ### Ambientes
 
@@ -193,4 +196,4 @@ repositorio**. Se guardan en:
 
 - **Local:** archivo `.env` (incluido en `.gitignore`).
 - **CI:** GitHub → Settings → Secrets and variables → Actions.
-- **Producción:** variables secretas del proyecto en Cloudflare.
+- **Producción:** variables de entorno del servicio en Render (backend) y de Vercel (frontend).

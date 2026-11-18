@@ -14,7 +14,7 @@ TalentMatch es una plataforma web que conecta a ingenieros con proyectos y vacan
 - **[User Roles & Flows](User-Roles-&-Flows)** — Cómo interactúan empleados, managers y RR.HH.
 - **[Product Features](Product-Features)** — Funcionalidades principales
 - **[Matching Algorithm](Matching-Algorithm)** — Cómo funciona el match sin IA
-- **[Technical Architecture](Technical-Architecture)** — Arquitectura de 4 capas, API REST y despliegue en Cloudflare
+- **[Technical Architecture](Technical-Architecture)** — Arquitectura de 4 capas, API REST y despliegue en Vercel, Render y Supabase
 - **[Development Workflow](Development-Workflow)** — Sprints, Gitflow, commits convencionales y tablero kanban
 - **[Database Model](Database-Model)** — Tablas y relaciones
 - **[Installation & Setup](Installation-&-Setup)** — Cómo instalar localmente
