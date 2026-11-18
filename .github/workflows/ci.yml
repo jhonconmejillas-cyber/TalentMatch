@@ -1,19 +1,25 @@
-# Integracion continua: compila el backend y ejecuta las pruebas JUnit
-# en cada Pull Request hacia develop o main. Si falla, el PR no se puede fusionar.
+# Integracion continua (taller de pruebas, punto 5):
+#  - compila el backend y ejecuta las pruebas JUnit siguiendo el gitflow:
+#      PR hacia develop o main, y push a develop, main, release/** y hotfix/**
+#  - genera el informe de pruebas (HTML + JSON) alineado con docs/pruebas/plan-de-pruebas.csv
+#    y lo publica SIEMPRE como artefacto "informe-pruebas" (pasen o fallen las pruebas)
+#  - mide la cobertura con JaCoCo y envia el analisis a SonarQube Cloud
+# Si las pruebas fallan, el PR no se puede fusionar.
 name: CI
 
 on:
   pull_request:
     branches: [develop, main]
   push:
-    branches: [develop, main]
+    branches: [develop, main, 'release/**', 'hotfix/**']
 
 jobs:
   backend:
     name: Compilar y probar backend
     runs-on: ubuntu-latest
 
-    # Base PostgreSQL de servicio para las pruebas de integracion.
+    # Base PostgreSQL temporal para las pruebas de integracion. Solo existe durante el job
+    # y acepta conexiones locales sin contrasena (no hay credenciales en el repositorio).
     # Flyway le aplica las migraciones y los datos de prueba al arrancar.
     services:
       postgres:
@@ -21,7 +27,7 @@ jobs:
         env:
           POSTGRES_DB: talentmatch_test
           POSTGRES_USER: talentmatch
-          POSTGRES_PASSWORD: talentmatch
+          POSTGRES_HOST_AUTH_METHOD: trust
         ports:
           - 5432:5432
         options: >-
@@ -33,10 +39,14 @@ jobs:
     env:
       DB_URL: jdbc:postgresql://localhost:5432/talentmatch_test
       DB_USER: talentmatch
-      DB_PASSWORD: talentmatch
+      DB_PASSWORD: ''
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Historial completo: SonarQube lo usa para saber que codigo es nuevo
+          fetch-depth: 0
 
       - name: Instalar Java 21
         uses: actions/setup-java@v4
@@ -45,16 +55,33 @@ jobs:
           java-version: '21'
           cache: maven
 
-      - name: Compilar y ejecutar pruebas (mvn verify)
+      - name: Compilar, ejecutar pruebas y medir cobertura (mvn verify)
         working-directory: backend
         run: ./mvnw -B verify
 
-      - name: Publicar reporte de pruebas si falla
-        if: failure()
+      - name: Generar informe de pruebas
+        if: always()
+        run: |
+          python3 scripts/reporte_pruebas.py \
+            --surefire backend/target/surefire-reports \
+            --plan docs/pruebas/plan-de-pruebas.csv \
+            --salida informe-pruebas
+          cat informe-pruebas/resumen.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publicar informe de pruebas
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: reportes-surefire
-          path: backend/target/surefire-reports/
+          name: informe-pruebas
+          path: |
+            informe-pruebas/
+            backend/target/surefire-reports/
+            backend/target/site/jacoco/
+
+      - name: Analisis de calidad en SonarQube Cloud
+        # Se omite (sin fallar) mientras el secreto SONAR_TOKEN no exista
+        if: ${{ success() && env.SONAR_TOKEN != '' }}
+        uses: SonarSource/sonarqube-scan-action@v5
 
   imagen-docker:
     name: Construir imagen Docker
