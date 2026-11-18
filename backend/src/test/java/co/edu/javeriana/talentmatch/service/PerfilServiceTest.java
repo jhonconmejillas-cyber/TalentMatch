@@ -36,7 +36,7 @@ class PerfilServiceTest {
         empleados = mock(EmpleadoRepository.class);
         proyectos = mock(ProyectoRepository.class);
         Clock reloj = Clock.fixed(HOY.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault());
-        servicio = new PerfilService(empleados, proyectos, reloj);
+        servicio = new PerfilService(empleados, proyectos, mock(RecalculoService.class), reloj);
 
         empleado = new Empleado("Ana", "ana@talentmatch.com", "hash");
         empleado.setId(1L);

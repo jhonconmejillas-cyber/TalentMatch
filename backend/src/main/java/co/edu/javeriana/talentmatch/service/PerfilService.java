@@ -22,11 +22,14 @@ public class PerfilService {
 
     private final EmpleadoRepository empleados;
     private final ProyectoRepository proyectos;
+    private final RecalculoService recalculo;
     private final Clock reloj;
 
-    public PerfilService(EmpleadoRepository empleados, ProyectoRepository proyectos, Clock reloj) {
+    public PerfilService(EmpleadoRepository empleados, ProyectoRepository proyectos, RecalculoService recalculo,
+                         Clock reloj) {
         this.empleados = empleados;
         this.proyectos = proyectos;
+        this.recalculo = recalculo;
         this.reloj = reloj;
     }
 
@@ -39,6 +42,7 @@ public class PerfilService {
     public PerfilDto actualizar(Long idEmpleado, ActualizarPerfilRequest datos) {
         Empleado empleado = obtener(idEmpleado);
         LocalDate hoy = LocalDate.now(reloj);
+        boolean cambiaSenioridad = empleado.getSenioridad() != datos.senioridad();
 
         empleado.setSenioridad(datos.senioridad());
         empleado.setAniosExperiencia(datos.aniosExperiencia());
@@ -56,7 +60,12 @@ public class PerfilService {
         }
 
         actualizarProyecto(empleado, datos, hoy);
-        return aDto(empleados.save(empleado));
+        Empleado guardado = empleados.save(empleado);
+        if (cambiaSenioridad) {
+            // HU-005: la senioridad entra al calculo -> se actualizan sus postulaciones activas
+            recalculo.recalcularPostulacionesActivas(guardado);
+        }
+        return aDto(guardado);
     }
 
     @Transactional(readOnly = true)

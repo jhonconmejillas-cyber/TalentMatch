@@ -53,6 +53,15 @@ spring:
     open-in-view: false
 
 # ---------------------------------------------------------------
+# Log de la aplicacion. Los tiempos de respuesta de la API (HU-005) quedan
+# con la etiqueta "tiempo-respuesta" y se pueden consultar con:
+#   grep tiempo-respuesta logs/talentmatch.log
+# ---------------------------------------------------------------
+logging:
+  file:
+    name: ${LOG_FILE:logs/talentmatch.log}
+
+# ---------------------------------------------------------------
 # CORS: paginas web (origenes) que pueden llamar a esta API.
 #   5500  -> Live Server de VS Code
 #   63342 -> servidor interno de IntelliJ al abrir un .html
