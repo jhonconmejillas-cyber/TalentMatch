@@ -8,10 +8,13 @@ const MENU_POR_ROL = {
   EMPLEADO: [
     { texto: "Inicio", pagina: "panel-empleado.html" },
     { texto: "Mi perfil", pagina: "perfil.html" },
+    { texto: "Mis habilidades", pagina: "habilidades.html" },
   ],
   MANAGER: [
     { texto: "Inicio", pagina: "panel-manager.html" },
+    { texto: "Avalar habilidades", pagina: "avalar.html" },
     { texto: "Mi perfil", pagina: "perfil.html" },
+    { texto: "Mis habilidades", pagina: "habilidades.html" },
   ],
   RRHH: [
     { texto: "Inicio", pagina: "panel-rrhh.html" },

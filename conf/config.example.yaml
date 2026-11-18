@@ -10,6 +10,12 @@ algoritmo:
   peso_habilidades: 0.7
   peso_senioridad: 0.3
 
+  # Ajuste por senioridad (RN-23). Si el empleado SUPERA el nivel de la vacante:
+  ajuste_senioridad_superior: 0.9
+  # Si esta por debajo, segun cuantos niveles: [mismo nivel, 1 abajo, 2 abajo, 3 o mas abajo]
+  # Niveles: JUNIOR < SEMI_SENIOR < SENIOR < LIDER
+  ajuste_senioridad_inferior: [1.0, 0.6, 0.3, 0.0]
+
   # Umbral de viabilidad: por debajo de este valor el candidato no
   # aparece en el ranking del manager, pero SI puede postularse (RN-27, RN-28)
   umbral_viabilidad: 65
