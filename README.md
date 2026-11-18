@@ -64,20 +64,21 @@ TalentMatch/
 │   ├── casos-uso/           CU_01 ... CU_25
 │   ├── diagramas/           Diagramas de casos de uso, clases y despliegue
 │   └── wiki/                Copia versionada de las páginas del wiki
-├── backend/                 API y lógica del algoritmo de matching
-│   ├── src/
-│   │   ├── api/routes/      Endpoints HTTP
-│   │   ├── core/            Configuración, seguridad, sesiones
-│   │   ├── models/          Entidades de dominio
-│   │   ├── schemas/         Contratos de entrada y salida
-│   │   ├── services/        Reglas de negocio (matching, rotación, alertas)
-│   │   └── repositories/    Acceso a datos
-│   └── tests/               Pruebas unitarias e integración
-├── frontend/                Aplicación web
-│   ├── public/
-│   ├── src/
-│   │   ├── assets/ components/ pages/ services/ hooks/ styles/
-│   └── tests/
+├── backend/                 API REST en Java 21 + Spring Boot (Maven)
+│   ├── pom.xml
+│   └── src/
+│       ├── main/java/co/edu/javeriana/talentmatch/
+│       │   ├── controller/  Endpoints HTTP (capa 2)
+│       │   ├── service/     Reglas de negocio (capa 3)
+│       │   ├── repository/  Interfaces JPA (capa 4)
+│       │   ├── model/       Entidades del diagrama de clases
+│       │   ├── dto/         Contratos JSON (anonimato RN-18)
+│       │   ├── security/    Login, token y permisos por rol
+│       │   └── config/      Lectura de conf/config.yaml
+│       └── test/java/       Pruebas JUnit
+├── frontend/                HTML + CSS + JavaScript sin framework
+│   ├── index.html           Login
+│   ├── pages/  js/  css/
 ├── database/                Esquema, migraciones y datos de prueba
 │   ├── migrations/
 │   └── seeds/
