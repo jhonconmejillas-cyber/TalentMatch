@@ -82,7 +82,12 @@ seguridad:
     - talentmatch.com
 
 rendimiento:
-  # RNF-04
+  # RNF-04 / HU-005: metas de tiempo de respuesta
+  # El 90 % de las paginas y consultas responde en menos de este tiempo
   max_segundos_respuesta: 3
+  # El ranking de una vacante con hasta 20 candidatos carga en menos de este tiempo
   max_segundos_ranking: 2
+  # RNF-01: usuarios concurrentes que debe soportar el MVP
   max_usuarios_concurrentes: 50
+  # La interfaz muestra un indicador de carga si una respuesta tarda mas de esto
+  milisegundos_indicador_carga: 300
