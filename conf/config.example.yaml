@@ -37,6 +37,12 @@ plazos:
   # PEN-01 confirmado con la empresa: 10 dias
   umbral_vacante_sin_match_dias: 10
 
+ranking:
+  # Indicador de color del ranking del manager (HU-001). Solo es visual: no cambia el orden.
+  #   verde >= indicador_verde, amarillo >= indicador_amarillo, rojo por debajo (y >= umbral)
+  indicador_verde: 80
+  indicador_amarillo: 70
+
 alertas:
   # Rechazos del mismo manager a candidatos viables antes de alertar a RRHH (RN-29)
   rechazos_viables_para_alerta: 2

@@ -63,7 +63,9 @@ public class VacanteAutomaticaService {
     @Transactional
     public Vacante liberarAsignacion(AsignacionProyecto asignacion, MotivoFinAsignacion motivo, LocalDateTime ahora) {
         asignacion.liberar(motivo, ahora.toLocalDate());
-        asignaciones.save(asignacion);
+        // Se escribe ya: si el empleado recibe otra asignacion en la misma transaccion, la base
+        // debe ver esta cerrada (maximo una asignacion vigente por empleado).
+        asignaciones.saveAndFlush(asignacion);
 
         Empleado saliente = asignacion.getEmpleado();
         Senioridad senioridad = saliente.getSenioridad() == null ? Senioridad.SEMI_SENIOR : saliente.getSenioridad();
