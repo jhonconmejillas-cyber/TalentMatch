@@ -7,17 +7,21 @@ import { escaparHtml } from "./ui.js";
 const MENU_POR_ROL = {
   EMPLEADO: [
     { texto: "Inicio", pagina: "panel-empleado.html" },
+    { texto: "Vacantes", pagina: "vacantes.html" },
     { texto: "Mi perfil", pagina: "perfil.html" },
     { texto: "Mis habilidades", pagina: "habilidades.html" },
   ],
   MANAGER: [
     { texto: "Inicio", pagina: "panel-manager.html" },
+    { texto: "Mis vacantes", pagina: "publicar-vacante.html" },
     { texto: "Avalar habilidades", pagina: "avalar.html" },
     { texto: "Mi perfil", pagina: "perfil.html" },
     { texto: "Mis habilidades", pagina: "habilidades.html" },
+    { texto: "Vacantes", pagina: "vacantes.html" },
   ],
   RRHH: [
     { texto: "Inicio", pagina: "panel-rrhh.html" },
+    { texto: "Vacantes", pagina: "vacantes.html" },
   ],
   LIDER_EJECUTIVO: [
     { texto: "Inicio", pagina: "panel-lider.html" },
