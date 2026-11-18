@@ -90,6 +90,16 @@ public class VacanteService {
         return vacantes.findByManagerIdOrderByFechaCreacionDesc(idManager).stream().map(VacanteDto::de).toList();
     }
 
+    /** Todas las vacantes, opcionalmente de un estado (panel de RR.HH.). */
+    @Transactional(readOnly = true)
+    public List<VacanteDto> todas(EstadoVacante estado) {
+        List<Vacante> lista = estado == null
+                ? vacantes.findAll(org.springframework.data.domain.Sort.by(
+                        org.springframework.data.domain.Sort.Direction.DESC, "fechaCreacion"))
+                : vacantes.findByEstadoOrderByFechaActivacionDesc(estado);
+        return lista.stream().map(VacanteDto::de).toList();
+    }
+
     Vacante obtener(Long id) {
         return vacantes.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("No existe la vacante " + id + "."));
