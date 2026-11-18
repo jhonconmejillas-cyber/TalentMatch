@@ -33,3 +33,7 @@ Thumbs.db
 .coverage
 htmlcov/
 .pytest_cache/
+
+# Despliegue (Cloudflare)
+deploy/cloudflare/node_modules/
+deploy/cloudflare/.wrangler/
