@@ -4,7 +4,7 @@
 import { request } from "../api.js";
 import { TEXTO_ESTADO_POSTULACION } from "../catalogos.js";
 import { montarLayout } from "../layout.js";
-import { escaparHtml, formatearFecha, mostrarMensaje } from "../ui.js";
+import { ejecutar, escaparHtml, formatearFecha, mostrarMensaje } from "../ui.js";
 
 const usuario = montarLayout(["MANAGER", "RRHH"]);
 const id = new URLSearchParams(window.location.search).get("id");
@@ -95,12 +95,12 @@ async function decidir(boton) {
 tabla.addEventListener("click", (e) => {
   const boton = e.target.closest("button[data-accion]");
   if (boton) {
-    decidir(boton);
+    ejecutar(decidir(boton));
     return;
   }
   const tr = e.target.closest("tr[data-id]");
   if (tr) {
-    verDesglose(tr.dataset.id);
+    ejecutar(verDesglose(tr.dataset.id));
   }
 });
 // RN-14: no se permite arrastrar filas

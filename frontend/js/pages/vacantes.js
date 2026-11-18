@@ -2,7 +2,7 @@
 
 import { request } from "../api.js";
 import { montarLayout } from "../layout.js";
-import { escaparHtml, formatearFecha, mostrarMensaje } from "../ui.js";
+import { ejecutar, escaparHtml, formatearFecha, mostrarMensaje } from "../ui.js";
 
 import { NOMBRE_SENIORIDAD } from "../catalogos.js";
 
@@ -67,5 +67,5 @@ async function iniciar() {
 }
 
 if (usuario) {
-  iniciar();
+  ejecutar(iniciar());
 }

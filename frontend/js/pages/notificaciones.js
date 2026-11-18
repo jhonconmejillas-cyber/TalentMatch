@@ -2,7 +2,7 @@
 
 import { request } from "../api.js";
 import { montarLayout } from "../layout.js";
-import { escaparHtml, mostrarMensaje } from "../ui.js";
+import { ejecutar, escaparHtml, mostrarMensaje } from "../ui.js";
 
 const usuario = montarLayout();
 const lista = document.getElementById("lista");
@@ -44,5 +44,5 @@ lista.addEventListener("click", async (e) => {
 });
 
 if (usuario) {
-  cargar();
+  ejecutar(cargar());
 }

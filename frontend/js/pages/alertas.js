@@ -2,7 +2,7 @@
 
 import { request } from "../api.js";
 import { montarLayout } from "../layout.js";
-import { escaparHtml, mostrarMensaje } from "../ui.js";
+import { ejecutar, escaparHtml, mostrarMensaje } from "../ui.js";
 
 const TIPO = { RECHAZOS_REPETIDOS: "Rechazos repetidos", VACANTE_SIN_MATCH: "Vacante sin match" };
 const usuario = montarLayout(["RRHH"]);
@@ -49,5 +49,5 @@ lista.addEventListener("click", async (e) => {
 verResueltas.addEventListener("change", cargar);
 
 if (usuario) {
-  cargar();
+  ejecutar(cargar());
 }
