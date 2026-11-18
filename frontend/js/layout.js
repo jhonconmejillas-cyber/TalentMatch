@@ -23,7 +23,7 @@ const MENU_POR_ROL = {
   ],
   RRHH: [
     { texto: "Inicio", pagina: "panel-rrhh.html" },
-    { texto: "Vacantes", pagina: "vacantes.html" },
+    { texto: "Gestión de vacantes", pagina: "gestion-vacantes.html" },
   ],
   LIDER_EJECUTIVO: [
     { texto: "Inicio", pagina: "panel-lider.html" },
@@ -32,6 +32,9 @@ const MENU_POR_ROL = {
     { texto: "Usuarios", pagina: "panel-admin.html" },
   ],
 };
+
+// Todas las personas reciben notificaciones del sistema (RNF-08).
+Object.values(MENU_POR_ROL).forEach((menu) => menu.push({ texto: "Notificaciones", pagina: "notificaciones.html" }));
 
 const NOMBRE_ROL = {
   EMPLEADO: "Empleado",
@@ -77,7 +80,7 @@ export function montarLayout(rolesPermitidos) {
   return usuario;
 }
 
-/** Agrega opciones al menu de un rol (lo usan las paginas que se van sumando). */
-export function registrarOpcionesMenu(rol, opciones) {
-  MENU_POR_ROL[rol] = [...(MENU_POR_ROL[rol] || []), ...opciones];
+/** Opciones del menu de un rol (el panel de inicio las muestra como accesos directos). */
+export function opcionesMenu(rol) {
+  return [...(MENU_POR_ROL[rol] || [])];
 }
