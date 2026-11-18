@@ -8,6 +8,7 @@ const MENU_POR_ROL = {
   EMPLEADO: [
     { texto: "Inicio", pagina: "panel-empleado.html" },
     { texto: "Vacantes", pagina: "vacantes.html" },
+    { texto: "Mis postulaciones", pagina: "mis-postulaciones.html" },
     { texto: "Mi perfil", pagina: "perfil.html" },
     { texto: "Mis habilidades", pagina: "habilidades.html" },
   ],
@@ -18,6 +19,7 @@ const MENU_POR_ROL = {
     { texto: "Mi perfil", pagina: "perfil.html" },
     { texto: "Mis habilidades", pagina: "habilidades.html" },
     { texto: "Vacantes", pagina: "vacantes.html" },
+    { texto: "Mis postulaciones", pagina: "mis-postulaciones.html" },
   ],
   RRHH: [
     { texto: "Inicio", pagina: "panel-rrhh.html" },
