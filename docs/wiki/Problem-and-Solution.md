@@ -1,57 +1,53 @@
-# Problema & Solución
+# Problema y solución
 
-## El Problema
+## El problema
 
-### Causa Raíz
-Cuando un ingeniero se aburre o siente que dejó de aprender, **no pide un cambio de proyecto**: simplemente busca otra empresa.
+### Causa raíz
+Cuando un ingeniero se aburre o siente que dejó de aprender, **no pide un cambio de proyecto**: busca otra empresa.
 
-### Por Qué Pasa
-1. **Invisibilidad** — El empleado no sabe qué oportunidades existen en su empresa
-2. **Desincentivo del manager** — Los líderes retienen a su mejor gente por instinto, aunque sea perjudicial para la empresa
-3. **Falta de argumento económico** — Nadie le dice al manager el costo real de perder al talento
+### Por qué pasa
+1. **Invisibilidad:** el empleado no sabe qué oportunidades existen en su empresa.
+2. **Desincentivo del manager:** los líderes retienen a su mejor gente por instinto, aunque eso perjudique a la empresa.
+3. **Falta de argumento económico:** nadie le muestra al manager el costo real de perder ese talento.
 
 ### Consecuencias
-- 💸 Empresa pierde talento conocido + paga $4K–$9K en recontratación
-- 🔴 Proyectos quedan incompletos
-- 😞 Ingenieros se van frustrados por falta de crecimiento visible
+- 💸 La empresa pierde talento conocido y paga entre USD 4 000 y 9 000 en recontratación.
+- 🔴 Los proyectos quedan incompletos y el código sin contexto.
+- 😞 Los ingenieros se van frustrados por no ver cómo crecer.
 
----
+## La solución: TalentMatch
 
-## La Solución: TalentMatch
+### 1. Visibilidad
+- El empleado ve todas las vacantes internas y su **Puntaje Final** para cada una antes de postularse.
+- **Wishlist:** el empleado marca las habilidades que quiere aprender y recibe una notificación cuando aparece una vacante que las pide.
+- **Vacantes automáticas:** cuando alguien deja su puesto, la vacante se crea sola (RN-02).
 
-### Tres Pilares
+### 2. Transparencia y mérito
+- **Match Score** explicable: habilidades avaladas × 0.7 + senioridad × 0.3. Puntaje Final = Match Score (ver [Algoritmo](Matching-Algorithm)).
+- Solo cuentan las habilidades **avaladas** por el manager actual.
+- **Ranking inmutable:** nadie puede reordenarlo.
+- El candidato no seleccionado ve **automáticamente** el puntaje y las habilidades de quien ganó, sin su identidad.
 
-#### 1️⃣ **Visibilidad**
-- Empleado ve todas las vacantes internas relevantes para su carrera
-- Sistema de "deseos" notifica cuando aparece lo que busca (proactivo, tipo Tinder)
+### 3. Argumento económico y control
+- **Costo de rotación** en el desglose: "si renuncia cuesta USD 11 000; rotarlo cuesta USD 2 000; ahorras USD 9 000".
+- **Alertas a RR.HH.** si un manager rechaza 2 o más candidatos viables, más un reporte mensual de patrones de rechazo.
+- **Top 10** para los líderes ejecutivos: los empleados con más habilidades avaladas, más rotaciones y más antigüedad.
 
-#### 2️⃣ **Transparencia en el Match**
-- Match Score muestra si tienes las habilidades
-- El Puntaje Final es igual al Match Score: sin "caja negra" — todo es explicable
+## Flujo resumido
 
-#### 3️⃣ **Argumento Económico para el Manager**
-- Reporte de Costo de Rotación: "Si pierdo este talento, costo $X. Si lo muevo, costo $Y. Ahorro: $Z"
-- Si rechaza a candidato de alto match, el sistema le muestra automáticamente el % y las habilidades de quien sí fue seleccionado (anónimo)
-- Alertas a RR.HH. si rechaza 2+ veces a alguien viable
-
----
-
-## Cómo Funciona (Flujo Simple)
-
-```
-Empleado                      Sistema                      Manager
-   |                             |                            |
-   └──Define deseos (Kubernetes)─>                           |
-   |                             |                            |
-   |                         Vacante aparece                  |
-   |<─────Notificación proactiva──|                           |
-   |                             |                            |
-   └──Expresa interés───────────────────────────────────────>|
-   |                             |     Manager ve ranking     |
-   |                             |     + Costo de Rotación    |
-   |                             |                            |
-   |<────────Match Aceptado────────────────Decisión del manager─|
-   |                             |                            |
-   └──Se inicia transición───────> Notifica a RR.HH. para    |
-   |                             |  formalizar cambio         |
+```mermaid
+sequenceDiagram
+    participant E as Empleado
+    participant S as TalentMatch
+    participant M as Manager
+    participant R as RR.HH.
+    E->>S: Define habilidades (su manager las avala) y wishlist
+    S-->>E: Notifica vacantes relevantes
+    E->>S: Revisa su puntaje y se postula
+    S->>S: Calcula el Puntaje Final (bitácora)
+    M->>S: Revisa el ranking (solo viables ≥ 65, alias, costo de rotación)
+    M->>S: Acepta a un candidato
+    S->>S: Cierra la vacante, cancela las otras postulaciones,<br/>mueve la asignación y crea la vacante del puesto que queda libre
+    S-->>R: Notifica la rotación aceptada
+    S-->>E: Los no seleccionados ven el resultado anónimo
 ```
