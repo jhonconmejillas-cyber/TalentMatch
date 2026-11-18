@@ -43,6 +43,21 @@
         <tbody id="filas"><tr><td colspan="4" class="vacio">Cargando…</td></tr></tbody>
       </table>
     </section>
+
+    <section class="tarjeta">
+      <h2>Mi wishlist</h2>
+      <p class="ayuda">Habilidades que quieres aprender. Te avisaremos cuando se abra una vacante que las incluya.</p>
+      <form id="form-wishlist" class="fila-campos" novalidate>
+        <div class="campo">
+          <label for="wishlistId">Habilidad</label>
+          <select id="wishlistId" name="wishlistId"><option value="">Selecciona…</option></select>
+        </div>
+        <div class="campo" style="justify-content:flex-end">
+          <button type="submit" class="boton">Agregar a mi wishlist</button>
+        </div>
+      </form>
+      <p id="wishlist"></p>
+    </section>
   </main>
   <script src="../js/ambiente.js"></script>
   <script type="module" src="../js/pages/habilidades.js"></script>
