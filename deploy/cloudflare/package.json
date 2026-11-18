@@ -1,0 +1,16 @@
+{
+  "name": "talentmatch-backend-worker",
+  "private": true,
+  "description": "Worker de Cloudflare que ejecuta la imagen Docker del backend de TalentMatch en Cloudflare Containers",
+  "type": "module",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev"
+  },
+  "dependencies": {
+    "@cloudflare/containers": "^0.0.28"
+  },
+  "devDependencies": {
+    "wrangler": "^4.40.0"
+  }
+}
