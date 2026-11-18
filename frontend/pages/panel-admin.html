@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Usuarios · TalentMatch</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+</head>
+<body>
+  <main class="contenido">
+    <section class="tarjeta">
+      <div class="titulo-seccion">
+        <h1>Usuarios y roles</h1>
+      </div>
+      <p id="mensaje" class="mensaje" role="alert" hidden></p>
+      <table class="tabla">
+        <thead>
+          <tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th></th></tr>
+        </thead>
+        <tbody id="filas"><tr><td colspan="5" class="vacio">Cargando…</td></tr></tbody>
+      </table>
+    </section>
+  </main>
+  <script type="module" src="../js/pages/admin.js"></script>
+</body>
+</html>
