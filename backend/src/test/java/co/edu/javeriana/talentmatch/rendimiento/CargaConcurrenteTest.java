@@ -69,7 +69,7 @@ class CargaConcurrenteTest {
         HttpResponse<String> r = http.send(HttpRequest.newBuilder(URI.create(url("/auth/login")))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(
-                        "{\"correo\":\"" + correo + "\",\"contrasena\":\"TalentMatch2026\"}"))
+                        "{\"correo\":\"" + correo + "\",\"contrasena\":\"talento\"}"))
                 .build(), HttpResponse.BodyHandlers.ofString());
         Matcher m = Pattern.compile("\"token\":\"([^\"]+)\"").matcher(r.body());
         assertTrue(m.find(), r.body());

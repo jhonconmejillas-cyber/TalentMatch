@@ -120,7 +120,7 @@ cd TalentMatch
    ```bash
    cd frontend && python -m http.server 5500
    ```
-   Abre http://localhost:5500 e inicia sesión con un usuario de prueba (contraseña `TalentMatch2026`):
+   Abre http://localhost:5500 e inicia sesión con un usuario de prueba (contraseña `talento`):
 
    | Rol | Correo |
    |---|---|
