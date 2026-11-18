@@ -94,7 +94,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource(CorsProperties cors) {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(cors.origenesPermitidos());
+        // Patrones: admite origenes exactos y comodines (ej. https://talentmatch-*.vercel.app para los previews)
+        config.setAllowedOriginPatterns(cors.origenesPermitidos());
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         // Authorization -> el token del login; Content-Type -> el cuerpo va en JSON
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));

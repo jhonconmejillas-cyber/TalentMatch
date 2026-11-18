@@ -40,30 +40,24 @@ CORS del backend.
 6. Interfaz y mensajes de error **en español** (RNF-13).
 7. El frontend **no calcula ni decide** nada del negocio: solo muestra lo que responde la API.
 
-## Publicación en Cloudflare Pages
+## Publicación en Vercel
 
-El workflow `.github/workflows/frontend.yml` publica la carpeta `frontend/` (sitio estático, sin
-compilación) en Cloudflare Pages:
+Vercel publica la carpeta `frontend/` (sitio estático) directamente desde GitHub:
 
-| Rama | Ambiente de Pages | URL de la API |
+| Rama | Ambiente de Vercel | URL |
 |---|---|---|
-| `develop` | preview (`develop.<proyecto>.pages.dev`) | variable `API_URL_PREVIEW` |
-| `main` | producción (`<proyecto>.pages.dev`) | variable `API_URL_PRODUCCION` |
+| `main` | Production | `https://talentmatch.vercel.app` |
+| `develop` y PRs | Preview | `https://talentmatch-git-<rama>-<usuario>.vercel.app` |
 
-Antes de publicar, el workflow escribe la URL de la API del ambiente en `js/ambiente.js`. Toda
-página nueva debe cargar `ambiente.js` antes de su módulo:
+Antes de publicar, Vercel ejecuta `scripts/generar-ambiente.mjs` (ver `vercel.json`), que
+escribe en `js/ambiente.js` la URL de la API tomada de la variable `TALENTMATCH_API_URL`.
+Toda página nueva debe cargar `ambiente.js` antes de su módulo:
 
 ```html
 <script src="../js/ambiente.js"></script>
 <script type="module" src="../js/pages/mi-pagina.js"></script>
 ```
 
-Configuración única (en GitHub → Settings → Secrets and variables → Actions):
-
-1. Crear el proyecto en Cloudflare: *Workers & Pages → Create → Pages → Direct Upload*, con
-   nombre `talentmatch` y rama de producción `main`.
-2. Secretos: `CLOUDFLARE_API_TOKEN` (permiso *Cloudflare Pages: Edit*) y `CLOUDFLARE_ACCOUNT_ID`.
-3. Variables: `CLOUDFLARE_PAGES_PROYECTO=talentmatch`, `API_URL_PREVIEW`, `API_URL_PRODUCCION`.
-4. Agregar la URL de Pages a `CORS_ORIGENES` del backend.
-
-Mientras `CLOUDFLARE_PAGES_PROYECTO` no exista, el job se omite sin fallar.
+Configuración única: importar el repositorio en Vercel con **Root Directory = `frontend`** y
+definir `TALENTMATCH_API_URL` (por ejemplo `https://talentmatch-backend.onrender.com/api/v1`).
+La guía completa está en [`deploy/README.md`](../deploy/README.md).

@@ -53,11 +53,13 @@ spring:
     open-in-view: false
 
 # ---------------------------------------------------------------
-# HTTPS (RNF-07): en Cloudflare el certificado TLS lo pone el borde y la peticion llega
+# HTTPS (RNF-07): en Render el certificado TLS lo pone su proxy y la peticion llega
 # al contenedor con X-Forwarded-Proto=https. Spring usa esos encabezados para saber
 # que la conexion es segura (y enviar HSTS).
 # ---------------------------------------------------------------
 server:
+  # Render indica el puerto en la variable PORT; en local se usa 8080
+  port: ${PORT:8080}
   forward-headers-strategy: framework
 
 # ---------------------------------------------------------------
@@ -73,8 +75,8 @@ logging:
 # CORS: paginas web (origenes) que pueden llamar a esta API.
 #   5500  -> Live Server de VS Code
 #   63342 -> servidor interno de IntelliJ al abrir un .html
-# Al publicar en Cloudflare Pages se agrega aqui su URL (o con la
-# variable de entorno CORS_ORIGENES).
+# En produccion se usan los dominios de Vercel con la variable de entorno
+# CORS_ORIGENES (ver render.yaml). Se aceptan comodines: https://talentmatch-*.vercel.app
 # ---------------------------------------------------------------
 talentmatch:
   cors:

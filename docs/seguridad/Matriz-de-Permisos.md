@@ -37,7 +37,7 @@ Leyenda: ✅ permitido · ❌ denegado (403) · 🔗 permitido solo con **relaci
 | Garantía | Cómo se cumple |
 |---|---|
 | Contraseñas con hash (RNF-07) | BCrypt en el registro (`AuthService`); nunca se devuelven en ninguna respuesta. |
-| HTTPS (RNF-07) | Cloudflare termina TLS; el backend respeta `X-Forwarded-Proto` y envía HSTS en las respuestas seguras. |
+| HTTPS (RNF-07) | Render y Vercel terminan TLS; el backend respeta `X-Forwarded-Proto` y envía HSTS en las respuestas seguras. |
 | Sesión que expira (HU-006, escenario 3) | Token de 30 min (`seguridad.minutos_inactividad_sesion`) renovado en cada petición (`X-Token-Renovado`): tras 30 min **sin actividad** el token vence y la API responde 401. El frontend además cierra la sesión por inactividad. |
 | Cuenta desactivada | Su token deja de servir de inmediato, aunque no haya vencido. |
 | Accesos denegados | Cada 403 queda en `bitacora_acceso` (quién, qué recurso, por qué), consultable por RR.HH. en `GET /gestion/accesos-denegados`. |

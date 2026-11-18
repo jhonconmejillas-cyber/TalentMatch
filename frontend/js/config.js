@@ -1,8 +1,8 @@
 // Configuracion del frontend: URL de la API segun el ambiente.
 //
 // - En local (localhost / 127.0.0.1) se usa el backend de la maquina: http://localhost:8080
-// - En Cloudflare Pages se puede fijar la URL con window.TALENTMATCH_API_URL
-//   (ver js/ambiente.js, que se genera al publicar).
+// - En Vercel la URL viene de window.TALENTMATCH_API_URL
+//   (js/ambiente.js, que genera scripts/generar-ambiente.mjs al publicar).
 
 const API_LOCAL = "http://localhost:8080/api/v1";
 
