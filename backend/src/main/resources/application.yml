@@ -1,0 +1,54 @@
+# Configuracion de Spring Boot para TalentMatch.
+# Los parametros de NEGOCIO (umbrales, plazos) NO van aqui: estan en conf/config.yaml (RNF-12).
+
+spring:
+  application:
+    # Nombre de la aplicacion (aparece en los logs)
+    name: talentmatch
+
+  config:
+    # ---------------------------------------------------------------
+    # Spring lee estos archivos al arrancar, en este orden:
+    #   1. conf/config.example.yaml -> parametros de negocio por defecto (se sube a Git)
+    #   2. conf/config.yaml         -> copia local de cada uno (NO se sube a Git)
+    #   3. .env                     -> secretos locales: DB_URL, DB_USER, DB_PASSWORD (NO se sube a Git)
+    # Si el mismo valor esta en varios, gana el ULTIMO.
+    #
+    # "optional:" = si el archivo no existe, no falla aqui.
+    # ${TALENTMATCH_CONF_DIR:../conf} = usa la variable de entorno TALENTMATCH_CONF_DIR
+    #   si existe; si no, la carpeta ../conf (relativa a backend/, desde donde se ejecuta).
+    # "[.properties]" le dice a Spring que el .env tiene formato CLAVE=valor.
+    # ---------------------------------------------------------------
+    import:
+      - optional:file:${TALENTMATCH_CONF_DIR:../conf}/config.example.yaml
+      - optional:file:${TALENTMATCH_CONF_DIR:../conf}/config.yaml
+      - optional:file:../.env[.properties]
+      - optional:file:.env[.properties]
+
+  # ---------------------------------------------------------------
+  # Base de datos: PostgreSQL en Supabase (RNF-07).
+  # Las credenciales SIEMPRE vienen de variables de entorno (o del .env local);
+  # nunca se escriben en este archivo. Ver .env.example en la raiz.
+  # ---------------------------------------------------------------
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    # Las tablas las crean las migraciones (Flyway), no Hibernate: solo se valida.
+    hibernate:
+      ddl-auto: none
+    # No mantener la sesion de base de datos abierta mientras se arma el JSON.
+    open-in-view: false
+
+# ---------------------------------------------------------------
+# CORS: paginas web (origenes) que pueden llamar a esta API.
+#   5500  -> Live Server de VS Code
+#   63342 -> servidor interno de IntelliJ al abrir un .html
+# Al publicar en Cloudflare Pages se agrega aqui su URL (o con la
+# variable de entorno CORS_ORIGENES).
+# ---------------------------------------------------------------
+talentmatch:
+  cors:
+    origenes-permitidos: ${CORS_ORIGENES:http://localhost:5500,http://127.0.0.1:5500,http://localhost:63342}
