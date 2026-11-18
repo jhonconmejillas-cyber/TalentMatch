@@ -14,7 +14,7 @@ class ParametrosServiceTest {
     @Test
     void entregaLosValoresDelArchivoDeConfiguracion() {
         ParametrosService parametros = new ParametrosService(
-                new AlgoritmoProperties(0.7, 0.3, 65),
+                new AlgoritmoProperties(0.7, 0.3, 65, 0.9, java.util.List.of(1.0, 0.6, 0.3, 0.0)),
                 new PlazosProperties(6, 6, 24, 3, 10),
                 new AlertasProperties(2),
                 new ReporteEjecutivoProperties(10));

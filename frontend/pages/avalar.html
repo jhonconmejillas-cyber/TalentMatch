@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Avalar habilidades · TalentMatch</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+</head>
+<body>
+  <main class="contenido">
+    <section class="tarjeta">
+      <div class="titulo-seccion">
+        <h1>Habilidades por avalar</h1>
+        <label class="ayuda"><input type="checkbox" id="ver-todas"> Ver también las ya revisadas</label>
+      </div>
+      <p class="ayuda">Solo ves las habilidades de las personas de las que eres manager actual.
+        Las que no avales siguen visibles en su perfil, pero no cuentan para su Puntaje Final.</p>
+      <p id="mensaje" class="mensaje" role="alert" hidden></p>
+      <table class="tabla">
+        <thead><tr><th>Empleado</th><th>Habilidad</th><th>Nivel declarado</th><th>Agregada</th><th>Estado</th><th></th></tr></thead>
+        <tbody id="filas"><tr><td colspan="6" class="vacio">Cargando…</td></tr></tbody>
+      </table>
+    </section>
+  </main>
+  <script src="../js/ambiente.js"></script>
+  <script type="module" src="../js/pages/avalar.js"></script>
+</body>
+</html>
