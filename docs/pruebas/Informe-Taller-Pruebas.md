@@ -98,13 +98,14 @@ Vulnerabilidades (Security), Code Smells (Maintainability) y Duplicaciones.
 
 ### 6.2 Resultado del primer análisis
 
-| Métrica | Primer análisis (automático) |
-|---|---|
-| Security | 20 issues |
-| Reliability | 20 issues |
-| Maintainability | 0 issues |
-| Duplicaciones | 1.0 % de 3.8 k líneas |
-| Cobertura | Sin medir (el análisis automático no mide cobertura) |
+| Métrica | Primer análisis (automático) | Análisis desde el pipeline (antes de las correcciones 8 y 9) |
+|---|---|---|
+| Security | 20 issues | 17 vulnerabilidades (los hashes de los datos de prueba) |
+| Reliability | 20 issues | 3 bugs |
+| Maintainability | 0 issues | 0 code smells |
+| Duplicaciones | 1.0 % | 0.7 % |
+| Cobertura | Sin medir | 43.4 % total (backend de producción: 89.9 %) |
+| Pruebas | — | 203 |
 
 ### 6.3 Problemas relevantes y soluciones implementadas
 
@@ -116,6 +117,8 @@ Vulnerabilidades (Security), Code Smells (Maintainability) y Duplicaciones.
 | 4 | **Contraseña escrita en el pipeline** (`yaml:S2068`) en `ci.yml`, para la base de datos temporal de pruebas. | Security · Medium | La base de prueba del CI usa `POSTGRES_HOST_AUTH_METHOD: trust`: solo existe durante el job y ya no hay ninguna contraseña en el repositorio. |
 | 5 | **`[` en lugar de `[[`** en `scripts/setup.sh` (`shell:S7688`). | Reliability · High | Se cambió a `[[ ... ]]`, que evita errores con variables vacías o con espacios. |
 | 7 | **Revisión del PR del taller** (segundo análisis): la acción de Sonar sin fijar a un *commit SHA* (`githubactions:S7637`) y el script del informe aceptaba rutas por línea de comandos (*path traversal*, `pythonsecurity:S8707`). | Security | La acción se fija a su SHA completo (`sonarqube-scan-action@e805d87…`, v8.4.1) y el script usa rutas fijas dentro del repositorio, sin argumentos. |
+| 8 | **3 bugs en el backend** detectados al pasar al análisis desde el pipeline: posible `NullPointerException` en `DecisionService` (fecha de activación nula), `Duration.between` sobre fechas sin zona horaria en `RankingService` y un `SecureRandom` nuevo en cada llamada en `TokenService`. | Reliability | Se usa la fecha de corte, la de activación o la actual (`Objects.requireNonNullElse`); los días del ciclo se cuentan con `ChronoUnit.DAYS.between`; el `SecureRandom` es un campo estático reutilizable. |
+| 9 | **Cobertura mal medida**: el scanner nuevo analiza todo el repositorio y contaba como "código por cubrir" las propias pruebas y el frontend (cobertura total 43.4 %, aunque el código de producción del backend tenía 89.9 %). | Coverage | `sonar.coverage.exclusions` deja fuera las pruebas, el frontend (no tiene lógica de negocio) y los scripts. La cobertura queda medida sobre el código de producción del backend. |
 | 6 | **Hashes BCrypt en los datos de prueba** (`secrets:S8215`) en `database/seeds/`. | Security · Blocker | Son los usuarios de **prueba** de la demo, no cuentas reales. No se pueden borrar de `V1_1` porque Flyway ya aplicó ese archivo en producción. **Propuesta:** en producción no cargar `database/seeds` (variable `FLYWAY_LOCATIONS` sin la carpeta de seeds) y marcar estos issues en SonarQube como *Accepted* con la justificación "datos de prueba". |
 
 📸 **Captura:** la pestaña *Issues* antes y después de los cambios (el segundo análisis corre al
