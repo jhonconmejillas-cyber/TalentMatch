@@ -71,13 +71,16 @@ public class RankingService {
         LocalDateTime corte = corteCiclo(vacante, ahora);
         double umbral = parametros.umbralViabilidad();
 
-        List<Postulacion> orden = Vacante.calcularRanking(postulaciones.findByVacanteId(idVacante), umbral);
+        // Vacante activa: candidatos en evaluacion. Vacante cerrada: el ranking final con su resultado.
+        List<Postulacion> orden = vacante.estaActiva()
+                ? Vacante.calcularRanking(postulaciones.findByVacanteId(idVacante), umbral)
+                : ordenCompleto(idVacante).stream().filter(p -> p.esViable(umbral)).toList();
         List<CandidatoDto> candidatos = new ArrayList<>();
         for (int i = 0; i < orden.size(); i++) {
             Postulacion p = orden.get(i);
             candidatos.add(new CandidatoDto(i + 1, p.getId(), alias(p.getEmpleado()), p.getPuntajeFinal(),
                     indicador(p.getPuntajeFinal()), p.getFechaCreacion(),
-                    corte != null && p.getFechaCreacion().isBefore(corte)));
+                    p.estaActiva() && corte != null && p.getFechaCreacion().isBefore(corte), p.getEstado()));
         }
         LocalDateTime proximo = vacante.getFechaActivacion() == null ? null
                 : (corte == null ? vacante.getFechaActivacion() : corte).plusDays(parametros.cicloEvaluacionDias());
@@ -143,7 +146,8 @@ public class RankingService {
     /** Todas las postulaciones de la vacante ordenadas por Puntaje Final (para registrar posiciones). */
     List<Postulacion> ordenCompleto(Long idVacante) {
         return postulaciones.findByVacanteId(idVacante).stream()
-                .filter(p -> p.getEstado() == EstadoPostulacion.ACTIVA || p.getEstado() == EstadoPostulacion.ACEPTADA)
+                .filter(p -> p.getEstado() == EstadoPostulacion.ACTIVA || p.getEstado() == EstadoPostulacion.ACEPTADA
+                        || (p.getEstado() == EstadoPostulacion.RECHAZADA && p.getPosicionRanking() != null))
                 .sorted(java.util.Comparator.comparingDouble(Postulacion::getPuntajeFinal).reversed()
                         .thenComparing(Postulacion::getFechaCreacion))
                 .toList();

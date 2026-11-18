@@ -2,6 +2,7 @@
 // La tabla no permite arrastrar ni reordenar (RN-14): el orden viene del servidor.
 
 import { request } from "../api.js";
+import { TEXTO_ESTADO_POSTULACION } from "../catalogos.js";
 import { montarLayout } from "../layout.js";
 import { escaparHtml, formatearFecha, mostrarMensaje } from "../ui.js";
 
@@ -21,7 +22,8 @@ function fila(c, vacanteActiva) {
       ? `<button type="button" class="boton boton-exito" data-accion="aceptar" data-id="${c.postulacionId}">Aceptar</button>
          <button type="button" class="boton boton-peligro" data-accion="rechazar" data-id="${c.postulacionId}">Rechazar</button>`
       : '<span class="ayuda">Próximo ciclo</span>')
-    : "";
+    : (c.estado !== "ACTIVA"
+      ? `<span class="etiqueta etiqueta-${c.estado.toLowerCase()}">${TEXTO_ESTADO_POSTULACION[c.estado]}</span>` : "");
   return `<tr data-id="${c.postulacionId}" draggable="false" tabindex="0">
     <td>${c.posicion}</td>
     <td>${COLOR[c.indicador]} ${escaparHtml(c.candidato)}</td>
@@ -41,7 +43,8 @@ async function cargar() {
     : `El primer lote de peticiones se habilita el ${r.proximoCorte ? new Date(r.proximoCorte).toLocaleString("es-CO") : "—"}.`;
   const activa = r.vacante.estado === "ACTIVA";
   tabla.innerHTML = r.candidatos.length === 0
-    ? '<tr><td colspan="5" class="vacio">Aún no hay candidatos viables.</td></tr>'
+    ? `<tr><td colspan="5" class="vacio">${activa ? "Aún no hay candidatos viables."
+      : "La vacante se cerró sin candidatos viables."}</td></tr>`
     : r.candidatos.map((c) => fila(c, activa)).join("");
 }
 
