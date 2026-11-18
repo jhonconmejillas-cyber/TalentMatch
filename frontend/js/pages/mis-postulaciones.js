@@ -22,7 +22,8 @@ function fila(p) {
     <td>${p.puntajeFinal.toFixed(1)} %</td>
     <td>${formatearFecha(p.fechaCreacion)}</td>
     <td><span class="etiqueta etiqueta-${p.estado.toLowerCase()}">${TEXTO_ESTADO_POSTULACION[p.estado]}</span>
-      <div class="ayuda">${posicion(p)}</div></td>
+      <div class="ayuda">${posicion(p)}</div>
+      ${p.mensaje ? `<div class="ayuda">${escaparHtml(p.mensaje)}</div>` : ""}</td>
     <td>${resultado}</td>
   </tr>`;
 }
