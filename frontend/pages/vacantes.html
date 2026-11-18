@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vacantes · TalentMatch</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+</head>
+<body>
+  <main class="contenido">
+    <section class="tarjeta">
+      <h1>Vacantes internas</h1>
+      <p class="ayuda">Incluye vacantes de todas las áreas: puedes rotar a un área distinta de la tuya.</p>
+      <form id="form-filtros" class="fila-campos" novalidate>
+        <div class="campo">
+          <label for="titulo">Buscar por título</label>
+          <input id="titulo" name="titulo" type="search" placeholder="Backend, Cloud…">
+        </div>
+        <div class="campo" style="justify-content:flex-end">
+          <button type="button" class="boton-enlace" id="mostrar-filtros" aria-expanded="false">Más filtros</button>
+        </div>
+      </form>
+      <!-- RNF-05: los filtros avanzados quedan ocultos tras un control explicito -->
+      <div id="filtros-avanzados" class="fila-campos" hidden>
+        <div class="campo">
+          <label for="area">Área</label>
+          <input id="area" name="area" type="text" placeholder="Datos">
+        </div>
+        <div class="campo">
+          <label for="senioridad">Senioridad</label>
+          <select id="senioridad" name="senioridad">
+            <option value="">Todas</option>
+            <option value="JUNIOR">Junior</option>
+            <option value="SEMI_SENIOR">Semi Senior</option>
+            <option value="SENIOR">Senior</option>
+            <option value="LIDER">Líder</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="habilidadId">Habilidad</label>
+          <select id="habilidadId" name="habilidadId"><option value="">Todas</option></select>
+        </div>
+      </div>
+      <p id="mensaje" class="mensaje" role="alert" hidden></p>
+    </section>
+
+    <section id="resultados" class="grilla-tarjetas"></section>
+  </main>
+  <script src="../js/ambiente.js"></script>
+  <script type="module" src="../js/pages/vacantes.js"></script>
+</body>
+</html>

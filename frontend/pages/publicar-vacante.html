@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Publicar vacante · TalentMatch</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+</head>
+<body>
+  <main class="contenido">
+    <section class="tarjeta">
+      <h1>Publicar vacante</h1>
+      <form id="form-vacante" novalidate>
+        <div class="fila-campos">
+          <div class="campo">
+            <label for="titulo">Título</label>
+            <input id="titulo" name="titulo" type="text" maxlength="120" required placeholder="Backend Senior">
+          </div>
+          <div class="campo">
+            <label for="area">Área</label>
+            <input id="area" name="area" type="text" maxlength="80" required placeholder="Backend">
+          </div>
+          <div class="campo">
+            <label for="senioridad">Senioridad requerida</label>
+            <select id="senioridad" name="senioridad" required>
+              <option value="">Selecciona…</option>
+              <option value="JUNIOR">Junior</option>
+              <option value="SEMI_SENIOR">Semi Senior</option>
+              <option value="SENIOR">Senior</option>
+              <option value="LIDER">Líder</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="proyectoId">Proyecto (opcional)</label>
+            <select id="proyectoId" name="proyectoId"><option value="">Sin proyecto</option></select>
+          </div>
+        </div>
+        <div class="campo">
+          <label for="descripcion">Descripción (opcional)</label>
+          <textarea id="descripcion" name="descripcion" rows="3" maxlength="2000"></textarea>
+        </div>
+        <div class="fila-campos">
+          <div class="campo">
+            <label for="habilidadesCriticasIds">Habilidades críticas</label>
+            <select id="habilidadesCriticasIds" name="habilidadesCriticasIds" multiple size="8" required></select>
+            <small class="ayuda">Ctrl + clic para elegir varias.</small>
+          </div>
+          <div class="campo">
+            <label for="habilidadesDeseablesIds">Habilidades deseables</label>
+            <select id="habilidadesDeseablesIds" name="habilidadesDeseablesIds" multiple size="8"></select>
+          </div>
+        </div>
+        <p id="mensaje" class="mensaje" role="alert" hidden></p>
+        <button type="submit" class="boton boton-primario">Publicar vacante</button>
+      </form>
+    </section>
+
+    <section class="tarjeta">
+      <h2>Mis vacantes</h2>
+      <table class="tabla">
+        <thead><tr><th>Título</th><th>Área</th><th>Estado</th><th>Activa desde</th><th></th></tr></thead>
+        <tbody id="mis-vacantes"><tr><td colspan="5" class="vacio">Cargando…</td></tr></tbody>
+      </table>
+    </section>
+  </main>
+  <script src="../js/ambiente.js"></script>
+  <script type="module" src="../js/pages/publicar-vacante.js"></script>
+</body>
+</html>
