@@ -158,6 +158,20 @@ class RankingControllerTest extends ApiTest {
     }
 
     @Test
+    void trasCerrarLaVacanteElRankingMuestraElResultadoFinal() throws Exception {
+        String carlos = login(MANAGER_CARLOS);
+        mvc.perform(post("/api/v1/postulaciones/" + santiago + "/aceptar").header("Authorization", carlos))
+                .andExpect(status().isOk());
+
+        mvc.perform(get("/api/v1/vacantes/1/ranking").header("Authorization", carlos))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.candidatos.length()").value(4))
+                .andExpect(jsonPath("$.candidatos[0].estado").value("ACEPTADA"))
+                .andExpect(jsonPath("$.candidatos[1].estado").value("RECHAZADA"))
+                .andExpect(jsonPath("$.candidatos[0].habilitadoParaDecidir").value(false));
+    }
+
+    @Test
     void rechazarNoPideJustificacion() throws Exception {
         mvc.perform(post("/api/v1/postulaciones/" + nicolas + "/rechazar").header("Authorization", login(MANAGER_CARLOS)))
                 .andExpect(status().isOk())

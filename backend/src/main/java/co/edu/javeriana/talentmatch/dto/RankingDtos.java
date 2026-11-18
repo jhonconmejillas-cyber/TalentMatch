@@ -26,7 +26,8 @@ public final class RankingDtos {
             Indicador indicador,
             LocalDateTime fechaPostulacion,
             /** RN-12: la peticion entra en el lote del ciclo ya cerrado y se puede resolver. */
-            boolean habilitadoParaDecidir) {
+            boolean habilitadoParaDecidir,
+            EstadoPostulacion estado) {
     }
 
     public record RankingDto(
