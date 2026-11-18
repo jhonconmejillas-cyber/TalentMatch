@@ -1,20 +1,39 @@
 package co.edu.javeriana.talentmatch.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.time.LocalDate;
 
 /**
  * Clase asociativa Empleado - Proyecto (DC-01): el puesto que ocupa un empleado
  * en un proyecto durante un periodo. Al liberarse se genera una vacante (RN-02).
  */
+@Entity
+@Table(name = "asignacion_proyecto")
 public class AsignacionProyecto {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "empleado_id")
     private Empleado empleado;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "proyecto_id")
     private Proyecto proyecto;
     /** Nombre del puesto dentro del proyecto (ej. "Backend Developer"); titulo de la vacante que se genera. */
     private String cargo;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
+    @Enumerated(EnumType.STRING)
     private MotivoFinAsignacion motivoFin;
 
     protected AsignacionProyecto() {
