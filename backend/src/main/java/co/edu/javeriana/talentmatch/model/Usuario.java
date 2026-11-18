@@ -1,5 +1,15 @@
 package co.edu.javeriana.talentmatch.model;
 
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
+
 /**
  * Cuenta de acceso al sistema (DC-01). Es abstracta: todo usuario es un
  * Empleado, Manager, AnalistaRRHH, LiderEjecutivo o Administrador.
@@ -7,8 +17,15 @@ package co.edu.javeriana.talentmatch.model;
  * El inicio y cierre de sesion del diagrama ({@code iniciarSesion}, {@code cerrarSesion})
  * se implementan en el paquete security, porque dependen del hash y del token.
  */
+@Entity
+@Table(name = "usuario")
+// Todos los roles viven en la tabla usuario; la columna "rol" dice de que subclase es cada fila.
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "rol", discriminatorType = DiscriminatorType.STRING, length = 20)
 public abstract class Usuario {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
     private String correo;

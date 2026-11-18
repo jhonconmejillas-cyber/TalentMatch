@@ -1,5 +1,17 @@
 package co.edu.javeriana.talentmatch.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -11,21 +23,42 @@ import java.util.Set;
  * Puesto abierto en un proyecto (DC-01). Puede publicarla un manager (RF-11)
  * o generarla el sistema al liberarse una asignacion (RN-02).
  */
+@Entity
+@Table(name = "vacante")
 public class Vacante {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String titulo;
     private String descripcion;
+    @Enumerated(EnumType.STRING)
     private Senioridad senioridad;
     private String area;
+    @Enumerated(EnumType.STRING)
     private EstadoVacante estado = EstadoVacante.BORRADOR;
+    @Enumerated(EnumType.STRING)
     private OrigenVacante origen = OrigenVacante.MANUAL;
     private LocalDateTime fechaCreacion;
     private LocalDateTime fechaActivacion;
     private LocalDateTime fechaCierre;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manager_id")
     private Manager manager;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "proyecto_id")
     private Proyecto proyecto;
+
+    @ManyToMany
+    @JoinTable(name = "vacante_habilidad_critica",
+            joinColumns = @JoinColumn(name = "vacante_id"),
+            inverseJoinColumns = @JoinColumn(name = "habilidad_id"))
     private Set<Habilidad> habilidadesCriticas = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "vacante_habilidad_deseable",
+            joinColumns = @JoinColumn(name = "vacante_id"),
+            inverseJoinColumns = @JoinColumn(name = "habilidad_id"))
     private Set<Habilidad> habilidadesDeseables = new HashSet<>();
 
     protected Vacante() {

@@ -1,11 +1,20 @@
 package co.edu.javeriana.talentmatch.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.util.Locale;
 import java.util.Objects;
 
 /** Habilidad del catalogo (Java, Docker, Kubernetes...). */
+@Entity
+@Table(name = "habilidad")
 public class Habilidad {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
 

@@ -1,5 +1,7 @@
 package co.edu.javeriana.talentmatch.model;
 
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
 import java.time.LocalDateTime;
 
 /**
@@ -9,6 +11,8 @@ import java.time.LocalDateTime;
  * Publicar vacantes y revisar el ranking necesitan repositorios, asi que viven en la
  * capa Service; aqui quedan las acciones que se resuelven con los objetos en memoria.
  */
+@Entity
+@DiscriminatorValue("MANAGER")
 public class Manager extends Empleado {
 
     protected Manager() {
