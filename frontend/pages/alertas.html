@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Alertas · TalentMatch</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+</head>
+<body>
+  <main class="contenido">
+    <section class="tarjeta">
+      <div class="titulo-seccion">
+        <h1>Bandeja de alertas</h1>
+        <label class="ayuda"><input type="checkbox" id="ver-resueltas"> Ver también las resueltas</label>
+      </div>
+      <p class="ayuda">Las alertas se generan solas: rechazos repetidos de candidatos viables (RN-29)
+        y vacantes sin match (RN-30). Ningún empleado tiene que reclamar.</p>
+      <p id="mensaje" class="mensaje" role="alert" hidden></p>
+      <div id="lista"><p class="vacio">Cargando…</p></div>
+    </section>
+  </main>
+  <script src="../js/ambiente.js"></script>
+  <script type="module" src="../js/pages/alertas.js"></script>
+</body>
+</html>

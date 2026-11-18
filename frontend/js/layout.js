@@ -23,6 +23,7 @@ const MENU_POR_ROL = {
   ],
   RRHH: [
     { texto: "Inicio", pagina: "panel-rrhh.html" },
+    { texto: "Alertas", pagina: "alertas.html" },
     { texto: "Gestión de vacantes", pagina: "gestion-vacantes.html" },
   ],
   LIDER_EJECUTIVO: [
