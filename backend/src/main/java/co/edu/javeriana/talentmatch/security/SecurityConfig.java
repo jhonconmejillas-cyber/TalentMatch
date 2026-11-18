@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers("/error").permitAll()
                         // Matriz de permisos por rol (RNF-07, HU-006)
                         .requestMatchers("/api/v1/usuarios/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/alertas/**", "/api/v1/asignaciones/**", "/api/v1/gestion/**").hasRole("RRHH")
                         // Cualquier otra ruta exige sesion; el permiso fino va en cada controlador
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(o -> o

@@ -38,6 +38,8 @@ public class Postulacion {
     /** Posicion en el ranking al resolverse la vacante (HU-004: "Fuiste #1 de 12"). */
     private Integer posicionRanking;
     private Integer totalCandidatos;
+    /** RN-29: true si el manager rechazo directamente (no por cierre de la vacante). */
+    private boolean rechazoDirecto;
 
     protected Postulacion() {
     }
@@ -63,8 +65,19 @@ public class Postulacion {
         resolver(EstadoPostulacion.ACEPTADA, ahora);
     }
 
+    /** El candidato no fue seleccionado porque la vacante se cerro con otra persona. */
     public void rechazar(LocalDateTime ahora) {
         resolver(EstadoPostulacion.RECHAZADA, ahora);
+    }
+
+    /** El manager rechaza directamente al candidato (cuenta para la alerta de RN-29). */
+    public void rechazarDirectamente(LocalDateTime ahora) {
+        resolver(EstadoPostulacion.RECHAZADA, ahora);
+        this.rechazoDirecto = true;
+    }
+
+    public boolean isRechazoDirecto() {
+        return rechazoDirecto;
     }
 
     /** RN-09: el empleado acepto otra vacante. */
