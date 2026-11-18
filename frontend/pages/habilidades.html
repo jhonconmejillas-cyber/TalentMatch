@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mis habilidades · TalentMatch</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+</head>
+<body>
+  <main class="contenido">
+    <section class="tarjeta">
+      <h1>Mis habilidades</h1>
+      <p class="mensaje mensaje-info">
+        Las habilidades nuevas quedan <strong>agregadas</strong> hasta que tu manager actual las avale.
+        Solo las <strong>avaladas</strong> cuentan para tu Puntaje Final.
+      </p>
+
+      <form id="form-habilidad" class="fila-campos" novalidate>
+        <div class="campo">
+          <label for="habilidadId">Habilidad</label>
+          <select id="habilidadId" name="habilidadId" required>
+            <option value="">Selecciona…</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="nivelDeclarado">Nivel (opcional)</label>
+          <select id="nivelDeclarado" name="nivelDeclarado">
+            <option value="">Sin especificar</option>
+            <option>Básico</option>
+            <option>Intermedio</option>
+            <option>Avanzado</option>
+            <option>Experto</option>
+          </select>
+        </div>
+        <div class="campo" style="justify-content:flex-end">
+          <button type="submit" class="boton boton-primario">Agregar habilidad</button>
+        </div>
+      </form>
+      <p id="mensaje" class="mensaje" role="alert" hidden></p>
+
+      <table class="tabla">
+        <thead><tr><th>Habilidad</th><th>Nivel declarado</th><th>Agregada</th><th>Estado</th></tr></thead>
+        <tbody id="filas"><tr><td colspan="4" class="vacio">Cargando…</td></tr></tbody>
+      </table>
+    </section>
+  </main>
+  <script src="../js/ambiente.js"></script>
+  <script type="module" src="../js/pages/habilidades.js"></script>
+</body>
+</html>
