@@ -53,6 +53,14 @@ spring:
     open-in-view: false
 
 # ---------------------------------------------------------------
+# HTTPS (RNF-07): en Cloudflare el certificado TLS lo pone el borde y la peticion llega
+# al contenedor con X-Forwarded-Proto=https. Spring usa esos encabezados para saber
+# que la conexion es segura (y enviar HSTS).
+# ---------------------------------------------------------------
+server:
+  forward-headers-strategy: framework
+
+# ---------------------------------------------------------------
 # Log de la aplicacion. Los tiempos de respuesta de la API (HU-005) quedan
 # con la etiqueta "tiempo-respuesta" y se pueden consultar con:
 #   grep tiempo-respuesta logs/talentmatch.log

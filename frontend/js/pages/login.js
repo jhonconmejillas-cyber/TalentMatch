@@ -7,6 +7,11 @@ import { limpiarCampos, limpiarMensaje, marcarCampo, mostrarMensaje } from "../u
 const formulario = document.getElementById("form-login");
 const mensaje = document.getElementById("mensaje");
 
+// Aviso cuando la sesion se cerro por inactividad (HU-006).
+if (new URLSearchParams(window.location.search).has("expirada")) {
+  mostrarMensaje(mensaje, "Tu sesión se cerró tras 30 minutos de inactividad. Inicia sesión de nuevo.", "info");
+}
+
 // Si ya hay una sesion abierta, ir directo al panel.
 const sesion = usuarioActual();
 if (sesion) {

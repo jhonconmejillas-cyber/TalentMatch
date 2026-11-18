@@ -27,5 +27,8 @@ public interface PostulacionRepository extends JpaRepository<Postulacion, Long> 
     List<Postulacion> findByEstadoInAndFechaResolucionGreaterThanEqualAndFechaResolucionLessThan(
             java.util.Collection<EstadoPostulacion> estados, java.time.LocalDateTime desde, java.time.LocalDateTime hasta);
 
+    /** HU-006: el empleado se postulo alguna vez a una vacante de este manager. */
+    boolean existsByEmpleadoIdAndVacanteManagerId(Long empleadoId, Long managerId);
+
     boolean existsByEmpleadoIdAndVacanteIdAndEstado(Long empleadoId, Long vacanteId, EstadoPostulacion estado);
 }

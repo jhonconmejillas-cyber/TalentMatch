@@ -2,7 +2,7 @@
 // todas usan request(), que agrega el token, convierte a JSON y traduce los errores.
 
 import { API_URL } from "./config.js";
-import { obtenerToken, cerrarSesion } from "./auth.js";
+import { obtenerToken, cerrarSesion, renovarToken } from "./auth.js";
 
 /** Error con el mensaje en espanol que devolvio la API (RNF-13). */
 export class ErrorApi extends Error {
@@ -90,6 +90,12 @@ export async function request(metodo, ruta, datos) {
   }
 
   const cuerpo = texto ? intentarJson(texto) : null;
+
+  // HU-006: la API devuelve un token nuevo en cada peticion; la sesion vence tras 30 min SIN actividad.
+  const renovado = respuesta.headers.get("X-Token-Renovado");
+  if (renovado) {
+    renovarToken(renovado);
+  }
 
   if (!respuesta.ok) {
     // Token vencido o invalido: se cierra la sesion y se vuelve al login.

@@ -1,6 +1,7 @@
 package co.edu.javeriana.talentmatch.security;
 
 import co.edu.javeriana.talentmatch.config.CorsProperties;
+import co.edu.javeriana.talentmatch.repository.UsuarioRepository;
 import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -31,7 +33,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, RespuestasSeguridad respuestas) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, RespuestasSeguridad respuestas, TokenService tokens,
+                                           UsuarioRepository usuarios) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // API sin cookies: el token viaja en un encabezado
                 .cors(Customizer.withDefaults())
@@ -52,7 +55,13 @@ public class SecurityConfig {
                         .authenticationEntryPoint(respuestas))
                 .exceptionHandling(e -> e
                         .authenticationEntryPoint(respuestas)
-                        .accessDeniedHandler(respuestas));
+                        .accessDeniedHandler(respuestas))
+                // HU-006: renueva el token en cada peticion (expira tras 30 min de INACTIVIDAD)
+                .addFilterAfter(new RenovacionTokenFilter(tokens, usuarios, respuestas),
+                        BearerTokenAuthenticationFilter.class)
+                // HTTPS (RNF-07): el navegador recuerda usar solo HTTPS por un anio (HSTS).
+                // Spring solo envia este encabezado en respuestas que ya viajan por HTTPS.
+                .headers(h -> h.httpStrictTransportSecurity(hsts -> hsts.maxAgeInSeconds(31536000)));
         return http.build();
     }
 
@@ -89,6 +98,8 @@ public class SecurityConfig {
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         // Authorization -> el token del login; Content-Type -> el cuerpo va en JSON
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        // El frontend debe poder leer el token renovado (expiracion por inactividad, HU-006)
+        config.setExposedHeaders(List.of(RenovacionTokenFilter.ENCABEZADO, "Content-Disposition"));
         UrlBasedCorsConfigurationSource fuente = new UrlBasedCorsConfigurationSource();
         fuente.registerCorsConfiguration("/api/**", config);
         return fuente;
