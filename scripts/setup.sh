@@ -10,18 +10,18 @@ if ! command -v java >/dev/null 2>&1; then
   exit 1
 fi
 version=$(java -version 2>&1 | head -1 | sed -E 's/.*"([0-9]+).*/\1/')
-if [ "$version" -lt 21 ]; then
+if [[ "$version" -lt 21 ]]; then
   echo "Se requiere JDK 21 o superior (tienes Java $version)." >&2
   exit 1
 fi
 echo "Java $version OK"
 
 echo "== Archivos de configuracion"
-if [ ! -f conf/config.yaml ]; then
+if [[ ! -f conf/config.yaml ]]; then
   cp conf/config.example.yaml conf/config.yaml
   echo "Creado conf/config.yaml (parametros de negocio, RNF-12)"
 fi
-if [ ! -f .env ]; then
+if [[ ! -f .env ]]; then
   cp .env.example .env
   echo "Creado .env: COMPLETA DB_URL, DB_USER y DB_PASSWORD antes de arrancar la API"
 fi

@@ -36,3 +36,6 @@ htmlcov/
 
 # Despliegue (Vercel)
 .vercel/
+
+# Informe de pruebas generado por scripts/reporte_pruebas.py
+informe-pruebas/

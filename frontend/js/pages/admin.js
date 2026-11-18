@@ -2,7 +2,7 @@
 
 import { request } from "../api.js";
 import { montarLayout, nombreRol } from "../layout.js";
-import { escaparHtml, mostrarMensaje } from "../ui.js";
+import { ejecutar, escaparHtml, mostrarMensaje } from "../ui.js";
 
 const ROLES = ["EMPLEADO", "MANAGER", "RRHH", "LIDER_EJECUTIVO", "ADMIN"];
 const usuario = montarLayout(["ADMIN"]);
@@ -46,7 +46,7 @@ async function actualizar(id, cambios, texto) {
 filas.addEventListener("change", (e) => {
   if (e.target.classList.contains("cambiar-rol")) {
     const id = e.target.closest("tr").dataset.id;
-    actualizar(id, { rol: e.target.value }, "Rol actualizado.");
+    ejecutar(actualizar(id, { rol: e.target.value }, "Rol actualizado."));
   }
 });
 
@@ -54,10 +54,10 @@ filas.addEventListener("click", (e) => {
   if (e.target.classList.contains("cambiar-estado")) {
     const id = e.target.closest("tr").dataset.id;
     const activo = e.target.dataset.activo === "true";
-    actualizar(id, { activo: !activo }, activo ? "Cuenta desactivada." : "Cuenta activada.");
+    ejecutar(actualizar(id, { activo: !activo }, activo ? "Cuenta desactivada." : "Cuenta activada."));
   }
 });
 
 if (usuario) {
-  cargar();
+  ejecutar(cargar());
 }

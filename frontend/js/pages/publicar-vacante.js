@@ -3,7 +3,7 @@
 import { request } from "../api.js";
 import { TEXTO_ESTADO_VACANTE } from "../catalogos.js";
 import { montarLayout } from "../layout.js";
-import { escaparHtml, formatearFecha, limpiarCampos, marcarErroresDeApi, mostrarMensaje } from "../ui.js";
+import { ejecutar, escaparHtml, formatearFecha, limpiarCampos, marcarErroresDeApi, mostrarMensaje } from "../ui.js";
 
 const usuario = montarLayout(["MANAGER"]);
 const formulario = document.getElementById("form-vacante");
@@ -63,5 +63,5 @@ formulario.addEventListener("submit", async (evento) => {
 });
 
 if (usuario) {
-  iniciar();
+  ejecutar(iniciar());
 }

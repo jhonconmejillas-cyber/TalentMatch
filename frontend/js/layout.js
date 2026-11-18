@@ -1,7 +1,6 @@
 // Encabezado comun de las paginas con sesion: marca, menu segun el rol y cierre de sesion.
 
 import { cerrarSesion, requerirSesion, rutaPanel } from "./auth.js";
-import { escaparHtml } from "./ui.js";
 
 /** Opciones del menu por rol. Cada accion principal queda a 1 clic del panel (RNF-03). */
 const MENU_POR_ROL = {
@@ -63,25 +62,39 @@ export function montarLayout(rolesPermitidos) {
     return null;
   }
   const actual = window.location.pathname.split("/").pop();
-  const opciones = (MENU_POR_ROL[usuario.rol] || [])
-    .map((o) => `<a href="${o.pagina}"${o.pagina === actual ? ' aria-current="page"' : ""}>${escaparHtml(o.texto)}</a>`)
-    .join("");
 
-  const encabezado = document.createElement("header");
-  encabezado.className = "encabezado";
-  encabezado.innerHTML = `
-    <a class="marca" href="${rutaPanel(usuario.rol)}">TalentMatch</a>
-    <nav aria-label="Menú principal">${opciones}</nav>
-    <div class="usuario-sesion">
-      <span>${escaparHtml(usuario.nombre)} · ${escaparHtml(nombreRol(usuario.rol))}</span>
-      <button type="button" class="boton" id="cerrar-sesion">Cerrar sesión</button>
-    </div>`;
+  // El encabezado se arma con la API del DOM (textContent / href), nunca con innerHTML:
+  // los datos de la sesion vienen del navegador y no deben poder inyectar HTML (XSS).
+  const encabezado = crear("header", { className: "encabezado" });
+  encabezado.append(crear("a", { className: "marca", href: rutaPanel(usuario.rol), textContent: "TalentMatch" }));
+
+  const nav = crear("nav");
+  nav.setAttribute("aria-label", "Menú principal");
+  for (const opcion of MENU_POR_ROL[usuario.rol] || []) {
+    const enlace = crear("a", { href: opcion.pagina, textContent: opcion.texto });
+    if (opcion.pagina === actual) {
+      enlace.setAttribute("aria-current", "page");
+    }
+    nav.append(enlace);
+  }
+  encabezado.append(nav);
+
+  const sesion = crear("div", { className: "usuario-sesion" });
+  const salir = crear("button", { type: "button", className: "boton", id: "cerrar-sesion", textContent: "Cerrar sesión" });
+  sesion.append(crear("span", { textContent: `${usuario.nombre} · ${nombreRol(usuario.rol)}` }), salir);
+  encabezado.append(sesion);
+
   document.body.prepend(encabezado);
-  document.getElementById("cerrar-sesion").addEventListener("click", () => {
+  salir.addEventListener("click", () => {
     cerrarSesion();
     window.location.href = "../index.html";
   });
   return usuario;
+}
+
+/** Crea un elemento y le asigna propiedades (textContent, href, className...). */
+function crear(etiqueta, propiedades = {}) {
+  return Object.assign(document.createElement(etiqueta), propiedades);
 }
 
 /** Opciones del menu de un rol (el panel de inicio las muestra como accesos directos). */

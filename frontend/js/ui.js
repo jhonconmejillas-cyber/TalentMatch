@@ -54,3 +54,13 @@ export function formatearFecha(iso) {
   }
   return new Date(iso).toLocaleDateString("es-CO", { year: "numeric", month: "long", day: "numeric" });
 }
+
+/**
+ * Lanza una tarea asincrona sin esperarla (por ejemplo, la carga inicial de una pagina o la
+ * accion de un boton) y deja registrado cualquier error que la tarea no haya controlado,
+ * en lugar de dejar una promesa suelta.
+ * @param {Promise<unknown>} promesa
+ */
+export function ejecutar(promesa) {
+  promesa.catch((error) => console.error("Error inesperado:", error));
+}
