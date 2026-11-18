@@ -57,6 +57,9 @@ seguridad:
   # RNF-07
   minutos_inactividad_sesion: 30
   longitud_minima_password: 8
+  # RF-01: solo se aceptan registros con correo de estos dominios corporativos
+  dominios_correo_corporativo:
+    - talentmatch.com
 
 rendimiento:
   # RNF-04
