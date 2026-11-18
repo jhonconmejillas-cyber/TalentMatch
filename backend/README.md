@@ -70,3 +70,18 @@ Pruebas (tambien necesitan una base PostgreSQL accesible con esas variables):
 Los parametros de `conf/config.yaml` se leen al arrancar (ver `application.properties`) y se
 consultan desde cualquier Service a traves de `ParametrosService`. Si la carpeta `conf/` esta en
 otra ruta, se indica con la variable de entorno `TALENTMATCH_CONF_DIR`.
+
+## Imagen Docker
+
+El `Dockerfile` es multi-etapa (compila con Maven + JDK 21 y ejecuta con solo el JRE 21) y se
+construye desde la **raíz** del repositorio, porque incluye `conf/` y `database/migrations`:
+
+```bash
+docker build -f backend/Dockerfile -t talentmatch-backend .
+docker run -p 8080:8080 --env-file .env talentmatch-backend
+```
+
+La imagen no carga los datos de prueba (`FLYWAY_LOCATIONS` solo apunta a las migraciones). Para
+un ambiente de pruebas se pueden incluir con
+`-e FLYWAY_LOCATIONS=filesystem:/app/database/migrations,filesystem:/app/database/seeds`.
+El CI construye la imagen en cada PR (job *Construir imagen Docker*).

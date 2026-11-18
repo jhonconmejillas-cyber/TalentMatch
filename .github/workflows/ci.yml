@@ -55,3 +55,12 @@ jobs:
         with:
           name: reportes-surefire
           path: backend/target/surefire-reports/
+
+  imagen-docker:
+    name: Construir imagen Docker
+    runs-on: ubuntu-latest
+    needs: backend
+    steps:
+      - uses: actions/checkout@v4
+      - name: docker build del backend
+        run: docker build -f backend/Dockerfile -t talentmatch-backend:ci .

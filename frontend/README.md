@@ -39,3 +39,31 @@ CORS del backend.
 5. Todo mensaje de bloqueo debe decir **cuándo** se habilitará la acción (HU-008).
 6. Interfaz y mensajes de error **en español** (RNF-13).
 7. El frontend **no calcula ni decide** nada del negocio: solo muestra lo que responde la API.
+
+## Publicación en Cloudflare Pages
+
+El workflow `.github/workflows/frontend.yml` publica la carpeta `frontend/` (sitio estático, sin
+compilación) en Cloudflare Pages:
+
+| Rama | Ambiente de Pages | URL de la API |
+|---|---|---|
+| `develop` | preview (`develop.<proyecto>.pages.dev`) | variable `API_URL_PREVIEW` |
+| `main` | producción (`<proyecto>.pages.dev`) | variable `API_URL_PRODUCCION` |
+
+Antes de publicar, el workflow escribe la URL de la API del ambiente en `js/ambiente.js`. Toda
+página nueva debe cargar `ambiente.js` antes de su módulo:
+
+```html
+<script src="../js/ambiente.js"></script>
+<script type="module" src="../js/pages/mi-pagina.js"></script>
+```
+
+Configuración única (en GitHub → Settings → Secrets and variables → Actions):
+
+1. Crear el proyecto en Cloudflare: *Workers & Pages → Create → Pages → Direct Upload*, con
+   nombre `talentmatch` y rama de producción `main`.
+2. Secretos: `CLOUDFLARE_API_TOKEN` (permiso *Cloudflare Pages: Edit*) y `CLOUDFLARE_ACCOUNT_ID`.
+3. Variables: `CLOUDFLARE_PAGES_PROYECTO=talentmatch`, `API_URL_PREVIEW`, `API_URL_PRODUCCION`.
+4. Agregar la URL de Pages a `CORS_ORIGENES` del backend.
+
+Mientras `CLOUDFLARE_PAGES_PROYECTO` no exista, el job se omite sin fallar.
