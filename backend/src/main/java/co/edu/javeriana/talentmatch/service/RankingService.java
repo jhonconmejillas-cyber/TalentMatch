@@ -20,8 +20,8 @@ import co.edu.javeriana.talentmatch.repository.UsuarioRepository;
 import co.edu.javeriana.talentmatch.repository.VacanteRepository;
 import co.edu.javeriana.talentmatch.service.MatchingService.Calculo;
 import java.time.Clock;
-import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -119,7 +119,7 @@ public class RankingService {
         if (vacante.getFechaActivacion() == null) {
             return null;
         }
-        long dias = Duration.between(vacante.getFechaActivacion(), ahora).toDays();
+        long dias = ChronoUnit.DAYS.between(vacante.getFechaActivacion(), ahora);
         long ciclos = dias / parametros.cicloEvaluacionDias();
         return ciclos == 0 ? null : vacante.getFechaActivacion().plusDays(ciclos * parametros.cicloEvaluacionDias());
     }

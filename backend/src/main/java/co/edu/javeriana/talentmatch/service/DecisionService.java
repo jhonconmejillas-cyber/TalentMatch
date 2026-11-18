@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -142,9 +143,10 @@ public class DecisionService {
         }
         LocalDateTime corte = ranking.corteCiclo(vacante, ahora);
         if (corte == null || !p.getFechaCreacion().isBefore(corte)) {
-            LocalDateTime proximo = corte == null
-                    ? vacante.getFechaActivacion().plusDays(parametros.cicloEvaluacionDias())
-                    : corte.plusDays(parametros.cicloEvaluacionDias());
+            // Sin corte aun: el primer ciclo cuenta desde la activacion (o desde ahora si no hay fecha)
+            LocalDateTime base = corte != null ? corte
+                    : Objects.requireNonNullElse(vacante.getFechaActivacion(), ahora);
+            LocalDateTime proximo = base.plusDays(parametros.cicloEvaluacionDias());
             throw new ReglaNegocioException("Esta petición se resuelve en el próximo ciclo de evaluación, a partir del "
                     + FECHA.format(proximo) + ".");
         }
