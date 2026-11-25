@@ -27,7 +27,12 @@ function tarjeta(v) {
 }
 
 let temporizador;
+// Cada busqueda lleva un numero. Si el servidor responde en desorden (red lenta o el plan
+// gratuito despertando), una respuesta vieja no puede pisar la de la ultima busqueda:
+// antes, al borrar un filtro, podia quedar "No hay vacantes" aunque si las hubiera.
+let ultimaBusqueda = 0;
 async function buscar() {
+  const numero = ++ultimaBusqueda;
   const parametros = new URLSearchParams();
   campos.forEach((c) => {
     if (c.value.trim()) {
@@ -36,13 +41,25 @@ async function buscar() {
   });
   try {
     const lista = await request("GET", `/vacantes?${parametros}`);
+    if (numero !== ultimaBusqueda) {
+      return;
+    }
     resultados.innerHTML = lista.length === 0
       ? '<p class="vacio">No hay vacantes activas con esos filtros.</p>'
       : lista.map(tarjeta).join("");
   } catch (error) {
-    mostrarMensaje(mensaje, error.message);
+    if (numero === ultimaBusqueda) {
+      mostrarMensaje(mensaje, error.message);
+    }
   }
 }
+
+// Si la pagina quedo abierta mientras un manager publicaba, al volver a ella se recarga la lista.
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && usuario) {
+    ejecutar(buscar());
+  }
+});
 
 campos.forEach((c) => c.addEventListener("input", () => {
   clearTimeout(temporizador);

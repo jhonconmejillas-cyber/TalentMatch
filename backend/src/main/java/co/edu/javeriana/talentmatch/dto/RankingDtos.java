@@ -37,7 +37,21 @@ public final class RankingDtos {
             /** Corte del ultimo ciclo: las postulaciones anteriores a esta fecha se pueden resolver. */
             LocalDateTime corteCicloActual,
             LocalDateTime proximoCorte,
-            List<CandidatoDto> candidatos) {
+            List<CandidatoDto> candidatos,
+            /**
+             * RN-28: postulados con Puntaje Final por debajo del umbral. No forman parte del ranking
+             * (no tienen posicion ni se pueden aceptar o rechazar), pero el manager sabe que existen.
+             */
+            List<PostuladoBajoUmbralDto> postuladosBajoUmbral) {
+    }
+
+    /** Postulado no viable (RN-28): se lista aparte, con alias y sin acciones de decision. */
+    public record PostuladoBajoUmbralDto(
+            Long postulacionId,
+            String candidato,
+            double puntajeFinal,
+            LocalDateTime fechaPostulacion,
+            EstadoPostulacion estado) {
     }
 
     /** RN-26: argumento economico aproximado, solo informativo. */

@@ -92,7 +92,8 @@ public class MatchingService {
     public static MiPuntajeDto aDto(Long idVacante, Calculo c) {
         String aviso = c.viable() ? null : String.format(java.util.Locale.ROOT,
                 "Tu Puntaje Final (%.1f %%) está por debajo del umbral de %.0f %%: tus posibilidades son bajas "
-                        + "y no aparecerás en el ranking del manager. Aun así puedes postularte.",
+                        + "y no entrarás al ranking del manager (verá tu postulación en una lista aparte). "
+                        + "Aun así puedes postularte.",
                 c.puntajeFinal(), c.umbral());
         return new MiPuntajeDto(idVacante, c.resultado().matchScore(), c.puntajeFinal(), c.umbral(), c.viable(),
                 aviso, DesgloseDto.de(c.resultado()));

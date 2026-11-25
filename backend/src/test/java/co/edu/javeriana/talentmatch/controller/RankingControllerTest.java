@@ -64,6 +64,35 @@ class RankingControllerTest extends ApiTest {
     }
 
     @Test
+    void rn28_elManagerVeAparteALosPostuladosPorDebajoDelUmbral() throws Exception {
+        // Bug: Camila (58) se postulo y el manager no la veia en ninguna parte.
+        mvc.perform(get("/api/v1/vacantes/1/ranking").header("Authorization", login(MANAGER_CARLOS)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.candidatos.length()").value(4))
+                .andExpect(jsonPath("$.postuladosBajoUmbral.length()").value(1))
+                .andExpect(jsonPath("$.postuladosBajoUmbral[0].postulacionId").value(camila))
+                .andExpect(jsonPath("$.postuladosBajoUmbral[0].candidato").value("Empleado_014"))
+                .andExpect(jsonPath("$.postuladosBajoUmbral[0].puntajeFinal").value(58.0))
+                // Sin posicion ni datos personales: no forma parte del ranking (RN-14, RNF-09)
+                .andExpect(jsonPath("$.postuladosBajoUmbral[0].posicion").doesNotExist())
+                .andExpect(jsonPath("$.postuladosBajoUmbral[0].nombre").doesNotExist());
+        // El manager puede abrir su desglose
+        mvc.perform(get("/api/v1/postulaciones/" + camila + "/desglose").header("Authorization", login(MANAGER_CARLOS)))
+                .andExpect(status().isOk());
+        // Y no puede aceptarla: no es viable
+        mvc.perform(post("/api/v1/postulaciones/" + camila + "/aceptar").header("Authorization", login(MANAGER_CARLOS)))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void rn09_losCanceladosPorRotacionNoSeListanBajoElUmbral() throws Exception {
+        jdbc.update("UPDATE postulacion SET estado = 'CANCELADA_POR_ROTACION', fecha_resolucion = CURRENT_TIMESTAMP WHERE id = ?",
+                camila);
+        mvc.perform(get("/api/v1/vacantes/1/ranking").header("Authorization", login(MANAGER_CARLOS)))
+                .andExpect(jsonPath("$.postuladosBajoUmbral.length()").value(0));
+    }
+
+    @Test
     void soloElManagerDeLaVacanteYRrhhVenElRanking() throws Exception {
         mvc.perform(get("/api/v1/vacantes/1/ranking").header("Authorization", login(MANAGER_DIANA)))
                 .andExpect(status().isForbidden());

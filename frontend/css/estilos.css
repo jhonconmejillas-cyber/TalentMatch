@@ -388,6 +388,17 @@ a {
   align-items: start;
 }
 
+/* Ranking y "postulados por debajo del umbral" apilados a la izquierda; el desglose a la derecha */
+.ranking-columna {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+
+.ranking-columna > .tarjeta {
+  margin: 0;
+}
+
 .tabla-ranking tbody tr {
   cursor: pointer;
   user-select: none; /* RN-14: nada que arrastrar ni reordenar */
