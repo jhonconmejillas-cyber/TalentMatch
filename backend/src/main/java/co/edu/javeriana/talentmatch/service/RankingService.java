@@ -7,6 +7,7 @@ import co.edu.javeriana.talentmatch.dto.RankingDtos.CandidatoDto;
 import co.edu.javeriana.talentmatch.dto.RankingDtos.CostoRotacionDto;
 import co.edu.javeriana.talentmatch.dto.RankingDtos.DesgloseCandidatoDto;
 import co.edu.javeriana.talentmatch.dto.RankingDtos.Indicador;
+import co.edu.javeriana.talentmatch.dto.RankingDtos.PostuladoBajoUmbralDto;
 import co.edu.javeriana.talentmatch.dto.RankingDtos.RankingDto;
 import co.edu.javeriana.talentmatch.dto.VacanteDtos.VacanteDto;
 import co.edu.javeriana.talentmatch.model.Empleado;
@@ -20,9 +21,10 @@ import co.edu.javeriana.talentmatch.repository.UsuarioRepository;
 import co.edu.javeriana.talentmatch.repository.VacanteRepository;
 import co.edu.javeriana.talentmatch.service.MatchingService.Calculo;
 import java.time.Clock;
-import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,10 +73,11 @@ public class RankingService {
         LocalDateTime corte = corteCiclo(vacante, ahora);
         double umbral = parametros.umbralViabilidad();
 
+        List<Postulacion> todas = postulaciones.findByVacanteId(idVacante);
         // Vacante activa: candidatos en evaluacion. Vacante cerrada: el ranking final con su resultado.
         List<Postulacion> orden = vacante.estaActiva()
-                ? Vacante.calcularRanking(postulaciones.findByVacanteId(idVacante), umbral)
-                : ordenCompleto(idVacante).stream().filter(p -> p.esViable(umbral)).toList();
+                ? Vacante.calcularRanking(todas, umbral)
+                : ordenCompleto(todas).stream().filter(p -> p.esViable(umbral)).toList();
         List<CandidatoDto> candidatos = new ArrayList<>();
         for (int i = 0; i < orden.size(); i++) {
             Postulacion p = orden.get(i);
@@ -85,7 +88,22 @@ public class RankingService {
         LocalDateTime proximo = vacante.getFechaActivacion() == null ? null
                 : (corte == null ? vacante.getFechaActivacion() : corte).plusDays(parametros.cicloEvaluacionDias());
         return new RankingDto(VacanteDto.de(vacante), umbral, parametros.cicloEvaluacionDias(), corte, proximo,
-                candidatos);
+                candidatos, bajoUmbral(todas, umbral));
+    }
+
+    /**
+     * RN-28: los postulados con puntaje bajo no entran al ranking, pero el manager debe saber
+     * que se postularon. Se excluyen los cancelados por rotacion (RN-09: dejan de aparecer).
+     */
+    private static List<PostuladoBajoUmbralDto> bajoUmbral(List<Postulacion> todas, double umbral) {
+        return todas.stream()
+                .filter(p -> !p.esViable(umbral))
+                .filter(p -> p.getEstado() != EstadoPostulacion.CANCELADA_POR_ROTACION)
+                .sorted(Comparator.comparingDouble(Postulacion::getPuntajeFinal).reversed()
+                        .thenComparing(Postulacion::getFechaCreacion))
+                .map(p -> new PostuladoBajoUmbralDto(p.getId(), alias(p.getEmpleado()), p.getPuntajeFinal(),
+                        p.getFechaCreacion(), p.getEstado()))
+                .toList();
     }
 
     /** Desglose del Match Score y Costo de Rotacion de un candidato (queda en la bitacora). */
@@ -119,7 +137,8 @@ public class RankingService {
         if (vacante.getFechaActivacion() == null) {
             return null;
         }
-        long dias = Duration.between(vacante.getFechaActivacion(), ahora).toDays();
+        // Se cuentan dias completos en la zona horaria del sistema (evita errores con cambios de hora)
+        long dias = ChronoUnit.DAYS.between(vacante.getFechaActivacion().atZone(reloj.getZone()), ahora.atZone(reloj.getZone()));
         long ciclos = dias / parametros.cicloEvaluacionDias();
         return ciclos == 0 ? null : vacante.getFechaActivacion().plusDays(ciclos * parametros.cicloEvaluacionDias());
     }
@@ -145,10 +164,14 @@ public class RankingService {
 
     /** Todas las postulaciones de la vacante ordenadas por Puntaje Final (para registrar posiciones). */
     List<Postulacion> ordenCompleto(Long idVacante) {
-        return postulaciones.findByVacanteId(idVacante).stream()
+        return ordenCompleto(postulaciones.findByVacanteId(idVacante));
+    }
+
+    private static List<Postulacion> ordenCompleto(List<Postulacion> todas) {
+        return todas.stream()
                 .filter(p -> p.getEstado() == EstadoPostulacion.ACTIVA || p.getEstado() == EstadoPostulacion.ACEPTADA
                         || (p.getEstado() == EstadoPostulacion.RECHAZADA && p.getPosicionRanking() != null))
-                .sorted(java.util.Comparator.comparingDouble(Postulacion::getPuntajeFinal).reversed()
+                .sorted(Comparator.comparingDouble(Postulacion::getPuntajeFinal).reversed()
                         .thenComparing(Postulacion::getFechaCreacion))
                 .toList();
     }

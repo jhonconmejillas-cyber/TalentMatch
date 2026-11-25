@@ -2,7 +2,7 @@
 
 import { descargar, request } from "../api.js";
 import { montarLayout } from "../layout.js";
-import { escaparHtml, mostrarMensaje } from "../ui.js";
+import { ejecutar, escaparHtml, mostrarMensaje } from "../ui.js";
 
 const usuario = montarLayout(["RRHH"]);
 const periodo = document.getElementById("periodo");
@@ -66,5 +66,5 @@ periodo.addEventListener("change", cargar);
 
 if (usuario) {
   periodo.value = mesAnterior();
-  cargar();
+  ejecutar(cargar());
 }

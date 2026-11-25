@@ -1,199 +1,150 @@
-# Arquitectura Técnica
+# Arquitectura técnica
 
-TalentMatch es una aplicación web organizada en **cuatro capas**. Cada capa tiene una sola
-responsabilidad y **solo se comunica con la capa inmediatamente inferior**.
+## 1. Visión de conjunto
 
-## Stack
+TalentMatch es un **monolito** organizado en **4 capas**: un solo backend Spring Boot que expone una API REST, un frontend estático que la consume y una base de datos PostgreSQL. No hay microservicios. El backend se empaqueta en **un solo contenedor Docker** porque así lo exige Render para ejecutar Java; eso no cambia la arquitectura.
 
-| Capa | Tecnología |
-|---|---|
-| Frontend | HTML, CSS y JavaScript (sin framework), `fetch` para llamar a la API |
-| Backend (Controller, Service, Repository) | Java 21 + Spring Boot |
-| Persistencia | Spring Data JPA + migraciones con Flyway |
-| Base de datos | PostgreSQL alojado en Supabase |
-| Autenticación | Spring Security + BCrypt + token (RNF-07) |
-| Pruebas | JUnit 5 |
-| Despliegue | Vercel (frontend), Render (backend), Supabase (BD) |
-
----
-
-## Las 4 capas
-
-```
-+---------------------------------------------+
-| 1. FRONTEND  (HTML + CSS + JavaScript)      |  Muestra y captura datos.
-|    avalar.html · avalar.js · estilos.css    |  NO decide nada del negocio.
-+----------------------+----------------------+
-                       |  HTTP + JSON (API REST /api/v1)
-+----------------------v----------------------+
-| 2. CONTROLLER  (Java)                       |  Recibe la petición, valida el rol,
-|    HabilidadController.java                 |  llama al servicio y responde JSON.
-+---------------------------------------------+
-| 3. SERVICE  (Java)  <- LÓGICA DE NEGOCIO    |  Aquí viven las Reglas de Negocio:
-|    HabilidadService.java                    |  6 meses, solo "avalado", 65 %, etc.
-+---------------------------------------------+
-| 4. REPOSITORY  (Java)  <- PERSISTENCIA      |  Solo lee y guarda datos.
-|    HabilidadEmpleadoRepository.java         |  NO contiene reglas de negocio.
-+----------------------+----------------------+
-                       |  SQL (JDBC)
-+----------------------v----------------------+
-|    PostgreSQL en Supabase                   |  Tablas del modelo Entidad-Relación.
-+---------------------------------------------+
+```mermaid
+flowchart LR
+    U[Usuario<br/>Chrome / Edge] -->|HTTPS| FE[Frontend estático<br/>HTML + CSS + JS<br/>Vercel]
+    FE -->|fetch JSON + token<br/>/api/v1/...| API[Backend Spring Boot 4<br/>Java 21 - 1 contenedor<br/>Render]
+    API -->|JDBC + TLS<br/>Session pooler| DB[(PostgreSQL<br/>Supabase)]
+    API -.->|tareas programadas<br/>cron| API
 ```
 
-**Regla de oro:** el HTML nunca toca la base de datos y el Repository nunca decide si una acción
-está permitida. Las reglas de negocio viven **únicamente** en la capa Service, por eso se pueden
-probar con JUnit sin navegador ni base de datos.
-
-### 1. Frontend — presentación
-
-- Una página `.html` y un archivo `.js` por pantalla.
-- `js/api.js` es la **única** puerta hacia el backend: agrega el token y maneja errores.
-- Muestra mensajes en español (RNF-13) y respeta el máximo de 3 clics (RNF-03).
-- No calcula puntajes ni valida reglas: solo muestra lo que responde la API.
-
-### 2. Controller — entrada de la API
-
-- Un controlador por recurso (`VacanteController`, `PostulacionController`, …).
-- Valida el **rol** del solicitante (RNF-07) y el formato de los datos de entrada.
-- No contiene reglas de negocio: delega todo al Service.
-
-### 3. Service — lógica de negocio
-
-- Implementa las Reglas de Negocio RN-01 … RN-30.
-- Ejemplos: antigüedad mínima de 6 meses (RN-07), solo habilidades `avalado` en el cálculo
-  (RN-20), umbral de 65 % (RN-27), ranking inmutable (RN-14), perfil anónimo del seleccionado
-  (RN-18), bitácora obligatoria de cada cálculo (RNF-06).
-- Lee los parámetros configurables desde `conf/config.yaml` (RNF-12).
-
-### 4. Repository — persistencia
-
-- Una interfaz JPA por entidad del diagrama de clases.
-- Traduce objetos Java a filas de PostgreSQL y viceversa.
-- Las tablas se crean con migraciones versionadas (`database/migrations/V1__...sql`).
-
----
-
-## Ejemplo: un manager avala una habilidad (RN-19)
-
-| Paso | Capa | Qué hace |
-|---|---|---|
-| 1 | Frontend `avalar.js` | `PATCH /api/v1/habilidades-empleado/{id}` con `{ "estado": "avalado" }` |
-| 2 | `HabilidadController` | Verifica que el usuario tenga rol `MANAGER` y llama al servicio |
-| 3 | `HabilidadService` | Verifica que sea el **manager actual** del empleado y que la habilidad no esté ya avalada; cambia el estado y registra fecha y quién avaló |
-| 4 | `HabilidadEmpleadoRepository` | Guarda el cambio en la tabla `habilidad_empleado` |
-| 5 | Frontend | Muestra la habilidad como avalada, o el mensaje de error que devolvió la API |
-
----
-
-## Estructura de carpetas
-
-```
-backend/
-├── pom.xml
-└── src/
-    ├── main/java/co/edu/javeriana/talentmatch/
-    │   ├── controller/    un controlador por recurso REST
-    │   ├── service/       reglas de negocio (RN)
-    │   ├── repository/    interfaces JPA
-    │   ├── model/         entidades del diagrama de clases
-    │   ├── dto/           contratos JSON de entrada/salida (anonimato RN-18)
-    │   ├── security/      login, token y permisos por rol
-    │   └── config/        lectura de conf/config.yaml
-    ├── main/resources/application.yml
-    └── test/java/         pruebas JUnit por servicio
-
-frontend/
-├── index.html             login
-├── pages/                 perfil.html, vacantes.html, ranking.html, avalar.html…
-├── js/
-│   ├── api.js             cliente HTTP único hacia el backend
-│   ├── auth.js            sesión y redirección por rol
-│   └── pages/             un .js por página
-└── css/
-
-database/migrations/       V1__esquema_inicial.sql, V2__…
-conf/config.yaml           umbrales y plazos (RNF-12)
-```
-
----
-
-## API REST
-
-Todas las rutas usan el prefijo `/api/v1` y validan el rol del solicitante.
-
-| Recurso | Ruta | Rol | RF |
+| Pieza | Tecnología | Dónde vive | Carpeta |
 |---|---|---|---|
-| Salud | `GET /health` | — | — |
-| Sesión | `POST /auth/registro` · `POST /auth/login` · `GET /me` | Todos | RF-01, RF-02 |
-| Usuarios | `GET /usuarios` · `PATCH /usuarios/{id}` | Administrador | RF-03 |
-| Perfil | `GET` / `PUT /empleados/me/perfil` | Empleado | RF-04 |
-| Catálogo | `GET /habilidades` | Todos | — |
-| Mis habilidades | `GET` / `POST /empleados/me/habilidades` | Empleado | RF-06 |
-| Aval | `GET /equipo/habilidades?estado=agregado` · `PATCH /habilidades-empleado/{id}` | Manager | RF-07 |
-| Wishlist | `GET` / `POST` / `DELETE /empleados/me/wishlist` | Empleado | RF-09 |
-| Vacantes | `GET /vacantes` (filtros) · `POST /vacantes` · `GET /vacantes/{id}` | Empleado / Manager | RF-11, RF-13 |
-| Mi puntaje | `GET /vacantes/{id}/mi-puntaje` | Empleado | RF-15 … RF-17 |
-| Postularse | `POST /vacantes/{id}/postulaciones` | Empleado | RF-19, RF-20 |
-| Ranking | `GET /vacantes/{id}/ranking` | Manager | RF-18, RF-21, RF-22 |
-| Decisión | `POST /postulaciones/{id}/aceptar` · `POST /postulaciones/{id}/rechazar` | Manager | RF-23 … RF-26 |
-| Resultado anónimo | `GET /postulaciones/{id}/resultado` | Empleado | RF-27 |
-| Historial propio | `GET /empleados/me/postulaciones` | Empleado | RF-31 |
-| Historial de empleado | `GET /empleados/{id}/historial` | Manager / RR.HH. | RF-30 |
-| Notificaciones | `GET /notificaciones` · `PATCH /notificaciones/{id}` | Todos | RF-10, RF-25 |
-| Alertas | `GET /alertas` · `PATCH /alertas/{id}` | RR.HH. | RF-14, RF-32 |
-| Carga masiva | `POST /cargas` (CSV) | RR.HH. | — |
-| Configuración | `GET` / `PUT /configuracion` | RR.HH. | RF-33 |
-| Reporte | `GET /reportes/top10` | Líder Ejecutivo | RF-29 |
+| Backend / API | Java 21, Spring Boot 4.1.1, Spring Security, Spring Data JPA (Hibernate 7), Flyway, Maven | Render (contenedor Docker, plan Free) | `backend/` |
+| Frontend | HTML, CSS y JavaScript con módulos ES, **sin framework ni compilación** | Vercel (sitio estático, plan Hobby) | `frontend/` |
+| Base de datos | PostgreSQL (16 en CI, 18 en local, Supabase en producción) | Supabase (plan Free) | `database/` |
+| Parámetros de negocio | YAML leído al arrancar | Dentro de la imagen | `conf/` |
+| CI | GitHub Actions | GitHub | `.github/workflows/` |
+| Calidad | JaCoCo, SonarQube Cloud, CodeRabbit | Nube | `sonar-project.properties`, `.coderabbit.yaml` |
 
-**Tareas programadas** (no son endpoints; las ejecuta el backend con `@Scheduled`): activación de
-vacantes 24 h después de una rotación (RN-03), alerta de vacante sin match a los 10 días (RN-05)
-y ciclo de evaluación de 3 días (RN-12).
-
----
-
-## Despliegue: Vercel + Render + Supabase
+## 2. Estructura del repositorio
 
 ```
-            Usuario (Chrome / Edge)
-                     |
-                     v
-+--------------------------------------+
-| Vercel                               |   Frontend estático (HTML/CSS/JS)
-+------------------+-------------------+
-                   | HTTPS /api/v1
-                   v
-+--------------------------------------+
-| Render                               |   Backend Spring Boot (un contenedor Docker)
-+------------------+-------------------+
-                   | JDBC (TLS)
-                   v
-+--------------------------------------+
-| Supabase PostgreSQL                  |   Base de datos
-+--------------------------------------+
+TalentMatch/
+├── backend/                 API Spring Boot (proyecto Maven con wrapper ./mvnw)
+│   ├── src/main/java/co/edu/javeriana/talentmatch/
+│   │   ├── controller/      Capa 2: endpoints REST y manejo de errores
+│   │   ├── service/         Capa 3: TODA la lógica de negocio
+│   │   ├── repository/      Capa 4: acceso a datos (Spring Data JPA)
+│   │   ├── model/           Entidades del diagrama de clases (JPA)
+│   │   ├── dto/             Contratos JSON de entrada y salida
+│   │   ├── security/        Login, token JWT, permisos y bitácora de accesos
+│   │   └── config/          Lectura de conf/config.yaml, tareas programadas, reloj, filtros
+│   ├── src/main/resources/application.yml
+│   ├── src/test/java/...    203 pruebas JUnit 5 (misma estructura de paquetes)
+│   ├── Dockerfile           Imagen multi-etapa (se construye desde la RAÍZ del repo)
+│   └── pom.xml
+├── frontend/                Capa 1: sitio estático
+│   ├── index.html           Login
+│   ├── pages/               Una página por pantalla (20 páginas)
+│   ├── js/                  api.js, auth.js, layout.js, ui.js, config.js, ambiente.js...
+│   ├── js/pages/            Un módulo JS por página
+│   ├── css/
+│   ├── scripts/generar-ambiente.mjs   Escribe la URL de la API al publicar en Vercel
+│   └── vercel.json
+├── database/
+│   ├── migrations/          V1..V5: esquema (Flyway)
+│   └── seeds/               V1_1 y V5_1: datos de prueba (Flyway, opcional)
+├── conf/config.example.yaml Parámetros de negocio (umbral, pesos, plazos...)
+├── docs/                    Especificación formal, matriz de permisos, plan de pruebas, copia de la wiki
+├── scripts/                 setup.sh, deploy.sh, reporte_pruebas.py
+├── .github/workflows/ci.yml Único workflow de GitHub Actions
+├── render.yaml              Blueprint de Render (backend)
+├── sonar-project.properties Configuración de SonarQube Cloud
+└── .coderabbit.yaml         Configuración de CodeRabbit (revisión automática de PRs)
 ```
 
-| Componente | Servicio | Notas |
+## 3. Las 4 capas
+
+| # | Capa | Paquete o carpeta | Responsabilidad | Lo que NO hace |
+|---|---|---|---|---|
+| 1 | Presentación | `frontend/` | Mostrar datos y capturar acciones del usuario | No calcula ni decide nada del negocio |
+| 2 | Controladores | `controller/` | Recibir la petición HTTP, validar el formato (`@Valid`), comprobar el rol (`@PreAuthorize`) y delegar | No tiene reglas de negocio |
+| 3 | Servicios | `service/` | **Toda** la lógica de negocio: reglas RN-xx, cálculos, transacciones, notificaciones | No conoce HTTP |
+| 4 | Repositorios | `repository/` | Leer y guardar entidades (Spring Data JPA) | No decide nada |
+
+El modelo de dominio (`model/`) es transversal: las entidades JPA también contienen **reglas de su propio estado**. Por ejemplo, `Vacante.activar()` rechaza activar una vacante cerrada y `Postulacion.resolver()` rechaza resolver una postulación que ya no está activa. Los servicios orquestan y las entidades protegen su consistencia.
+
+## 4. Ciclo de vida de una petición
+
+Ejemplo: el manager acepta a un candidato (`POST /api/v1/postulaciones/{id}/aceptar`).
+
+```mermaid
+sequenceDiagram
+    participant FE as Frontend (ranking.js)
+    participant SEC as Spring Security
+    participant F as RenovacionTokenFilter
+    participant C as RankingController
+    participant S as DecisionService
+    participant R as Repositorios
+    participant DB as PostgreSQL
+    FE->>SEC: POST /postulaciones/42/aceptar<br/>Authorization: Bearer <token>
+    SEC->>SEC: Valida firma y vencimiento del JWT (HS256)
+    SEC->>F: Usuario autenticado
+    F->>R: ¿La cuenta sigue activa?
+    F-->>FE: Encabezado X-Token-Renovado (token nuevo de 30 min)
+    F->>C: continúa
+    C->>C: @PreAuthorize("hasRole('MANAGER')")
+    C->>S: aceptar(idManager, 42)
+    S->>S: ¿Es su vacante? ¿Activa? ¿Viable? ¿Ya pasó el corte del ciclo de 3 días?
+    S->>R: cierra la vacante, acepta, rechaza a los demás, cancela otras postulaciones (RN-09),<br/>mueve la asignación (RN-15), crea vacante diferida (RN-02/03), notifica a RR.HH. (RN-16)
+    R->>DB: Todo en UNA transacción
+    S-->>C: DTO
+    C-->>FE: 200 JSON
+```
+
+Si algo falla dentro del servicio, la excepción sube a `ManejadorErrores`, que la traduce a un código HTTP con un mensaje en español:
+
+| Excepción | HTTP | Cuándo |
 |---|---|---|
-| Frontend | **Vercel** (plan Hobby) | Gratis. Se publica solo desde GitHub (`frontend/vercel.json`). |
-| Backend | **Render** (plan Free) | Ejecuta la imagen de `backend/Dockerfile` (`render.yaml`). Se duerme tras 15 min sin uso. |
-| Base de datos | **Supabase** (plan Free) | El backend usa la cadena del *Session pooler* (IPv4). |
+| `MethodArgumentNotValidException`, `DatosInvalidosException` | 400 | Campos inválidos. La respuesta incluye `campos` para marcar el formulario |
+| `HttpMessageNotReadableException`, `MethodArgumentTypeMismatchException` | 400 | JSON mal formado o tipo incorrecto |
+| `CredencialesInvalidasException` | 401 | Login fallido o cuenta desactivada |
+| Sin token o token vencido | 401 | Lo responde Spring Security (`RespuestasSeguridad`) |
+| `AccesoDenegadoException` o rol incorrecto | 403 | Se registra en `bitacora_acceso` |
+| `RecursoNoEncontradoException` | 404 | El id no existe |
+| `ReglaNegocioException` | 409 | Se violó una regla de negocio (por ejemplo, "ya tienes una postulación activa") |
 
-El backend es un **monolito**: un solo servicio Spring Boot dentro de un solo contenedor.
-La guía paso a paso está en `deploy/README.md`.
+## 5. Piezas transversales
 
-### Ambientes
-
-| Rama | Ambiente | Uso |
+| Pieza | Clase | Para qué |
 |---|---|---|
-| `develop` | Preview | Probar la integración del sprint en curso |
-| `main` | Producción | Versión entregada al cierre de cada sprint |
+| Parámetros de negocio | `config/*Properties` + `service/ParametrosService` | Los valores de `conf/config.yaml` (umbral 65, pesos 0.7 y 0.3, plazos...) se cargan como `@ConfigurationProperties`. **Ningún valor de negocio está fijo en el código** (RNF-12). |
+| Reloj | `config/RelojConfig` (bean `Clock`) | Todos los servicios usan `LocalDateTime.now(reloj)`. Las pruebas inyectan un reloj fijo y así las reglas de "6 meses" o "24 horas" son repetibles. |
+| Tareas programadas | `config/TareasProgramadas` | Tres cron (ver la sección 6). La lógica vive en los servicios. |
+| Tiempos de respuesta | `config/TiemposRespuestaFilter` | Registra en el log la duración de cada petición con la etiqueta `tiempo-respuesta` (HU-005). |
+| Eventos de la decisión | `DecisionService.EventosDecision` | Interfaz de *listener* que implementan `AlertaService` y `ResultadoService`: cuando el manager acepta o rechaza, se generan las alertas (RN-29) y los resultados (RN-18) sin acoplar los servicios entre sí. |
+| Notificaciones | `NotificacionService` | Se guardan en la misma transacción que el evento que las origina (RNF-08). |
+| Bitácora de cálculo | `BitacoraCalculo` (`@Immutable`) + trigger SQL | Cada cálculo del Puntaje Final queda registrado y **no se puede modificar ni borrar** (RNF-06). |
+| Bitácora de accesos | `security/RegistroAccesosDenegados` | Cada 403 se guarda en `bitacora_acceso`, con trigger de solo lectura (HU-006). |
 
-### Secretos
+## 6. Tareas programadas (cron)
 
-Las credenciales (cadena de conexión de Supabase, clave de firma del token) **nunca se suben al
-repositorio**. Se guardan en:
+Definidas en `application.yml`, en `talentmatch.tareas.*`. Se pueden apagar con `TAREAS_HABILITADAS=false`.
 
-- **Local:** archivo `.env` (incluido en `.gitignore`).
-- **CI:** GitHub → Settings → Secrets and variables → Actions.
-- **Producción:** variables de entorno del servicio en Render (backend) y de Vercel (frontend).
+| Tarea | Cron por defecto | Regla | Servicio |
+|---|---|---|---|
+| Activar vacantes cuya ventana de 24 h ya pasó | `0 * * * * *` (cada minuto) | RN-03 | `VacanteAutomaticaService.activarPendientes` |
+| Alertar vacantes sin match después de 10 días | `0 0 7 * * *` (todos los días a las 7:00) | RN-05 y RN-30 | `VacanteAutomaticaService.revisarVacantesSinMatch` |
+| Generar el reporte mensual de rechazos | `0 0 2 1 * *` (el día 1 a las 2:00) | HU-002 | `ReporteRechazosService` |
+
+> En el plan Free de Render el servicio **se duerme** tras 15 minutos sin tráfico. Mientras duerme no corren los cron. Al despertar se ponen al día en la siguiente ejecución, porque cada tarea revisa el estado actual y no "eventos perdidos".
+
+## 7. Decisiones de arquitectura
+
+| Decisión | Por qué |
+|---|---|
+| Monolito y no microservicios | El dominio es pequeño y las reglas cruzan entidades: aceptar a un candidato toca vacantes, postulaciones, asignaciones y notificaciones en una sola transacción. |
+| Lógica en la capa Service, no en el frontend | El frontend es manipulable. Toda regla se valida en el servidor y el frontend solo muestra mensajes. |
+| Fórmula sin IA y parametrizable | Requisito de neutralidad y auditabilidad (RNF-09, RNF-06): cualquiera puede recalcular el puntaje a mano. |
+| `ddl-auto: validate` + Flyway | Las tablas las crea Flyway. Hibernate solo **valida** al arrancar que las entidades coincidan con las tablas; si no coinciden, la app no arranca. |
+| Herencia `SINGLE_TABLE` en `usuario` | Un solo login para los 5 roles. Columna discriminadora `rol`. `Empleado` y `Manager` guardan sus datos extra en la tabla secundaria `empleado`. |
+| JWT HS256 sin estado + renovación por petición | Escala sin sesiones en el servidor y cumple la expiración por **inactividad** de 30 minutos (HU-006). |
+| Frontend sin framework | Requisito del curso y despliegue trivial: archivos estáticos, sin `npm install` ni compilación. |
+| Un solo workflow de CI | Vercel y Render despliegan solos desde GitHub. El CI solo valida: pruebas, informe, cobertura, Sonar y build de Docker. |
+
+Ver también: [Guía del backend](Backend) · [Modelo de datos](Database-Model) · [Seguridad](Security) · [Despliegue](Deployment).

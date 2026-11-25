@@ -4,12 +4,14 @@
 import { request } from "../api.js";
 import { TEXTO_ESTADO_POSTULACION } from "../catalogos.js";
 import { montarLayout } from "../layout.js";
-import { escaparHtml, formatearFecha, mostrarMensaje } from "../ui.js";
+import { ejecutar, escaparHtml, formatearFecha, mostrarMensaje } from "../ui.js";
 
 const usuario = montarLayout(["MANAGER", "RRHH"]);
 const id = new URLSearchParams(window.location.search).get("id");
 const tabla = document.getElementById("candidatos");
 const panel = document.getElementById("desglose");
+const seccionBajoUmbral = document.getElementById("seccion-bajo-umbral");
+const tablaBajoUmbral = document.getElementById("bajo-umbral");
 const mensaje = document.getElementById("mensaje");
 const COLOR = { VERDE: "🟢", AMARILLO: "🟡", ROJO: "🔴" };
 const esManager = usuario && usuario.rol === "MANAGER";
@@ -46,11 +48,29 @@ async function cargar() {
     ? `<tr><td colspan="5" class="vacio">${activa ? "Aún no hay candidatos viables."
       : "La vacante se cerró sin candidatos viables."}</td></tr>`
     : r.candidatos.map((c) => fila(c, activa)).join("");
+  pintarBajoUmbral(r.postuladosBajoUmbral || [], r.umbralViabilidad);
+}
+
+// RN-28: quienes se postularon con puntaje bajo no entran al ranking ni se pueden aceptar,
+// pero el manager debe saber que existen (antes quedaban ocultos y parecia que nadie se postulo).
+function pintarBajoUmbral(lista, umbral) {
+  seccionBajoUmbral.hidden = lista.length === 0;
+  document.getElementById("titulo-bajo-umbral").textContent = `Postulados por debajo del umbral (${lista.length})`;
+  document.getElementById("ayuda-bajo-umbral").textContent = `Se postularon, pero su Puntaje Final es menor `
+    + `al ${umbral.toFixed(0)} %: no entran al ranking ni se pueden aceptar (RN-28). Selecciona uno para ver su desglose.`;
+  tablaBajoUmbral.innerHTML = lista.map((c) => `<tr data-id="${c.postulacionId}" draggable="false" tabindex="0">
+    <td>${COLOR.ROJO} ${escaparHtml(c.candidato)}</td>
+    <td>${c.puntajeFinal.toFixed(1)} %</td>
+    <td>${formatearFecha(c.fechaPostulacion)}</td>
+    <td>${c.estado === "ACTIVA" ? "" : `<span class="etiqueta etiqueta-${c.estado.toLowerCase()}">`
+      + `${TEXTO_ESTADO_POSTULACION[c.estado]}</span>`}</td>
+  </tr>`).join("");
 }
 
 // Escenario 2: el desglose se abre al lado, sin perder el ranking.
 async function verDesglose(idPostulacion) {
-  tabla.querySelectorAll("tr").forEach((tr) => tr.classList.toggle("resaltada", tr.dataset.id === idPostulacion));
+  [tabla, tablaBajoUmbral].forEach((t) => t.querySelectorAll("tr")
+    .forEach((tr) => tr.classList.toggle("resaltada", tr.dataset.id === idPostulacion)));
   panel.innerHTML = '<p class="vacio">Cargando…</p>';
   try {
     const d = await request("GET", `/postulaciones/${idPostulacion}/desglose`);
@@ -95,16 +115,23 @@ async function decidir(boton) {
 tabla.addEventListener("click", (e) => {
   const boton = e.target.closest("button[data-accion]");
   if (boton) {
-    decidir(boton);
+    ejecutar(decidir(boton));
     return;
   }
   const tr = e.target.closest("tr[data-id]");
   if (tr) {
-    verDesglose(tr.dataset.id);
+    ejecutar(verDesglose(tr.dataset.id));
+  }
+});
+tablaBajoUmbral.addEventListener("click", (e) => {
+  const tr = e.target.closest("tr[data-id]");
+  if (tr) {
+    ejecutar(verDesglose(tr.dataset.id));
   }
 });
 // RN-14: no se permite arrastrar filas
 tabla.addEventListener("dragstart", (e) => e.preventDefault());
+tablaBajoUmbral.addEventListener("dragstart", (e) => e.preventDefault());
 
 if (usuario && id) {
   cargar().catch((e) => mostrarMensaje(mensaje, e.message));

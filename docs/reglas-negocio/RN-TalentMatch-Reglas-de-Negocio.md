@@ -121,7 +121,7 @@ Vacante (Mid-Senior): Go, Kubernetes, Docker
 | ID | Condición | Acción |
 |---|---|---|
 | **RN-27** | Puntaje Final **≥ 65 %** | Candidato **"viable"**: se muestra al manager en el ranking. |
-| **RN-28** | Puntaje Final **< 65 %** | El sistema **informa al empleado** que sus posibilidades son bajas, pero **NO bloquea** la postulación. El candidato **no aparece** en el ranking del manager. |
+| **RN-28** | Puntaje Final **< 65 %** | El sistema **informa al empleado** que sus posibilidades son bajas, pero **NO bloquea** la postulación. El candidato **no aparece** en el ranking del manager: se lista aparte, en "Postulados por debajo del umbral" (alias y puntaje, sin acciones de decisión), para que el manager sepa que se postuló. |
 | **RN-29** | **2 o más rechazos** del mismo manager a candidatos viables (≥ 65 %) | Se dispara una **alerta a RR.HH.** |
 | **RN-30** | Vacante sin Match pasados **10 días** (RN-05) | Notificación al manager solicitante y al Jefe del área. |
 

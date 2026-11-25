@@ -2,7 +2,7 @@
 
 import { request } from "../api.js";
 import { montarLayout } from "../layout.js";
-import { escaparHtml, formatearFecha, mostrarMensaje } from "../ui.js";
+import { ejecutar, escaparHtml, formatearFecha, mostrarMensaje } from "../ui.js";
 
 const TEXTO_ESTADO = { AGREGADO: "Pendiente de aval", AVALADO: "Avalada", RECHAZADO: "No avalada" };
 
@@ -57,5 +57,5 @@ filas.addEventListener("click", async (e) => {
 verTodas.addEventListener("change", cargar);
 
 if (usuario) {
-  cargar();
+  ejecutar(cargar());
 }

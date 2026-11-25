@@ -3,7 +3,7 @@
 import { request } from "../api.js";
 import { TEXTO_ESTADO_POSTULACION } from "../catalogos.js";
 import { montarLayout } from "../layout.js";
-import { escaparHtml, formatearFecha, mostrarMensaje } from "../ui.js";
+import { ejecutar, escaparHtml, formatearFecha, mostrarMensaje } from "../ui.js";
 
 const usuario = montarLayout(["EMPLEADO", "MANAGER"]);
 const filas = document.getElementById("filas");
@@ -40,5 +40,5 @@ async function cargar() {
 }
 
 if (usuario) {
-  cargar();
+  ejecutar(cargar());
 }

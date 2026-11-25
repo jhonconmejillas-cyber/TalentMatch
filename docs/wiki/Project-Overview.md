@@ -1,52 +1,62 @@
-# Project Overview
+# Visión general
 
 ## ¿Qué es TalentMatch?
 
-TalentMatch es una plataforma de **movilidad interna** que:
+TalentMatch es una plataforma de **movilidad interna de talento** para empresas de ingeniería de software:
 
-- ✅ Conecta ingenieros con proyectos/vacantes dentro de su empresa
-- ✅ Usa un sistema de "match" sin IA (reglas lógicas simples)
-- ✅ Muestra el costo económico de perder talento vs. moverlo internamente
-- ✅ Prioriza la satisfacción de empleado + manager, no solo llenar vacantes
+- ✅ Conecta a los empleados con vacantes de **otros proyectos o áreas** dentro de su propia empresa.
+- ✅ Calcula un **Puntaje Final** objetivo con reglas simples y explicables, **sin IA**.
+- ✅ Muestra al manager el **costo económico** de perder talento frente a moverlo internamente.
+- ✅ Protege al empleado: ranking por mérito que nadie puede reordenar, resultado anónimo y alertas a RR.HH. ante rechazos sospechosos.
 
-## El Diferenciador
+## El diferenciador
 
 | Aspecto | TalentMatch |
-|---------|-------------|
-| **Sin caja negra** | Todo el cálculo es explicable, no usa IA |
-| **Doble satisfacción** | Mide si empleado y manager quedaron felices |
-| **Argumento económico** | Muestra al manager el ROI de aceptar candidatos |
-| **Descubrimiento activo** | Notifica al empleado de vacantes relevantes (tipo Tinder) |
+|---|---|
+| **Sin caja negra** | La fórmula es pública y parametrizable, y cada cálculo queda en una bitácora inmutable |
+| **Mérito, no cercanía** | Solo cuentan las habilidades **avaladas** por el manager actual. El ranking no se puede reordenar y RR.HH. recibe una alerta si un manager rechaza repetidamente a candidatos viables |
+| **Argumento económico** | El desglose muestra al manager cuánto ahorra rotando internamente frente a contratar afuera |
+| **Descubrimiento activo** | La wishlist avisa al empleado cuando aparece una vacante con lo que quiere aprender |
+| **Transparencia sin exponer a nadie** | Quien no fue seleccionado ve el puntaje y las habilidades del elegido, pero nunca su identidad |
 
-## Objetivos Principales
+## Objetivos
 
-1. **Retener talento interno** — evitar que ingenieros renuncien por estancamiento
-2. **Reducir costos de rotación** — ahorrar en recruitment y ramp-up
-3. **Visibilizar oportunidades** — empleados ven dónde pueden crecer
-4. **Decisiones data-driven** — managers deciden con base económica, no emocional
+1. **Retener talento:** evitar que los ingenieros renuncien por estancamiento.
+2. **Reducir costos de rotación:** ahorrar en reclutamiento y *ramp-up*.
+3. **Visibilizar oportunidades:** los empleados ven dónde pueden crecer.
+4. **Decisiones basadas en datos:** el manager decide con un ranking objetivo y el costo real.
 
-## Por qué Importa
+## Alcance del MVP (v1.0.0)
 
-La principal causa de renuncia en ingeniería **no es salario**: es estancamiento técnico y falta de visibilidad de oportunidades internas.
+| Incluido | Fuera del alcance |
+|---|---|
+| Registro y login con 5 roles | Integración con nómina o con el ERP de RR.HH. |
+| Perfil, habilidades y aval del manager | La comunicación humana del cambio (la hace RR.HH. fuera de la app) |
+| Vacantes manuales y automáticas (al liberarse un puesto) | La decisión de contratar externamente o eliminar el puesto |
+| Postulación con reglas (6 meses, repostulación) | El Career Impact Score (eliminado, PEN-03) |
+| Puntaje Final con bitácora | Decisiones de ascenso (el top 10 es solo un insumo) |
+| Ranking inmutable, aceptar y rechazar, ciclo de 3 días | Aplicación móvil |
+| Resultado anónimo, alertas y reportes (rechazos, top 10) | — |
+| Seguridad: permisos por rol y por relación, bitácora de accesos y sesión de 30 min | — |
 
-**Costos cuando un ingeniero renuncia:**
-- 📉 Recruitment + onboarding: $4,000–$9,000 USD
-- 📉 Proyectos interrumpidos, código sin contexto
-- 📉 Pérdida de conocimiento cultural
+## Estado
 
-**Beneficio de moverlo internamente:**
-- ✅ El ingeniero aprende y crece
-- ✅ La empresa retiene talento conocido
-- ✅ El proyecto nuevo consigue alguien experimentado
-## La Solución: TalentMatch viene para ayudar  los dos roles mas importante dentro de una empresa el jefe y el empleado, TalentMatch quiere que el manager entienda las ganancias  que genera a la empresa rotar empleados, y darle la herramientas al usuario para que pueda crecer  dentro de la empresa sin necesidad de cambiar de esta y así tener flujos de trabajo mas rápidos al no tener que buscar nuevas personas y capacitar a alas personas para un proyecto que esta en la mitad del desarrollo.
+- **v1.0.0** publicada; los 24 issues de los 5 sprints están cerrados.
+- **En producción:** https://talentmatch-frontend-puce.vercel.app (ver [Despliegue](Deployment)).
+- **Pruebas:** 203 en verde y 89.9 % de cobertura; *quality gate* de SonarQube aprobado.
+- **Pendiente:** validación del Product Owner (ver [Historial](Project-History#pendientes)).
 
+## Equipo
 
-####  **Vision**
-- Talent Match tiene como vision  a 5 años expandirse por las diferentes areas de la ingenieria, salud y logistica donde se permite el cambio de rol gracias a diferentes actividades o proyecto que realiza la empresa.
+| Integrante | Rol(es) | GitHub |
+|---|---|---|
+| Carlos Camacho | Scrum Master / DevOps Engineer | [@charly-31](https://github.com/charly-31) |
+| Jhon Mejía | Product Owner / Configuration Manager | [@jhonconmejillas-cyber](https://github.com/jhonconmejillas-cyber) |
+| Juan Maldonado | Sprint Planner / QA Lead | [@camilo058](https://github.com/camilo058) |
 
-#### **Alcance**
-- El primer producto de la empresa va enfocado hacia el sector software.
+Curso: Fundamentos de Ingeniería de Software, Pontificia Universidad Javeriana.
 
--  Por el lado regional se busca  a futuro una fuerte presencia en el sector de Latinoamérica donde hay la creación de muchas  startups, donde su uso es primordial para el crecimiento y cuidado del empleado.
+## Visión a futuro
 
-
+- **5 años:** expandirse a otras áreas además del software (ingeniería, salud, logística) donde exista rotación interna por proyectos.
+- **Región:** Latinoamérica, con foco en *startups* en crecimiento.

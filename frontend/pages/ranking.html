@@ -13,15 +13,25 @@
     <section class="tarjeta">
       <h1 id="titulo">Ranking de candidatos</h1>
       <p class="ayuda" id="ciclo"></p>
-      <p class="ayuda">Ordenado por Puntaje Final. Solo aparecen candidatos viables. El orden no se puede modificar.</p>
+      <p class="ayuda">Ordenado por Puntaje Final. Solo aparecen candidatos viables; los demás postulados se listan aparte. El orden no se puede modificar.</p>
     </section>
     <div class="ranking-layout">
-      <section class="tarjeta">
-        <table class="tabla tabla-ranking">
-          <thead><tr><th>#</th><th>Candidato</th><th>Puntaje Final</th><th>Postulado</th><th></th></tr></thead>
-          <tbody id="candidatos"><tr><td colspan="5" class="vacio">Cargando…</td></tr></tbody>
-        </table>
-      </section>
+      <div class="ranking-columna">
+        <section class="tarjeta">
+          <table class="tabla tabla-ranking">
+            <thead><tr><th>#</th><th>Candidato</th><th>Puntaje Final</th><th>Postulado</th><th></th></tr></thead>
+            <tbody id="candidatos"><tr><td colspan="5" class="vacio">Cargando…</td></tr></tbody>
+          </table>
+        </section>
+        <section class="tarjeta" id="seccion-bajo-umbral" hidden>
+          <h2 id="titulo-bajo-umbral">Postulados por debajo del umbral</h2>
+          <p class="ayuda" id="ayuda-bajo-umbral"></p>
+          <table class="tabla tabla-ranking">
+            <thead><tr><th>Candidato</th><th>Puntaje Final</th><th>Postulado</th><th></th></tr></thead>
+            <tbody id="bajo-umbral"></tbody>
+          </table>
+        </section>
+      </div>
       <aside class="tarjeta" id="desglose">
         <p class="vacio">Selecciona un candidato para ver su desglose.</p>
       </aside>

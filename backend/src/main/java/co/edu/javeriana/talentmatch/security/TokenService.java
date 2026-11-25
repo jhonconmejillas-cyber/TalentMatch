@@ -32,6 +32,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class TokenService {
 
+    /** Generador seguro reutilizable (crear uno por llamada es costoso y menos aleatorio). */
+    private static final SecureRandom ALEATORIO = new SecureRandom();
+
     private static final Logger LOG = LoggerFactory.getLogger(TokenService.class);
     public static final String CLAIM_ROL = "rol";
     public static final String CLAIM_NOMBRE = "nombre";
@@ -75,7 +78,7 @@ public class TokenService {
         if (secreto == null || secreto.isBlank()) {
             LOG.warn("JWT_SECRET no esta definido: se usa una clave aleatoria (solo para desarrollo).");
             bytes = new byte[32];
-            new SecureRandom().nextBytes(bytes);
+            ALEATORIO.nextBytes(bytes);
         } else {
             bytes = secreto.getBytes(StandardCharsets.UTF_8);
             if (bytes.length < 32) {

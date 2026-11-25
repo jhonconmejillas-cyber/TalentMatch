@@ -3,7 +3,7 @@
 import { request } from "../api.js";
 import { NOMBRE_SENIORIDAD } from "../catalogos.js";
 import { montarLayout } from "../layout.js";
-import { escaparHtml, formatearFecha, mostrarMensaje } from "../ui.js";
+import { ejecutar, escaparHtml, formatearFecha, mostrarMensaje } from "../ui.js";
 
 const usuario = montarLayout(["EMPLEADO", "MANAGER", "RRHH"]);
 const id = new URLSearchParams(window.location.search).get("id");
@@ -64,5 +64,5 @@ async function iniciar() {
 }
 
 if (usuario && id) {
-  iniciar();
+  ejecutar(iniciar());
 }

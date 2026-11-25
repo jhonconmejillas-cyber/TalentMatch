@@ -2,7 +2,7 @@
 
 import { request } from "../api.js";
 import { montarLayout } from "../layout.js";
-import { escaparHtml, formatearFecha, limpiarCampos, marcarErroresDeApi, mostrarMensaje } from "../ui.js";
+import { ejecutar, escaparHtml, formatearFecha, limpiarCampos, marcarErroresDeApi, mostrarMensaje } from "../ui.js";
 
 const usuario = montarLayout(["EMPLEADO", "MANAGER"]);
 const formulario = document.getElementById("form-habilidad");
@@ -82,5 +82,5 @@ formulario.addEventListener("submit", async (evento) => {
 });
 
 if (usuario) {
-  iniciar();
+  ejecutar(iniciar());
 }

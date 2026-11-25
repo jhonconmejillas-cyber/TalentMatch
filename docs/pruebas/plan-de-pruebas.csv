@@ -1,0 +1,27 @@
+caso|componente|metodo|descripcion|entrada|tipo|esperado|justificacion
+CP01|CalculadoraMatchScore|calcular|Todas las habilidades avaladas y misma senioridad|Avaladas={Java,SQL}; requeridas={Java,SQL}; Senior vs Senior|Normal|Match Score = 100.0; porcentaje = 1.0; sin faltantes|Camino feliz de la formula RN-23
+CP02|CalculadoraMatchScore|calcular (porcentaje de habilidades)|Coincidencia parcial de habilidades|Avaladas={Java}; requeridas={Java,SQL}; Senior vs Senior|Normal|Porcentaje = 0.5; Match Score = 65.0; faltante = SQL|Verifica los pesos 0.7 / 0.3 y que 65 coincide con el umbral
+CP03|CalculadoraMatchScore|calcular|Vacante sin habilidades requeridas|Avaladas={}; requeridas={}; Senior vs Senior|Borde|Porcentaje = 1.0 (no divide entre cero); Match Score = 100.0|Lista vacía: evita la división por cero
+CP04|CalculadoraMatchScore|ajusteSenioridad|Diferencia máxima de senioridad|Junior vs vacante Líder|Borde|Ajuste = 0.0|Último valor de la tabla de ajuste inferior
+CP05|CalculadoraMatchScore|ajusteSenioridad|Empleado sin senioridad declarada|null vs Semi Senior|Borde|Ajuste = 0.6 (igual que Junior)|Dato faltante: se toma el nivel más bajo
+CP06|CalculadoraMatchScore|calcular|Habilidades avaladas nulas|Avaladas = null|Negativa|NullPointerException|Una entrada inválida no debe producir un puntaje
+CP07|CalculadoraMatchScore|calcular|Habilidades requeridas nulas|Requeridas = null|Negativa|NullPointerException|Una entrada inválida no debe producir un puntaje
+CP08|CalculadoraMatchScore|calcular (RN-20)|Habilidad declarada pero sin aval del manager|Avaladas={Java}; sin avalar={Docker}; requeridas={Java,Docker}|Negocio|Porcentaje = 0.5; Docker aparece en sinAvalar y faltantes|RN-20: solo cuentan las habilidades avaladas
+CP09|CalculadoraMatchScore|Resultado.detalle|Texto del cálculo para la bitácora|Resultado de 1 de 2 habilidades|Normal|El texto contiene "coinciden 1 de 2" y "= 65.0"|RNF-06: la bitácora explica el cálculo
+CP10|CalculadoraMatchScore|ajusteSenioridad|Empleado con senioridad superior a la pedida|Líder vs vacante Senior|Normal|Ajuste = 0.9|Superar la senioridad no penaliza fuerte
+CP11|Vacante|activar|Activar una vacante en borrador|Vacante BORRADOR; fecha = 18/11/2026 10:00|Normal|Estado ACTIVA y fecha de activación registrada|Ciclo de vida RN-02
+CP12|Vacante|cerrar|Cerrar una vacante que no está activa|Vacante BORRADOR|Negativa|ReglaNegocioException; sigue en BORRADOR|Transición de estado inválida
+CP13|Vacante|programarActivacion|Programar la activación sin fecha|fecha = null|Negativa|ReglaNegocioException; sigue en BORRADOR|Evita una vacante pendiente que nunca se activa
+CP14|Vacante|debeActivarse|Ventana de 24 h exacta (RN-03)|Programada a T+24h; consulta en T+24h-1s y en T+24h|Borde|false un segundo antes; true justo al cumplirse|Límite exacto de la ventana RN-03
+CP15|Vacante|calcularRanking|Puntaje Final igual al umbral|Puntajes 65.0 y 64.9; umbral 65|Borde|Solo entra la postulación de 65.0|Límite exacto del umbral RN-27
+CP16|Vacante|calcularRanking|Orden del ranking|Puntajes 80, 72 (antes), 72 (después) y 95 rechazada|Negocio|Orden 80, 72 antes, 72 después; la rechazada no aparece|RN-14: ranking inmutable y desempate por fecha
+CP17|Vacante|esMismoPuestoQue|Mismo puesto en otra rotación (RN-10)|"Backend Senior" vs "backend senior" del mismo proyecto; otro proyecto; null|Normal|true; false; false|Define la "nueva rotación" de RN-10
+CP18|Vacante|descartar|Descartar una vacante cerrada|Vacante CERRADA|Negativa|ReglaNegocioException; sigue CERRADA|Una vacante cubierta no se puede descartar
+CP19|PostulacionService|postularse|Postulación exitosa|Empleado 8 (12 meses en el rol); vacante 10 activa|Normal|Postulación ACTIVA guardada con su Puntaje Final|Camino feliz de HU-008
+CP20|PostulacionService|postularse|Empleado inexistente|idEmpleado = 999|Negativa|RecursoNoEncontradoException; no se guarda nada|Identificador inválido
+CP21|PostulacionService|postularse|Postulación repetida|Ya existe una postulación ACTIVA a la vacante 10|Negativa|ReglaNegocioException "Ya tienes una postulación activa"|No se duplica la postulación
+CP22|PostulacionService|elegibilidad|Un día antes de cumplir 6 meses en el rol (RN-07)|Inicio del rol = hoy - 6 meses + 1 día|Borde|No puede postularse; habilitado mañana|Límite exacto de RN-07
+CP23|PostulacionService|elegibilidad|6 meses exactos después de un rechazo, con nueva rotación (RN-10)|Rechazo hace 6 meses en "Backend Senior"; nueva vacante del mismo puesto|Borde|Puede postularse|Límite exacto de RN-10
+CP24|PostulacionService|cancelarOtrasPostulaciones|Cancelación en cascada al aceptar (RN-09)|Postulaciones activas A (aceptada) y B|Negocio|B queda CANCELADA_POR_ROTACION; A sigue ACEPTADA|RN-09: el empleado sale de los demás rankings
+CP25|PostulacionService|elegibilidad|Vacante cerrada|Vacante 10 en estado CERRADA|Negativa|No puede postularse: "La vacante no está recibiendo postulaciones."|Solo se aceptan postulaciones a vacantes activas
+CP26|PostulacionService|misPostulaciones|Listado de mis postulaciones|Empleado 8 con una postulación (id 50)|Normal|1 DTO con id 50 y vacante "Backend Senior"|El empleado ve el estado de sus postulaciones
